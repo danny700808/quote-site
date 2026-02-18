@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>活動企劃｜設備選配與即時報價</title>
+
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#1a1f2b; --muted:#6b7280; --line:#e5e7eb;
+      --brand:#1e8e6f; --brand2:#156e56; --danger:#e24a4a;
+      --shadow:0 10px 28px rgba(0,0,0,.08); --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:18px}
+    header{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+    .title{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);padding:14px 16px;flex:1}
+    .title h1{margin:0 0 6px;font-size:18px}
+    .title p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+    .status{display:flex;gap:10px;align-items:center}
+    .badge{background:#eef7f3;border:1px solid #cfe9df;color:var(--brand2);padding:8px 10px;border-radius:999px;font-size:12px;white-space:nowrap}
+    .btn{cursor:pointer;border:none;background:var(--brand);color:#fff;padding:10px 12px;border-radius:12px;font-weight:700}
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{background:#111827}
+    .btn.ghost{background:#fff;color:var(--text);border:1px solid var(--line)}
+    .layout{display:grid;grid-template-columns: 1.25fr .75fr;gap:14px;align-items:start}
+    @media (max-width: 980px){ .layout{grid-template-columns:1fr} }
+
+    .panel{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);overflow:hidden}
+    .panel-head{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}
+    .panel-head h2{margin:0;font-size:15px}
+    .panel-head .sub{color:var(--muted);font-size:12px}
+    .panel-body{padding:14px}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    select,input{
+      border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;color:var(--text);
+      outline:none;font-size:14px;
+    }
+    input{min-width:220px}
+    .hint{color:var(--muted);font-size:12px;margin-top:8px}
+
+    .grid{display:grid;grid-template-columns: repeat(2, minmax(0,1fr));gap:12px;margin-top:12px}
+    @media (max-width: 560px){ .grid{grid-template-columns:1fr} }
+
+    .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+    .thumb{aspect-ratio: 16/9; background:#f1f5f9; display:flex; align-items:center; justify-content:center; overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .card-body{padding:12px}
+    .name{font-weight:800;margin:0 0 6px;font-size:14px}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-bottom:10px}
+    .price{font-weight:900}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:900}
+    .qty input{width:56px;min-width:auto;text-align:center;padding:8px 8px;border-radius:10px}
+    .actions{display:flex;gap:8px}
+    .small{padding:9px 10px;border-radius:10px;font-weight:800}
+
+    /* Right sticky quote */
+    .sticky{position:sticky;top:14px}
+    .quote-list{display:flex;flex-direction:column;gap:10px}
+    .qitem{border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;gap:10px;justify-content:space-between;align-items:flex-start}
+    .qitem .left{min-width:0}
+    .qitem .t{font-weight:900;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+    .qitem .d{color:var(--muted);font-size:12px;margin-top:4px}
+    .qitem .right{text-align:right;white-space:nowrap}
+    .qitem .right .sum{font-weight:900}
+    .qitem .right button{margin-top:6px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 9px;cursor:pointer}
+    .total{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+    .total .big{font-size:18px;font-weight:1000}
+    .empty{color:var(--muted);font-size:13px;padding:10px 0}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(17,24,39,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .modal.show{display:flex}
+    .modal-card{width:min(920px, 100%);background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+    .modal-head .mh{font-weight:1000}
+    .modal-head button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer}
+    .modal-body{padding:14px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+    @media (max-width: 820px){ .modal-body{grid-template-columns:1fr} }
+    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .gallery.one{grid-template-columns:1fr}
+    .gallery img{width:100%;height:220px;object-fit:cover;border-radius:14px;border:1px solid var(--line);background:#f1f5f9}
+    .desc{color:var(--muted);font-size:13px;line-height:1.6}
+    .kv{display:grid;grid-template-columns: 110px 1fr;gap:8px;font-size:13px;margin:10px 0}
+    .kv div:nth-child(odd){color:var(--muted)}
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:#111827;color:#fff;padding:10px 12px;border-radius:12px;display:none;z-index:60}
+    .toast.show{display:block}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>活動企劃｜設備選配與即時報價</h1>
+        <p>資料來源：Google Sheet（你改 Sheet，網頁會跟著更新）。</p>
+      </div>
+      <div class="status">
+        <div class="badge" id="dataState">資料：尚未載入</div>
+        <button class="btn ghost" id="btnReload">重新載入</button>
+        <button class="btn secondary" id="btnClear">清空報價</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Left -->
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>設備 / 服務分類</h2>
+            <div class="sub">可搜尋、可排序、點「詳情」看圖與說明</div>
+          </div>
+          <div class="sub" id="countInfo">0 項</div>
+        </div>
+        <div class="panel-body">
+          <div class="filters">
+            <select id="catSelect"></select>
+            <input id="q" placeholder="搜尋：麥克風、喇叭、PAR..." />
+            <select id="sortSelect">
+              <option value="sort">排序：sort（小→大）</option>
+              <option value="priceAsc">價格：低→高</option>
+              <option value="priceDesc">價格：高→低</option>
+              <option value="nameAsc">名稱：A→Z</option>
+            </select>
+          </div>
+          <div class="hint">小提醒：你的 items 表裡 img 欄位請放「可公開的圖片網址」（例如 i.imgur.com 或公開雲端直連）。</div>
+          <div class="grid" id="itemsGrid"></div>
+        </div>
+      </section>
+
+      <!-- Right sticky -->
+      <aside class="panel sticky">
+        <div class="panel-head">
+          <div>
+            <h2>即時報價單</h2>
+            <div class="sub">加入品項後會出現在這裡</div>
+          </div>
+          <div class="sub" id="cartCount">0 項</div>
+        </div>
+        <div class="panel-body">
+          <div class="quote-list" id="quoteList"></div>
+          <div class="total">
+            <div>
+              <div class="sub" style="color:var(--muted);font-size:12px">預估總金額</div>
+              <div class="big" id="grandTotal">NT$ 0</div>
+            </div>
+            <button class="btn" id="btnCopy">複製報價內容</button>
+          </div>
+          <div class="hint" style="margin-top:10px">
+            ※ 這是「設備選配」估算，運輸/人力/場勘可再加項目。
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="mh" id="mTitle">詳情</div>
+        <button id="mClose">關閉</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="gallery" id="mGallery"></div>
+        </div>
+        <div>
+          <div class="kv">
+            <div>分類</div><div id="mCat"></div>
+            <div>單位</div><div id="mUnit"></div>
+            <div>單價</div><div id="mPrice"></div>
+          </div>
+          <div class="desc" id="mDesc"></div>
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn small" id="mAdd">加入報價</button>
+            <button class="btn ghost small" id="mOpenImg">開啟圖片</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">已複製</div>
+
+<script>
+/** ✅ 你的 Google Sheet CSV 連結（你已經發佈成功的） **/
+const CATEGORIES_CSV =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQagyOTerM4A-yQzU_rZ_jEEHnHv7iIzAeu9XpbaeqVOz3Ur-sINk07I_JYJrW_YKvRDJMi51xPJS-/pub?gid=0&single=true&output=csv";
+
+const ITEMS_CSV =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQagyOTerM4A-yQzU_rZ_jEEHnHv7iIzAeu9XpbaeqVOz3Ur-sINk07I_JYJrW_YKvRDJMi51xPJS-/pub?gid=253807614&single=true&output=csv";
+
+/** -------------------- Utils -------------------- **/
+const $ = (s)=>document.querySelector(s);
+const fmt = (n)=> "NT$ " + (Number(n||0)).toLocaleString("zh-Hant-TW");
+function toast(msg="完成"){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 1100);
+}
+
+// Basic CSV parser that supports quotes
+function parseCSV(text){
+  const rows = [];
+  let row = [], cur = "", inQ = false;
+  for(let i=0;i<text.length;i++){
+    const c = text[i], n = text[i+1];
+    if(inQ){
+      if(c === '"' && n === '"'){ cur+='"'; i++; }
+      else if(c === '"'){ inQ = false; }
+      else { cur += c; }
+    }else{
+      if(c === '"'){ inQ = true; }
+      else if(c === ','){ row.push(cur); cur=""; }
+      else if(c === '\n'){ row.push(cur); rows.push(row); row=[]; cur=""; }
+      else if(c === '\r'){ /* ignore */ }
+      else { cur += c; }
+    }
+  }
+  if(cur.length || row.length){ row.push(cur); rows.push(row); }
+  // trim empty last row
+  while(rows.length && rows[rows.length-1].every(x=>String(x||"").trim()==="")) rows.pop();
+  return rows;
+}
+
+async function loadCSV(url){
+  const res = await fetch(url, {cache:"no-store"});
+  if(!res.ok) throw new Error("Fetch failed: "+res.status);
+  const txt = await res.text();
+  return parseCSV(txt);
+}
+
+function rowsToObjects(rows){
+  const header = rows[0].map(h=>String(h||"").trim());
+  const out = [];
+  for(let i=1;i<rows.length;i++){
+    const r = rows[i];
+    if(!r || r.every(x=>String(x||"").trim()==="")) continue;
+    const o = {};
+    header.forEach((k,idx)=> o[k] = (r[idx] ?? "").toString().trim());
+    out.push(o);
+  }
+  return out;
+}
+
+/** -------------------- App State -------------------- **/
+let categories = []; // {catId, catName, sort}
+let items = [];      // {itemId, catId, name, unit, price, img, desc, sort}
+let cart = new Map(); // itemId => qty
+
+/** -------------------- Render -------------------- **/
+function buildCatSelect(){
+  const sel = $("#catSelect");
+  sel.innerHTML = "";
+  const optAll = document.createElement("option");
+  optAll.value = "ALL";
+  optAll.textContent = "全部分類";
+  sel.appendChild(optAll);
+
+  categories
+    .slice()
+    .sort((a,b)=> Number(a.sort||9999) - Number(b.sort||9999))
+    .forEach(c=>{
+      const o=document.createElement("option");
+      o.value=c.catId;
+      o.textContent = c.catName || c.catId;
+      sel.appendChild(o);
+    });
+}
+
+function getFilteredItems(){
+  const cat = $("#catSelect").value;
+  const q = ($("#q").value||"").trim().toLowerCase();
+  const sortMode = $("#sortSelect").value;
+
+  let list = items.slice();
+
+  if(cat !== "ALL") list = list.filter(it=>it.catId === cat);
+
+  if(q){
+    list = list.filter(it=>{
+      const s = `${it.name} ${it.desc} ${it.itemId}`.toLowerCase();
+      return s.includes(q);
+    });
+  }
+
+  if(sortMode==="priceAsc") list.sort((a,b)=> Number(a.price||0)-Number(b.price||0));
+  else if(sortMode==="priceDesc") list.sort((a,b)=> Number(b.price||0)-Number(a.price||0));
+  else if(sortMode==="nameAsc") list.sort((a,b)=> String(a.name||"").localeCompare(String(b.name||""), "zh-Hant"));
+  else list.sort((a,b)=>{
+    const ca = categories.find(c=>c.catId===a.catId)?.sort ?? 9999;
+    const cb = categories.find(c=>c.catId===b.catId)?.sort ?? 9999;
+    if(ca!==cb) return Number(ca)-Number(cb);
+    const sa = Number(a.sort||9999), sb = Number(b.sort||9999);
+    if(sa!==sb) return sa-sb;
+    return String(a.name||"").localeCompare(String(b.name||""), "zh-Hant");
+  });
+
+  return list;
+}
+
+function renderItems(){
+  const list = getFilteredItems();
+  $("#countInfo").textContent = `${list.length} 項`;
+  const grid = $("#itemsGrid");
+  grid.innerHTML = "";
+
+  list.forEach(it=>{
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const thumb = document.createElement("div");
+    thumb.className = "thumb";
+    const img = document.createElement("img");
+    img.alt = it.name || "";
+    img.loading = "lazy";
+    img.src = it.img || "";
+    img.onerror = ()=>{ img.remove(); thumb.textContent = "無圖片"; };
+    if(it.img) thumb.appendChild(img);
+    else thumb.textContent = "無圖片";
+
+    const body = document.createElement("div");
+    body.className = "card-body";
+
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = it.name || it.itemId;
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const catName = categories.find(c=>c.catId===it.catId)?.catName || it.catId;
+    meta.innerHTML = `<span>分類：${catName}</span><span>單位：${it.unit||"-"}</span><span class="price">${fmt(it.price)}</span>`;
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const qty = document.createElement("div");
+    qty.className = "qty";
+
+    const btnMinus = document.createElement("button");
+    btnMinus.textContent = "−";
+    btnMinus.onclick = ()=> changeQty(it.itemId, -1);
+
+    const qInput = document.createElement("input");
+    qInput.value = cart.get(it.itemId) || 0;
+    qInput.inputMode = "numeric";
+    qInput.onchange = ()=>{
+      let v = Math.max(0, Math.floor(Number(qInput.value||0)));
+      if(v===0) cart.delete(it.itemId); else cart.set(it.itemId, v);
+      syncUI();
+    };
+
+    const btnPlus = document.createElement("button");
+    btnPlus.textContent = "+";
+    btnPlus.onclick = ()=> changeQty(it.itemId, +1);
+
+    qty.append(btnMinus, qInput, btnPlus);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const btnDetail = document.createElement("button");
+    btnDetail.className = "btn ghost small";
+    btnDetail.textContent = "詳情";
+    btnDetail.onclick = ()=> openModal(it);
+
+    const btnAdd = document.createElement("button");
+    btnAdd.className = "btn small";
+    btnAdd.textContent = "加入";
+    btnAdd.onclick = ()=> { changeQty(it.itemId, +1); };
+
+    actions.append(btnDetail, btnAdd);
+
+    row.append(qty, actions);
+    body.append(name, meta, row);
+
+    card.append(thumb, body);
+    grid.appendChild(card);
+  });
+}
+
+function changeQty(itemId, delta){
+  const cur = cart.get(itemId) || 0;
+  const next = Math.max(0, cur + delta);
+  if(next===0) cart.delete(itemId);
+  else cart.set(itemId, next);
+  syncUI();
+}
+
+function renderQuote(){
+  const list = $("#quoteList");
+  list.innerHTML = "";
+
+  if(cart.size===0){
+    list.innerHTML = `<div class="empty">尚未加入任何品項。到左側選擇設備後按「加入」。</div>`;
+    $("#grandTotal").textContent = fmt(0);
+    $("#cartCount").textContent = "0 項";
+    return;
+  }
+
+  let total = 0;
+  let count = 0;
+
+  [...cart.entries()].forEach(([id,qty])=>{
+    const it = items.find(x=>x.itemId===id);
+    if(!it) return;
+    const sum = Number(it.price||0) * Number(qty||0);
+    total += sum;
+    count += qty;
+
+    const div = document.createElement("div");
+    div.className = "qitem";
+    div.innerHTML = `
+      <div class="left">
+        <div class="t" title="${it.name}">${it.name}</div>
+        <div class="d">${fmt(it.price)} × ${qty} ${it.unit||""}</div>
+      </div>
+      <div class="right">
+        <div class="sum">${fmt(sum)}</div>
+        <button type="button">移除</button>
+      </div>
+    `;
+    div.querySelector("button").onclick = ()=>{ cart.delete(id); syncUI(); };
+    list.appendChild(div);
+  });
+
+  $("#grandTotal").textContent = fmt(total);
+  $("#cartCount").textContent = `${count} 項`;
+}
+
+function syncUI(){
+  // update qty inputs shown in cards by re-render items (simple + stable)
+  renderItems();
+  renderQuote();
+  saveCart();
+}
+
+/** -------------------- Modal -------------------- **/
+let modalItem = null;
+
+function openModal(it){
+  modalItem = it;
+  $("#mTitle").textContent = it.name || "詳情";
+  $("#mCat").textContent = categories.find(c=>c.catId===it.catId)?.catName || it.catId || "-";
+  $("#mUnit").textContent = it.unit || "-";
+  $("#mPrice").textContent = fmt(it.price);
+  $("#mDesc").textContent = it.desc || "（尚未提供說明）";
+
+  // gallery: support multiple images separated by | , or newline
+  const raw = (it.img||"").trim();
+  let imgs = [];
+  if(raw){
+    imgs = raw.split(/[\n|,]+/).map(s=>s.trim()).filter(Boolean);
+  }
+  const g = $("#mGallery");
+  g.innerHTML = "";
+  g.className = "gallery" + (imgs.length<=1 ? " one":"");
+
+  if(imgs.length===0){
+    const ph = document.createElement("div");
+    ph.style.cssText="border:1px dashed #cbd5e1;border-radius:14px;height:220px;display:flex;align-items:center;justify-content:center;color:#64748b";
+    ph.textContent="無圖片";
+    g.appendChild(ph);
+  }else{
+    imgs.slice(0,2).forEach(src=>{
+      const im = document.createElement("img");
+      im.src = src;
+      im.alt = it.name || "";
+      im.onerror = ()=>{ im.style.display="none"; };
+      g.appendChild(im);
+    });
+  }
+
+  $("#mAdd").onclick = ()=>{ changeQty(it.itemId, +1); toast("已加入報價"); };
+  $("#mOpenImg").onclick = ()=>{
+    const first = imgs[0];
+    if(first) window.open(first, "_blank");
+    else toast("沒有圖片連結");
+  };
+
+  $("#modal").classList.add("show");
+}
+$("#mClose").onclick = ()=> $("#modal").classList.remove("show");
+$("#modal").onclick = (e)=>{ if(e.target.id==="modal") $("#modal").classList.remove("show"); };
+
+/** -------------------- Copy Quote -------------------- **/
+$("#btnCopy").onclick = async ()=>{
+  const lines = [];
+  let total = 0;
+  lines.push("【活動設備報價】");
+  [...cart.entries()].forEach(([id,qty])=>{
+    const it = items.find(x=>x.itemId===id);
+    if(!it) return;
+    const sum = Number(it.price||0) * Number(qty||0);
+    total += sum;
+    lines.push(`- ${it.name}：${fmt(it.price)} × ${qty}${it.unit||""} = ${fmt(sum)}`);
+  });
+  lines.push(`總計：${fmt(total)}`);
+
+  try{
+    await navigator.clipboard.writeText(lines.join("\n"));
+    toast("已複製到剪貼簿");
+  }catch{
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = lines.join("\n");
+    document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy");
+    ta.remove();
+    toast("已複製");
+  }
+};
+
+/** -------------------- Save/Load Cart -------------------- **/
+function saveCart(){
+  const obj = {};
+  cart.forEach((v,k)=>obj[k]=v);
+  localStorage.setItem("quote_cart_v1", JSON.stringify(obj));
+}
+function loadCart(){
+  try{
+    const raw = localStorage.getItem("quote_cart_v1");
+    if(!raw) return;
+    const obj = JSON.parse(raw);
+    cart = new Map(Object.entries(obj).map(([k,v])=>[k, Number(v)]).filter(([k,v])=>v>0));
+  }catch{}
+}
+$("#btnClear").onclick = ()=>{
+  cart.clear();
+  saveCart();
+  syncUI();
+  toast("已清空");
+};
+$("#btnReload").onclick = ()=> init();
+
+/** -------------------- Init -------------------- **/
+async function init(){
+  $("#dataState").textContent = "資料：載入中…";
+  $("#dataState").style.background = "#fff7ed";
+  $("#dataState").style.borderColor = "#fed7aa";
+  $("#dataState").style.color = "#9a3412";
+
+  try{
+    const [catRows, itemRows] = await Promise.all([loadCSV(CATEGORIES_CSV), loadCSV(ITEMS_CSV)]);
+    categories = rowsToObjects(catRows).map(r=>({
+      catId:r.catId, catName:r.catName, sort:r.sort
+    })).filter(x=>x.catId);
+
+    items = rowsToObjects(itemRows).map(r=>({
+      itemId:r.itemId,
+      catId:r.catId,
+      name:r.name,
+      unit:r.unit,
+      price: Number(r.price||0),
+      img:r.img,
+      desc:r.desc,
+      sort:r.sort
+    })).filter(x=>x.itemId);
+
+    buildCatSelect();
+
+    // Load cart after items ready
+    loadCart();
+    syncUI();
+
+    $("#dataState").textContent = `資料：已載入（分類 ${categories.length} / 品項 ${items.length}）`;
+    $("#dataState").style.background = "#eef7f3";
+    $("#dataState").style.borderColor = "#cfe9df";
+    $("#dataState").style.color = "var(--brand2)";
+  }catch(err){
+    console.error(err);
+    $("#dataState").textContent = "資料：載入失敗（請確認 Sheet 已發佈/網址正確）";
+    $("#dataState").style.background = "#fef2f2";
+    $("#dataState").style.borderColor = "#fecaca";
+    $("#dataState").style.color = "#991b1b";
+    $("#itemsGrid").innerHTML = `<div style="color:#991b1b;font-weight:800">載入失敗：請確認你的 Google Sheet「發布到網路」仍有效，且兩條 CSV 連結可在瀏覽器直接打開看到資料。</div>`;
+  }
+}
+
+// events
+$("#catSelect").addEventListener("change", renderItems);
+$("#q").addEventListener("input", ()=>{ clearTimeout(window.__t); window.__t=setTimeout(renderItems, 150); });
+$("#sortSelect").addEventListener("change", renderItems);
+
+// start
+init();
+</script>
+</body>
+</html>
