@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>活動企劃｜設備選配與即時報價</title>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:#f6f7fb}
+.wrap{max-width:1150px;margin:auto;padding:20px}
+.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.grid{display:grid;grid-template-columns:1.7fr 1fr;gap:20px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+h2{margin-top:0}
+.tile{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.tile img{width:100%;height:180px;object-fit:cover}
+.tile-body{padding:12px}
+.btn{background:#1e8e6f;color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer}
+.small{font-size:12px;color:#6b7280}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="grid">
+<div>
+
+<div class="card">
+<h2>1️⃣ 基本資料</h2>
+<input placeholder="姓名 / 單位"><br><br>
+<input placeholder="電話"><br><br>
+<input placeholder="活動名稱"><br><br>
+<input type="date"><br><br>
+<input type="time"> 至 <input type="time"><br><br>
+<textarea placeholder="備註" rows="3"></textarea>
+</div>
+
+<div class="card">
+<h2>2️⃣ 燈光音響配置區</h2>
+<div id="packages"></div>
+</div>
+
+<div class="card">
+<h2>3️⃣ 設備 / 服務分類</h2>
+<div id="items"></div>
+</div>
+
+</div>
+
+<div class="card">
+<h2>即時報價單</h2>
+<div id="quote">尚未加入任何項目</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+const PACKAGES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQagyOTerM4A-yQzU_rZ_jEEHnHv7ilzAeu9XpbaeqVOz3Ur-sINk07I_JYJrW_YKvRDJMi51xPJS-/pub?gid=1516378637&single=true&output=csv";
+const ITEMS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQagyOTerM4A-yQzU_rZ_jEEHnHv7ilzAeu9XpbaeqVOz3Ur-sINk07I_JYJrW_YKvRDJMi51xPJS-/pub?gid=253807614&single=true&output=csv";
+
+function parseCSV(text){ 
+  const rows=text.trim().split("\n").map(r=>r.split(","));
+  const head=rows.shift();
+  return rows.map(r=>Object.fromEntries(r.map((v,i)=>[head[i],v])));
+}
+
+async function load(){
+  const [pkgTxt,itemTxt] = await Promise.all([
+    fetch(PACKAGES_CSV).then(r=>r.text()),
+    fetch(ITEMS_CSV).then(r=>r.text())
+  ]);
+  const packages=parseCSV(pkgTxt);
+  const items=parseCSV(itemTxt);
+
+  const pkgBox=document.getElementById("packages");
+  packages.forEach(p=>{
+    pkgBox.innerHTML+=`
+      <div class="tile">
+        <img src="${p.img1||''}">
+        <div class="tile-body">
+          <b>${p.pkgName}</b><br>
+          NT$ ${p.price}<br><br>
+          <button class="btn">加入</button>
+        </div>
+      </div>
+    `;
+  });
+
+  const itemBox=document.getElementById("items");
+  items.forEach(i=>{
+    itemBox.innerHTML+=`
+      <div class="tile">
+        <img src="${i.img1||''}">
+        <div class="tile-body">
+          <b>${i.name}</b><br>
+          NT$ ${i.price}<br><br>
+          <button class="btn">加入</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+load();
+</script>
+
+</body>
+</html>
