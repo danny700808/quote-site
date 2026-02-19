@@ -816,181 +816,181 @@
   };
 
 
-// ============================
-// Google Sheet (Apps Script) JSONP 載入
-// ============================
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
+  // ============================
+  // Google Sheet (Apps Script) JSONP 載入（避免 CORS）
+  // ============================
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
 
-function loadSheetData(){
-  if(!SHEET_API_URL) return;
+  function loadSheetData(){
+    if(!SHEET_API_URL) return;
 
-  const cbName = "__applySheetPayload__" + Date.now();
-  window[cbName] = (payload)=>{
-    try{
-      if(!payload || !payload.ok) throw new Error("API 回傳不正確");
-      applySheetData(payload.data);
-
-      // 套用後重新渲染
+    const cbName = "__applySheetPayload__" + Date.now();
+    window[cbName] = (payload)=>{
       try{
-        if(!CATEGORIES.find(c=>c.id===state.catId) && CATEGORIES[0]) state.catId = CATEGORIES[0].id;
-      }catch(_{}){}
-      renderAll();
+        if(!payload || !payload.ok) throw new Error("API 回傳不正確");
+        applySheetData(payload.data);
 
-      const el = $("#jsStatus");
-      if(el) el.textContent = "JS: OK (sheet)";
-    }catch(err){
-      console.error(err);
-      alert("讀取 Sheet 失敗：" + (err?.message || err));
-    }finally{
-      try{ delete window[cbName]; }catch(_{}){}
+        // 套用後重新渲染
+        try{
+          if(!CATEGORIES.find(c=>c.id===state.catId) && CATEGORIES[0]) state.catId = CATEGORIES[0].id;
+        }catch(_){}
+        renderAll();
+
+        const el = $("#jsStatus");
+        if(el) el.textContent = "JS: OK (sheet)";
+      }catch(err){
+        console.error(err);
+        alert("讀取 Sheet 失敗：" + (err?.message || err));
+      }finally{
+        try{ delete window[cbName]; }catch(_){}
+      }
+    };
+
+    const s = document.createElement("script");
+    s.src = SHEET_API_URL + (SHEET_API_URL.includes("?") ? "&" : "?") + "callback=" + cbName + "&_=" + Date.now();
+    s.onerror = ()=>alert("無法載入 Apps Script API，請確認 Web App URL 是否正確、且部署為 Anyone 可存取");
+    document.head.appendChild(s);
+  }
+
+  function ynToBool(v){
+    const s = String(v??"").trim();
+    return !(s==="否" || s==="false" || s==="0");
+  }
+
+  function applySheetData(data){
+    // --- 系統設定（保留擴充）
+    const sysRows = data["系統設定"] || [];
+    const sys = {};
+    for(const r of sysRows){
+      const k = String(r["設定項目"]||"").trim();
+      const v = String(r["設定值"]??"").trim();
+      if(k) sys[k]=v;
     }
-  };
 
-  const s = document.createElement("script");
-  s.src = SHEET_API_URL + (SHEET_API_URL.includes("?") ? "&" : "?") + "callback=" + cbName + "&_=" + Date.now();
-  s.onerror = ()=>alert("無法載入 Apps Script API，請確認 Web App URL 是否正確、且部署為 Anyone 可存取");
-  document.head.appendChild(s);
-}
+    // --- 讀取各表
+    const catRows = (data["設備大分類"] || []).filter(r=>ynToBool(r["是否啟用"]));
+    const prodRows = (data["設備商品"] || []).filter(r=>ynToBool(r["是否啟用"]));
+    const tierRows = (data["階梯價"] || []).filter(r=>ynToBool(r["是否啟用"]));
+    const optRows  = (data["商品選項"] || []).filter(r=>ynToBool(r["是否啟用"]));
 
-function ynToBool(v){
-  const s = String(v??"").trim();
-  return !(s==="否" || s==="false" || s==="0");
-}
+    const levelCardRows = (data["等級卡片"] || []).filter(r=>ynToBool(r["是否啟用"]));
+    const includeRows   = (data["等級包含內容"] || []);
 
-function applySheetData(data){
-  // --- 系統設定（可擴充用，先保留）
-  const sysRows = data["系統設定"] || [];
-  const sys = {};
-  for(const r of sysRows){
-    const k = String(r["設定項目"]||"").trim();
-    const v = String(r["設定值"]??"").trim();
-    if(k) sys[k]=v;
-  }
-
-  // --- 讀取各表
-  const catRows = (data["設備大分類"] || []).filter(r=>ynToBool(r["是否啟用"]));
-  const prodRows = (data["設備商品"] || []).filter(r=>ynToBool(r["是否啟用"]));
-  const tierRows = (data["階梯價"] || []).filter(r=>ynToBool(r["是否啟用"]));
-  const optRows  = (data["商品選項"] || []).filter(r=>ynToBool(r["是否啟用"]));
-
-  const levelCardRows = (data["等級卡片"] || []).filter(r=>ynToBool(r["是否啟用"]));
-  const includeRows   = (data["等級包含內容"] || []);
-
-  // --- 階梯價：商品代碼 -> priceTiers[]
-  const tiersBy = {};
-  for(const r of tierRows){
-    const id = String(r["商品代碼"]||"").trim();
-    if(!id) continue;
-    if(!tiersBy[id]) tiersBy[id]=[];
-    tiersBy[id].push({min:Number(r["最小數量"]||1), price:Number(r["單價"]||0)});
-  }
-  for(const k in tiersBy) tiersBy[k].sort((a,b)=>a.min-b.min);
-
-  // --- 商品選項：商品代碼 -> options{}
-  const optsBy = {};
-  for(const r of optRows){
-    const id = String(r["商品代碼"]||"").trim();
-    const code = String(r["選項代碼"]||"").trim();
-    if(!id || !code) continue;
-    if(!optsBy[id]) optsBy[id]={};
-
-    const label = String(r["選項名稱"]||"").trim();
-    const whenStr = String(r["顯示條件"]||"").trim();
-    let when = null;
-    if(whenStr.includes("=")){
-      const parts = whenStr.split("=");
-      const opt = String(parts[0]||"").trim();
-      const isv = String(parts[1]||"").trim();
-      if(opt) when = {opt, is: isv};
+    // --- 階梯價：商品代碼 -> priceTiers[]
+    const tiersBy = {};
+    for(const r of tierRows){
+      const id = String(r["商品代碼"]||"").trim();
+      if(!id) continue;
+      if(!tiersBy[id]) tiersBy[id]=[];
+      tiersBy[id].push({min:Number(r["最小數量"]||1), price:Number(r["單價"]||0)});
     }
-    const hidden = String(r["隱藏值"]||"").trim();
+    for(const k in tiersBy) tiersBy[k].sort((a,b)=>a.min-b.min);
 
-    const list = String(r["選項值列表"]||"")
-      .split("｜").map(s=>s.trim()).filter(Boolean)
-      .map(s=>{
-        const s2 = s.includes("=") ? s.split("=")[1].trim() : s;
-        return s2.replace(/\+\d+$/,"").trim(); // 先把「+100」移除（目前版本尚未計入加價）
-      });
+    // --- 商品選項：商品代碼 -> options{}
+    const optsBy = {};
+    for(const r of optRows){
+      const id = String(r["商品代碼"]||"").trim();
+      const code = String(r["選項代碼"]||"").trim();
+      if(!id || !code) continue;
+      if(!optsBy[id]) optsBy[id]={};
 
-    const def = { label, values: list };
-    if(hidden) def.omitValues = [hidden];
-    if(when) def.when = when;
+      const label = String(r["選項名稱"]||"").trim();
+      const whenStr = String(r["顯示條件"]||"").trim();
+      let when = null;
+      if(whenStr.includes("=")){
+        const parts = whenStr.split("=");
+        const opt = String(parts[0]||"").trim();
+        const isv = String(parts[1]||"").trim();
+        if(opt) when = {opt, is: isv};
+      }
+      const hidden = String(r["隱藏值"]||"").trim();
 
-    optsBy[id][code] = def;
-  }
-
-  // --- 重新建立 CATEGORIES（直接覆蓋原本內建資料）
-  CATEGORIES.length = 0;
-  catRows
-    .sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0))
-    .forEach(c=>{
-      const cid = String(c["分類代碼"]||"").trim();
-      const cname= String(c["分類名稱"]||"").trim();
-
-      const items = prodRows
-        .filter(p=>String(p["所屬分類代碼"]||"").trim()===cid)
-        .sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0))
-        .map(p=>{
-          const id = String(p["商品代碼"]||"").trim();
-          return {
-            id,
-            name: String(p["商品名稱"]||"").trim(),
-            unit: String(p["單位"]||"").trim(),
-            price: Number(p["基本單價"]||0),
-            priceTiers: tiersBy[id] || [],
-            options: optsBy[id] || undefined,
-            img: String(p["商品縮圖URL(自動)"] || p["商品縮圖URL"] || "").trim(),
-            desc: String(p["詳情說明(長文)"] || p["詳情說明"] || "").trim()
-          };
+      const list = String(r["選項值列表"]||"")
+        .split("｜").map(s=>s.trim()).filter(Boolean)
+        .map(s=>{
+          const s2 = s.includes("=") ? s.split("=")[1].trim() : s;
+          return s2.replace(/\+\d+$/,"").trim(); // 先把「+100」移除（目前版本尚未計入加價）
         });
 
-      CATEGORIES.push({ id: cid, name: cname, items });
-    });
+      const def = { label, values: list };
+      if(hidden) def.omitValues = [hidden];
+      if(when) def.when = when;
 
-  // --- 等級卡片：LEVELS / LEVEL_PRICES / TIER_PHOTOS
-  const group = { safety:[], ambience:[], upgrade:[] };
-  for(const r of levelCardRows){
-    const t = String(r["類型代碼"]||"").trim();
-    if(group[t]) group[t].push(r);
+      optsBy[id][code] = def;
+    }
+
+    // --- 重新建立 CATEGORIES（直接覆蓋原本內建資料）
+    CATEGORIES.length = 0;
+    catRows
+      .sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0))
+      .forEach(c=>{
+        const cid = String(c["分類代碼"]||"").trim();
+        const cname= String(c["分類名稱"]||"").trim();
+
+        const items = prodRows
+          .filter(p=>String(p["所屬分類代碼"]||"").trim()===cid)
+          .sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0))
+          .map(p=>{
+            const id = String(p["商品代碼"]||"").trim();
+            return {
+              id,
+              name: String(p["商品名稱"]||"").trim(),
+              unit: String(p["單位"]||"").trim(),
+              price: Number(p["基本單價"]||0),
+              priceTiers: tiersBy[id] || [],
+              options: optsBy[id] || undefined,
+              img: String(p["商品縮圖URL(自動)"] || p["商品縮圖URL"] || "").trim(),
+              desc: String(p["詳情說明(長文)"] || p["詳情說明"] || "").trim()
+            };
+          });
+
+        CATEGORIES.push({ id: cid, name: cname, items });
+      });
+
+    // --- 等級卡片：LEVELS / LEVEL_PRICES / TIER_PHOTOS
+    const group = { safety:[], ambience:[], upgrade:[] };
+    for(const r of levelCardRows){
+      const t = String(r["類型代碼"]||"").trim();
+      if(group[t]) group[t].push(r);
+    }
+
+    for(const t of ["safety","ambience","upgrade"]){
+      const arr = (group[t]||[]).sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0));
+      LEVELS[t] = arr.map(r=>String(r["卡片標題"]||"").trim());
+      LEVEL_PRICES[t] = arr.map(r=>Number(r["參考價格"]||0));
+
+      TIER_PHOTOS[t] = arr.map(r=>{
+        const card = String(r["卡片圖片URL(自動)"] || r["卡片圖片URL"] || "").trim();
+        const a = String(r["詳情圖片A URL(自動)"] || r["詳情圖片A URL"] || "").trim();
+        const b = String(r["詳情圖片B URL(自動)"] || r["詳情圖片B URL"] || "").trim();
+        const first = card || a || b || "";
+        const second = b || a || card || "";
+        return [first, second];
+      });
+    }
+
+    // --- 套裝包含內容：PACKS_SAFETY / PACKS_AMBIENCE / PACKS_UPGRADE
+    const packTmp = { safety:{}, ambience:{}, upgrade:{} };
+
+    const sortedIncludes = [...includeRows].sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0));
+    for(const r of sortedIncludes){
+      const t = String(r["類型代碼"]||"").trim();
+      const lvl = Number(r["等級(1~6)"] || r["等級"] || 0);
+      const id = String(r["商品代碼"]||"").trim();
+      const qty = Number(r["數量"]||1);
+      if(!packTmp[t] || !lvl || !id) continue;
+      if(!packTmp[t][lvl]) packTmp[t][lvl]=[];
+      packTmp[t][lvl].push({id, qty});
+    }
+
+    for(const k of Object.keys(PACKS_SAFETY)) delete PACKS_SAFETY[k];
+    for(const k of Object.keys(PACKS_AMBIENCE)) delete PACKS_AMBIENCE[k];
+    for(const k of Object.keys(PACKS_UPGRADE)) delete PACKS_UPGRADE[k];
+
+    Object.assign(PACKS_SAFETY, packTmp.safety);
+    Object.assign(PACKS_AMBIENCE, packTmp.ambience);
+    Object.assign(PACKS_UPGRADE, packTmp.upgrade);
   }
-
-  for(const t of ["safety","ambience","upgrade"]){
-    const arr = (group[t]||[]).sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0));
-    LEVELS[t] = arr.map(r=>String(r["卡片標題"]||"").trim());
-    LEVEL_PRICES[t] = arr.map(r=>Number(r["參考價格"]||0));
-
-    TIER_PHOTOS[t] = arr.map(r=>{
-      const card = String(r["卡片圖片URL(自動)"] || r["卡片圖片URL"] || "").trim();
-      const a = String(r["詳情圖片A URL(自動)"] || r["詳情圖片A URL"] || "").trim();
-      const b = String(r["詳情圖片B URL(自動)"] || r["詳情圖片B URL"] || "").trim();
-      const first = card || a || b || "";
-      const second = b || a || card || "";
-      return [first, second];
-    });
-  }
-
-  // --- 套裝包含內容：PACKS_SAFETY / PACKS_AMBIENCE / PACKS_UPGRADE
-  const packTmp = { safety:{}, ambience:{}, upgrade:{} };
-
-  const sortedIncludes = [...includeRows].sort((a,b)=>Number(a["排序"]||0)-Number(b["排序"]||0));
-  for(const r of sortedIncludes){
-    const t = String(r["類型代碼"]||"").trim();
-    const lvl = Number(r["等級(1~6)"] || r["等級"] || 0);
-    const id = String(r["商品代碼"]||"").trim();
-    const qty = Number(r["數量"]||1);
-    if(!packTmp[t] || !lvl || !id) continue;
-    if(!packTmp[t][lvl]) packTmp[t][lvl]=[];
-    packTmp[t][lvl].push({id, qty});
-  }
-
-  for(const k of Object.keys(PACKS_SAFETY)) delete PACKS_SAFETY[k];
-  for(const k of Object.keys(PACKS_AMBIENCE)) delete PACKS_AMBIENCE[k];
-  for(const k of Object.keys(PACKS_UPGRADE)) delete PACKS_UPGRADE[k];
-
-  Object.assign(PACKS_SAFETY, packTmp.safety);
-  Object.assign(PACKS_AMBIENCE, packTmp.ambience);
-  Object.assign(PACKS_UPGRADE, packTmp.upgrade);
-}
 
 
   const TW = {
