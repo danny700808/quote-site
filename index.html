@@ -821,13 +821,9 @@
   // ============================
   // Google Sheet (Apps Script) JSONP 載入（避免 CORS）
   // ============================
-  // ✅ 緊急恢復開關：先用內建資料顯示畫面
-  const ENABLE_SHEET = false;
-
   const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
 
   function loadSheetData(){
-    if(!ENABLE_SHEET) return;
     if(!SHEET_API_URL) return;
 
     const cbName = "__applySheetPayload__" + Date.now();
@@ -965,21 +961,10 @@
       LEVELS[t] = arr.map(r=>String(r["卡片標題"]||"").trim());
       LEVEL_PRICES[t] = arr.map(r=>Number(r["參考價格"]||0));
 
-      // 若等級卡片沒有填圖片 URL，會依照系統設定自動組出：{基底}{前綴}{type}_{level}(.jpg)
-      const tierBase = String(sys["圖片基底網址_等級"] || sys["圖片基底網址_等"] || "").trim();
-      const tierPrefix = String(sys["等級主圖前綴"] || "tier_").trim();
-      const tierExt = String(sys["等級主圖副檔名"] || sys["商品主圖副檔名"] || "jpg").trim().replace(/^\./, "");
-
-      TIER_PHOTOS[t] = arr.map((r, idx)=>{
-        const level = Number(r["等級(1~6)"] || r["等級"] || 0) || (idx + 1);
-        const autoCard = tierBase ? `${tierBase}${tierPrefix}${t}_${level}.${tierExt}` : "";
-        const autoA = tierBase ? `${tierBase}${tierPrefix}${t}_${level}_a.${tierExt}` : "";
-        const autoB = tierBase ? `${tierBase}${tierPrefix}${t}_${level}_b.${tierExt}` : "";
-
-        const card = String(r["卡片圖片URL(自動)"] || r["卡片圖片URL"] || "").trim() || autoCard;
-        const a = String(r["詳情圖片A URL(自動)"] || r["詳情圖片A URL"] || "").trim() || autoA;
-        const b = String(r["詳情圖片B URL(自動)"] || r["詳情圖片B URL"] || "").trim() || autoB;
-
+      TIER_PHOTOS[t] = arr.map(r=>{
+        const card = String(r["卡片圖片URL(自動)"] || r["卡片圖片URL"] || "").trim();
+        const a = String(r["詳情圖片A URL(自動)"] || r["詳情圖片A URL"] || "").trim();
+        const b = String(r["詳情圖片B URL(自動)"] || r["詳情圖片B URL"] || "").trim();
         const first = card || a || b || "";
         const second = b || a || card || "";
         return [first, second];
@@ -1217,7 +1202,6 @@
 
   function initCity(){
     const city=$("#fCity"), area=$("#fArea");
-    if(!city || !area) return;
     city.innerHTML=Object.keys(TW).map(c=>`<option value="${c}">${c}</option>`).join("");
     function fillArea(){
       area.innerHTML=(TW[city.value]||[]).map(a=>`<option value="${a}">${a}</option>`).join("");
@@ -1290,11 +1274,11 @@ function initTimePickers(){
       $("#fTime2End").value   = `${$("#t2EndH").value}:${$("#t2EndM").value}`;
     }
 
-    ["tStartH","tStartM","tEndH","tEndM"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("change", ()=>{ sync(); renderCart(); }); });
+    ["tStartH","tStartM","tEndH","tEndM"].forEach(id=>$("#"+id).addEventListener("change", ()=>{ sync(); renderCart(); }));
     sync();
 
     if($("#t2StartH")){
-      ["t2StartH","t2StartM","t2EndH","t2EndM"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("change", ()=>{ sync2(); renderCart(); }); });
+      ["t2StartH","t2StartM","t2EndH","t2EndM"].forEach(id=>$("#"+id).addEventListener("change", ()=>{ sync2(); renderCart(); }));
       sync2();
     }
   }
@@ -2209,29 +2193,24 @@ renderCart();
     }
   }
 
-  const __btnPrint = $("#btnPrint");
-  if(__btnPrint) __btnPrint.addEventListener("click", ()=>{
+$("#btnPrint").addEventListener("click", ()=>{
     try{ handlePrintPDF(); }catch(e){ alert("列印功能錯誤：" + (e?.message||e)); console.error(e); window.print(); }
   });
-  const __btnClear = $("#btnClear");
-  if(__btnClear) __btnClear.addEventListener("click", ()=>{
+  $("#btnClear").addEventListener("click", ()=>{
     if(confirm("確定要清空全部已選項目嗎？")){
       state.cart={packs:{}};
-      state.tiers={ safety: 0, ambience: 0, upgrade: 0 };
+state.tiers={ safety: 0, ambience: 0, upgrade: 0 };
       renderAll();
     }
   });
-  const __btnCopy = $("#btnCopy");
-  if(__btnCopy) __btnCopy.addEventListener("click", async ()=>{
+  $("#btnCopy").addEventListener("click", async ()=>{
     const txt=buildQuoteText();
     try{ await navigator.clipboard.writeText(txt); alert("已複製報價內容！"); }
     catch(e){ prompt("複製失敗，請手動全選複製：", txt); }
   });
   try{const b=$("#btnMail"); if(b) b.remove();}catch(e){}
-  const __btnMail = $("#btnMail");
-  if(__btnMail) __btnMail.addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
-  const __btnSendQuote = $("#btnSendQuote");
-  if(__btnSendQuote) __btnSendQuote.addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
+$("#btnMail").addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
+$("#btnSendQuote").addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
 
 // 初始化（加強防呆：即使某段初始化失敗，也會繼續渲染主畫面）
   try{
