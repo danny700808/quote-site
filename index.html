@@ -2089,7 +2089,109 @@ lines.push(`總計：${fmt(total)}`);
 renderCart();
   }
 
-  $("#btnPrint").addEventListener("click", ()=>{
+  
+  // ============================
+  // 送出報價單：後台產 PDF 並寄 Email（客人 + 店家）
+  // ============================
+  const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
+
+  function buildQuoteItemsForSend(){
+    const items = [];
+
+    // 套裝
+    if(state.cart?.packs){
+      const order=[["safety","安全等級"],["ambience","氣氛等級"],["upgrade","升級等級"]];
+      for(const [k,label] of order){
+        const p = state.cart.packs[k];
+        if(!p) continue;
+        items.push({
+          categoryName: "套裝",
+          name: `套裝｜${label}｜${p.name||""}`,
+          id: `pack_${k}`,
+          unit: "套",
+          price: Number(p.price||0),
+          qty: 1,
+          lineTotal: Number(p.price||0),
+          options: {}
+        });
+      }
+    }
+
+    // 單品
+    const groups = groupCart();
+    for(const [catName, rows] of groups.entries()){
+      for(const {item, qty} of rows){
+        const up = getUnitPrice(item, qty);
+        items.push({
+          categoryName: catName,
+          name: item.name,
+          id: item.id,
+          unit: item.unit || "",
+          price: Number(up||0),
+          qty: Number(qty||0),
+          lineTotal: Number(up||0) * Number(qty||0),
+          options: state.itemOpts?.[item.id] || {}
+        });
+      }
+    }
+    return items;
+  }
+
+  function calcQuoteSummaryForSend(){
+    const r = calc();
+    return {
+      subtotal: Number(r.sum||0),
+      discount: 0,
+      tax: 0,
+      dayFee: Number(r.dayFee||0),
+      session2Fee: Number(r.session2Fee||0),
+      total: Number(r.total||0)
+    };
+  }
+
+  function getLevelsForSend(){
+    return {
+      safety: state.cart?.packs?.safety?.name || "",
+      ambience: state.cart?.packs?.ambience?.name || "",
+      upgrade: state.cart?.packs?.upgrade?.name || ""
+    };
+  }
+
+  function submitQuoteToAppsScript(){
+    try{
+      const payload = {
+        action: "submitQuote",
+        ownerEmail: "", // 建議你在「系統設定」表填：收單通知Email（就不用在這裡寫）
+        form: {
+          name: $("#fName")?.value?.trim() || "",
+          phone: $("#fPhone")?.value?.trim() || "",
+          email: $("#fEmail")?.value?.trim() || "",
+          date: $("#fDateStart")?.value || "",
+          city: $("#fCity")?.value || "",
+          area: $("#fArea")?.value || "",
+          crowd: $("#fCrowd")?.value || "",
+          eventType: $("#fEventType")?.value || "",
+          indoor: $("#fIndoor")?.value || "",
+          note: $("#fNote")?.value?.trim() || ""
+        },
+        levels: getLevelsForSend(),
+        items: buildQuoteItemsForSend(),
+        summary: calcQuoteSummaryForSend()
+      };
+
+      const ok = navigator.sendBeacon(ORDER_API_URL, new Blob([JSON.stringify(payload)], {type:"application/json"}));
+      if(ok) {
+        alert("已送出！系統會產生 PDF 報價單並寄到客人 Email，也會寄一份到店家。");
+      } else {
+        alert("送出失敗（瀏覽器未送出）。請重新整理後再試一次。");
+      }
+    }catch(e){
+      console.error(e);
+      alert("送出失敗：" + (e?.message||e));
+    }
+  }
+
+$("#btnPrint").addEventListener("click", ()=>{
     try{ handlePrintPDF(); }catch(e){ alert("列印功能錯誤：" + (e?.message||e)); console.error(e); window.print(); }
   });
   $("#btnClear").addEventListener("click", ()=>{
@@ -2104,15 +2206,8 @@ state.tiers={ safety: 0, ambience: 0, upgrade: 0 };
     try{ await navigator.clipboard.writeText(txt); alert("已複製報價內容！"); }
     catch(e){ prompt("複製失敗，請手動全選複製：", txt); }
   });
-  $("#btnMail").addEventListener("click", ()=>{
-    const to = $("#fEmail").value.trim() ? $("#fEmail").value.trim() : "";
-    const subject = encodeURIComponent("活動企劃｜設備選配報價");
-    const body = encodeURIComponent(buildQuoteText());
-    location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-  });
-
-  
-  $("#btnSendQuote").addEventListener("click", ()=>{
+  $("#btnMail").addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
+$("#btnSendQuote").addEventListener("click", ()=>{
     alert("已新增「送出報價單」按鈕（目前先保留位置）。\n\n你可以先用「列印成 PDF」下載/分享；等你要啟用自動寄送時，我再幫你接上寄信流程。");
   });
 
