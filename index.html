@@ -245,93 +245,63 @@
     .optselect{flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}
 
     @media (max-width:920px){
-/* === 手機版專屬優化：步驟直覺化、左右對稱、符號對齊 === */
+/* === 手機版優化：修正比例、符號對齊、左右對稱 === */
     @media (max-width: 620px) {
-      /* 1. 四步驟導覽：更像進度條 */
+      .wrap { padding: 10px; }
+
+      /* 1. 四步驟導覽：整齊排開 (修正圖1) */
       .steps {
         display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 6px !important;
-        padding: 5px 0 !important;
       }
       .stepBox {
         flex-direction: column !important;
         padding: 8px 2px !important;
         gap: 4px !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
         background: #fff !important;
-        border: 1px solid var(--line) !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,.04) !important;
       }
-      .stepNum {
-        width: 22px !important;
-        height: 22px !important;
-        font-size: 11px !important;
-      }
-      .stepText {
-        font-size: 10px !important;
-        white-space: normal !important;
-        text-align: center;
-        line-height: 1.2;
-        transform: scale(0.9);
-      }
+      .stepNum { width: 22px !important; height: 22px !important; font-size: 11px !important; }
+      .stepText { font-size: 10px !important; transform: scale(0.9); white-space: normal !important; text-align: center; }
       .stepArrow { display: none !important; }
 
-      /* 2. 設備等級左右對稱（解決圖 2 太長的問題） */
+      /* 2. 設備等級左右對稱與比例固定 (修正圖2) */
       .levelRow {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 10px !important;
       }
       .levelBtn {
         flex-direction: column !important;
-        align-items: stretch !important;
-        padding: 8px !important;
-        border-radius: 12px !important;
+        padding: 0 !important; 
+        overflow: hidden !important;
+        border-radius: 14px !important;
       }
       .levelMedia {
         width: 100% !important;
-        height: 80px !important;
-        margin: 0 0 8px 0 !important;
-        border-radius: 8px !important;
+        aspect-ratio: 4/3 !important; /* 強制圖片比例，解決縮放問題 */
+        height: auto !important;
+        margin: 0 !important;
       }
-      .levelTopRow {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 2px !important;
-      }
-      .levelName {
-        font-size: 13px !important;
-        min-height: 32px;
-      }
-      .levelPrice {
-        font-size: 12px !important;
-        color: var(--danger) !important;
-      }
-      /* 恢復詳情按鈕佈局 */
-      .levelActions {
-        display: flex !important;
-        gap: 4px !important;
-        margin-top: 6px !important;
-      }
-      .miniBtn {
-        flex: 1 !important;
-        padding: 6px 2px !important;
-        font-size: 11px !important;
-        text-align: center !important;
-      }
+      .levelText { padding: 8px !important; }
+      .levelName { font-size: 13px !important; min-height: 32px; }
+      .levelActions { padding: 0 8px 10px !important; display: flex !important; gap: 4px !important; }
+      .miniBtn { flex: 1 !important; padding: 6px 2px !important; font-size: 11px !important; }
 
-      /* 3. 日期範圍符號垂直對齊（修正圖 3） */
-      .dateRow {
+      /* 3. 日期時間波浪號垂直置中 (修正圖3) */
+      .dateRow, .timeRow {
         display: flex !important;
         align-items: flex-end !important;
-      }
-      .dateRow .sep {
-        padding: 0 4px 10px 4px !important; /* 讓波浪號對齊輸入框中心 */
-        margin: 0 !important;
-        font-size: 16px !important;
+        gap: 4px !important;
       }
       .dateCol { flex: 1 !important; }
+      .dateRow .sep, .timeRow .sep {
+        padding-bottom: 10px !important; /* 讓波浪號對齊輸入框中心 */
+        margin: 0 !important;
+      }
+
+      .form { grid-template-columns: 1fr !important; }
     }
   </style>
 </head>
