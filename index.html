@@ -409,6 +409,68 @@
       .tabs { padding: 8px 10px 10px; gap: 6px; }
       .tab { padding: 6px 10px; font-size: 13px; }
     }
+    /* ===== 日期與時間欄位修正（全裝置適用） ===== */
+    /* 讓波浪號垂直置中對齊輸入框，而不是貼在底部 */
+    .dateRow .sep {
+      transform: translateY(-14px); /* 往上推，對齊輸入框正中心 */
+      margin: 0 4px; /* 左右保留一點安全距離，避免卡到 */
+    }
+
+    /* ===== 手機版緊湊優化 (Max-width: 620px) ===== */
+    @media (max-width: 620px) {
+      /* 1. 整體外距與卡片內距大幅縮小 */
+      .wrap { padding: 8px; }
+      .grid { gap: 10px; margin-top: 10px; }
+      .card .hd { padding: 10px 10px 8px; }
+      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
+      
+      /* 2. 輸入框與文字縮小，減少佔用高度 */
+      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
+      .field textarea { min-height: 60px; }
+      .field { gap: 4px; }
+      
+      /* 🌟 3. 修復：日期格子卡到的問題 🌟 */
+      .dateRow { gap: 4px; } /* 縮小三個元素之間的間距 */
+      .dateRow input[type="date"] {
+        padding: 8px 4px; /* 極度縮小左右內距，把空間還給文字 */
+        font-size: 13px;
+        letter-spacing: -0.5px; /* 讓日期文字稍微緊湊一點，防止撐爆格子 */
+      }
+      .dateRow .sep {
+        transform: translateY(-10px); /* 手機版框比較扁，微調往上推的距離 */
+      }
+
+      /* 4. 上方四步驟導覽列微調 */
+      .stepBox { padding: 6px 10px; gap: 6px; }
+      .stepNum { width: 24px; height: 24px; font-size: 12px; }
+      .stepText { font-size: 12px; }
+      
+      /* 5. 商品列表緊湊化 (圖片縮小、按鈕縮小) */
+      .item { padding: 8px; gap: 8px; grid-template-columns: 60px 1fr; }
+      .thumb { width: 60px; height: 60px; border-radius: 10px; }
+      .meta .row2 { margin-top: 4px; gap: 6px; }
+      .qty { padding: 4px 6px; gap: 4px; }
+      .qbtn { width: 28px; height: 28px; }
+      .qval { min-width: 30px; }
+      .linkbtn { padding: 6px 8px; }
+      
+      /* 6. 等級選配卡片緊湊化 (預覽圖高度減半) */
+      .levelBtn { padding: 8px; gap: 8px; }
+      .levelTopRow { margin-bottom: 2px; }
+      .levelMedia img { height: 70px; }
+      .miniBtn { padding: 6px 8px; }
+      
+      /* 7. 右側報價單/購物車清單緊湊化 */
+      .group .gh { padding: 8px 10px; }
+      .group .gb { padding: 8px; gap: 6px; }
+      .citem { padding: 8px; padding-right: 40px; } 
+      .citem .nm { font-size: 13px; }
+      #cart .xbtn { width: 28px; height: 28px; right: 6px; font-size: 12px; }
+      
+      /* 8. 頁籤 (分類按鈕) 縮小 */
+      .tabs { padding: 8px 10px 10px; gap: 6px; }
+      .tab { padding: 6px 10px; font-size: 13px; }
+    }
 </style>
 </head>
 
