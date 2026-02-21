@@ -365,6 +365,50 @@
       .optrow{flex-direction:column;align-items:stretch;gap:6px}
       .optlabel{min-width:0}
     }
+    /* ===== 手機版緊湊優化 (Max-width: 620px) ===== */
+    @media (max-width: 620px) {
+      /* 1. 整體外距與卡片內距大幅縮小 */
+      .wrap { padding: 8px; }
+      .grid { gap: 10px; margin-top: 10px; }
+      .card .hd { padding: 10px 10px 8px; }
+      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
+      
+      /* 2. 輸入框與文字縮小，減少佔用高度 */
+      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
+      .field textarea { min-height: 60px; }
+      .field { gap: 4px; }
+      
+      /* 3. 上方四步驟導覽列微調 */
+      .stepBox { padding: 6px 10px; gap: 6px; }
+      .stepNum { width: 24px; height: 24px; font-size: 12px; }
+      .stepText { font-size: 12px; }
+      
+      /* 4. 商品列表緊湊化 (圖片縮小、按鈕縮小) */
+      .item { padding: 8px; gap: 8px; grid-template-columns: 60px 1fr; }
+      .thumb { width: 60px; height: 60px; border-radius: 10px; }
+      .meta .row2 { margin-top: 4px; gap: 6px; }
+      .qty { padding: 4px 6px; gap: 4px; }
+      .qbtn { width: 28px; height: 28px; }
+      .qval { min-width: 30px; }
+      .linkbtn { padding: 6px 8px; }
+      
+      /* 5. 等級選配卡片緊湊化 (預覽圖高度減半) */
+      .levelBtn { padding: 8px; gap: 8px; }
+      .levelTopRow { margin-bottom: 2px; }
+      .levelMedia img { height: 70px; } /* 原本 110px，大幅壓低 */
+      .miniBtn { padding: 6px 8px; }
+      
+      /* 6. 右側報價單/購物車清單緊湊化 */
+      .group .gh { padding: 8px 10px; }
+      .group .gb { padding: 8px; gap: 6px; }
+      .citem { padding: 8px; padding-right: 40px; } /* 留空間給右側刪除按鈕 */
+      .citem .nm { font-size: 13px; }
+      #cart .xbtn { width: 28px; height: 28px; right: 6px; font-size: 12px; }
+      
+      /* 7. 頁籤 (分類按鈕) 縮小 */
+      .tabs { padding: 8px 10px 10px; gap: 6px; }
+      .tab { padding: 6px 10px; font-size: 13px; }
+    }
 </style>
 </head>
 
