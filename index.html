@@ -450,14 +450,13 @@
             <option>半戶外</option>
           </select>
         </div>
-        <div class="field span2">
-          <label>活動日期（開始 ～ 結束）</label>
-          <div class="dateRow">
+<div class="field span2">
+          <label>活動日期（開始、結束）</label>
+          <div class="dateRow" style="grid-template-columns: 1fr 1fr;">
             <div class="dateCol">
               <div class="dateCap">開始</div>
               <input id="fDateStart" type="date">
             </div>
-            <div class="sep">～</div>
             <div class="dateCol">
               <div class="dateCap">結束</div>
               <input id="fDateEnd" type="date">
@@ -465,6 +464,24 @@
           </div>
         </div>
 
+        <div class="field span2" style="margin-top: 4px;">
+          <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
+            <input type="checkbox" id="fHasExtraDate" style="width:18px;height:18px">
+            需要新增不連續的活動日期
+          </label>
+          <div id="extraDateWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc; margin-top:6px;">
+            <div class="dateRow" style="grid-template-columns: 1fr 1fr;">
+              <div class="dateCol">
+                <div class="dateCap">額外日期（開始）</div>
+                <input id="fExtraDateStart" type="date">
+              </div>
+              <div class="dateCol">
+                <div class="dateCap">額外日期（結束）</div>
+                <input id="fExtraDateEnd" type="date">
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="field span2">
           <label>活動時間（只提供 00/10/20/30/40/50 分）</label>
           <div class="timeRow">
@@ -531,7 +548,7 @@
 
           <div class="tierCard">
             <div class="tierHead">
-              <b>安全等級</b>
+              <b>安全等級 <span style="font-size:12px;color:var(--muted);font-weight:normal;">（不包含燈光）</span></b>
               <span class="pill pillStatus" id="pillSafety">未選</span>
             </div>
             <div class="tierBody">
@@ -545,7 +562,7 @@
 
           <div class="tierCard">
             <div class="tierHead">
-              <b>氣氛等級</b>
+              <b>氣氛等級 <span style="font-size:12px;color:var(--muted);font-weight:normal;">（含燈光+簡易特效）</span></b>
               <span class="pill pillStatus" id="pillAmbience">未選</span>
             </div>
             <div class="tierBody">
@@ -559,7 +576,7 @@
 
           <div class="tierCard">
             <div class="tierHead">
-              <b>升級等級</b>
+              <b>升級等級 <span style="font-size:12px;color:var(--muted);font-weight:normal;">（含進階燈光+高級特效）</span></b>
               <span class="pill pillStatus" id="pillUpgrade">未選</span>
             </div>
             <div class="tierBody">
@@ -1610,6 +1627,9 @@
           hasSession2: $("#fHasSession2")?.checked ? "是" : "否",
           session2Start: $("#fTime2Start")?.value || "",
           session2End: $("#fTime2End")?.value || "",
+          hasExtraDate: $("#fHasExtraDate")?.checked ? "是" : "否",
+          extraDateStart: $("#fExtraDateStart")?.value || "",
+          extraDateEnd: $("#fExtraDateEnd")?.value || "",
           note: $("#fNote")?.value?.trim() || ""
         },
         levels: getLevelsForSend(),
@@ -1638,7 +1658,13 @@
     initCity();
     initTimePickers();
     renderSession2Days();
-
+const cExtra = $("#fHasExtraDate");
+    const wExtra = $("#extraDateWrap");
+    if(cExtra){
+      cExtra.addEventListener("change", ()=>{
+        if(wExtra) wExtra.style.display = cExtra.checked ? "block" : "none";
+      });
+    }
     const c2 = $("#fHasSession2");
     const w2 = $("#session2Wrap");
     if(c2){
