@@ -313,6 +313,20 @@
       .photoGrid { grid-template-columns: 1fr; }
       .photoBox img { height: 170px; }
     }
+    /* ===== 修正基本資料區塊：防擠壓與字體縮放優化 ===== */
+    @media (max-width: 620px) {
+      /* 1. 表單強制改為單欄上下排列，不要左右並排擠壓 */
+      .form { grid-template-columns: 1fr !important; }
+      
+      /* 2. 避免 iOS 自動縮放導致字體忽大忽小，輸入框強制設回安全大小 16px */
+      .field input, .field select, .field textarea { 
+        font-size: 16px !important; 
+        padding: 10px 12px !important; 
+      }
+      
+      /* 3. 讓下拉選單的文字也保持一致 */
+      .field label { font-size: 13px !important; }
+    }
   </style>
 </head>
 
