@@ -33,40 +33,73 @@
     .title small{color:var(--muted)}
     .actions{grid-column:3;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 
-    /* ===== 四步驟導覽（只做顯示，不影響功能） ===== */
-    .stepsWrap{width:100%}
-    .stepsHint{font-size:13px;color:var(--muted);margin-top:2px}
-    .steps{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-    .stepBox{
-      display:flex;align-items:center;gap:12px;
-      padding:12px 16px;
-      background:var(--mintSoft);
-      border:1px solid var(--line);
-      border-radius:999px;
-      box-shadow:0 10px 26px rgba(0,0,0,.06);
-      white-space:nowrap;
+    /* ===== 四步驟導覽（連貫進度條樣式） ===== */
+    .stepsWrap { width: 100%; margin-top: 4px; }
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      padding: 0;
+      margin: 0;
     }
-    .stepBox:nth-child(4n+1){border-color:color-mix(in srgb, var(--brand) 35%, var(--line));}
-    .stepBox:nth-child(4n+2){border-color:color-mix(in srgb, var(--blush) 35%, var(--line)); background:color-mix(in srgb, var(--blushSoft) 85%, var(--card));}
-    .stepBox:nth-child(4n+3){border-color:color-mix(in srgb, var(--brand) 22%, var(--line));}
-    .stepBox:nth-child(4n+4){border-color:color-mix(in srgb, var(--blush) 22%, var(--line)); background:color-mix(in srgb, var(--blushSoft) 85%, var(--card));}
-        .stepNum{
-      width:34px;height:34px;border-radius:999px;
-      display:grid;place-items:center;
-      background:rgba(99,191,174,.18); background:color-mix(in srgb, var(--brand) 22%, transparent);
-      color:var(--brand2);
-      font-weight:900;
-      flex:0 0 auto;
+    /* 建立背後貫穿的連貫線條 */
+    .steps::before {
+      content: "";
+      position: absolute;
+      top: 15px; /* 對齊數字圓圈正中間 */
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: var(--line);
+      z-index: 0;
     }
-    .stepText{font-size:14px;font-weight:750;color:var(--text)}
-    .stepArrow{color:var(--muted);display:inline-flex;align-items:center}
-    .stepIcon{width:22px;height:22px;opacity:.9}
-    @media (max-width:520px){
-      .stepArrow{display:none}
-      .stepBox{border-radius:14px}
-      .steps{gap:8px}
+    /* 隱藏原本的箭頭圖示 */
+    .stepArrow { display: none !important; }
+
+    /* 每個步驟變成上下排列：圓圈在上，文字在下 */
+    .stepBox {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      flex: 1;
+      white-space: normal;
+    }
+    /* 數字圓圈設計 */
+    .stepNum {
+      width: 32px; height: 32px;
+      background: var(--card); /* 蓋住背後的線 */
+      border: 2px solid var(--brand);
+      color: var(--brand2);
+      font-weight: 900;
+      border-radius: 999px;
+      display: grid; place-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex: 0 0 auto;
+    }
+    /* 步驟文字設計 */
+    .stepText {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.25;
+      word-break: keep-all;
     }
 
+    /* 手機版微調：縮小圓圈與文字，確保四個步驟能並排 */
+    @media (max-width: 620px) {
+      .steps::before { top: 13px; left: 8%; right: 8%; }
+      .stepNum { width: 28px; height: 28px; font-size: 12px; border-width: 1.5px; }
+      .stepText { font-size: 11px; transform: scale(0.95); }
+      .stepBox { gap: 4px; }
+    }
     .btn{border:1px solid var(--line);background:var(--card);padding:10px 12px;border-radius:999px;cursor:pointer;font-weight:900;font-size:13px}
     .btn.primary{background:var(--brand);border-color:transparent;color:#fff}
     .btn.primary:hover{background:var(--brand2)}
@@ -506,7 +539,7 @@
           <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <div class="stepBox"><span class="stepNum">3</span><span class="stepText">選取設備服務加購</span></div>
           <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <div class="stepBox"><span class="stepNum">4</span><span class="stepText">查看即時報價</span></div>
+          <div class="stepBox"><span class="stepNum">4</span><span class="stepText">送出報價單</span></div>
         </div>
 </div>
 
