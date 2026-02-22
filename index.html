@@ -30,76 +30,18 @@
     .head{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding:14px 18px}
     .title{grid-column:2;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
     .title h1{margin:0;font-size:18px}
-    .title small{color:var(--muted)}
+    .title small{color:var(--muted);display:none!important;}
     .actions{grid-column:3;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 
     /* ===== 四步驟導覽（連貫進度條樣式） ===== */
     .stepsWrap { width: 100%; margin-top: 4px; }
-    .steps {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-      padding: 0;
-      margin: 0;
-    }
-    /* 建立背後貫穿的連貫線條 */
-    .steps::before {
-      content: "";
-      position: absolute;
-      top: 15px; /* 對齊數字圓圈正中間 */
-      left: 10%;
-      right: 10%;
-      height: 2px;
-      background: var(--line);
-      z-index: 0;
-    }
-    /* 隱藏原本的箭頭圖示 */
+    .steps { display: flex; justify-content: space-between; position: relative; padding: 0; margin: 0; }
+    .steps::before { content: ""; position: absolute; top: 15px; left: 10%; right: 10%; height: 2px; background: var(--line); z-index: 0; }
+    .stepBox { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0; flex: 1; white-space: normal; }
+    .stepNum { width: 32px; height: 32px; background: var(--card); border: 2px solid var(--brand); color: var(--brand2); font-weight: 900; border-radius: 999px; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); flex: 0 0 auto; }
+    .stepText { font-size: 13px; font-weight: 800; color: var(--text); text-align: center; line-height: 1.25; word-break: keep-all; }
     .stepArrow { display: none !important; }
 
-    /* 每個步驟變成上下排列：圓圈在上，文字在下 */
-    .stepBox {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-      padding: 0;
-      flex: 1;
-      white-space: normal;
-    }
-    /* 數字圓圈設計 */
-    .stepNum {
-      width: 32px; height: 32px;
-      background: var(--card); /* 蓋住背後的線 */
-      border: 2px solid var(--brand);
-      color: var(--brand2);
-      font-weight: 900;
-      border-radius: 999px;
-      display: grid; place-items: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      flex: 0 0 auto;
-    }
-    /* 步驟文字設計 */
-    .stepText {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text);
-      text-align: center;
-      line-height: 1.25;
-      word-break: keep-all;
-    }
-
-    /* 手機版微調：縮小圓圈與文字，確保四個步驟能並排 */
-    @media (max-width: 620px) {
-      .steps::before { top: 13px; left: 8%; right: 8%; }
-      .stepNum { width: 28px; height: 28px; font-size: 12px; border-width: 1.5px; }
-      .stepText { font-size: 11px; transform: scale(0.95); }
-      .stepBox { gap: 4px; }
-    }
     .btn{border:1px solid var(--line);background:var(--card);padding:10px 12px;border-radius:999px;cursor:pointer;font-weight:900;font-size:13px}
     .btn.primary{background:var(--brand);border-color:transparent;color:#fff}
     .btn.primary:hover{background:var(--brand2)}
@@ -109,20 +51,11 @@
     .card .hd{padding:14px 14px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
     .card .hd h2{margin:0;font-size:16px}
 
-    /* ===== 四步驟區塊標題：顏色呼應 1/2/3/4（只改外觀，不影響功能） ===== */
+    /* 四步驟區塊標題 */
     .stepHd{position:relative;border-bottom:1px solid var(--line)}
-    .stepHd::before{
-      content:"";
-      position:absolute;left:0;top:0;bottom:0;width:10px;
-      border-radius:0 10px 10px 0;
-      background:color-mix(in srgb, var(--line) 35%, transparent);
-    }
+    .stepHd::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;border-radius:0 10px 10px 0;background:color-mix(in srgb, var(--line) 35%, transparent);}
     .stepHd h2{display:flex;align-items:center;gap:10px}
-    .stepHd h2::before{
-      content:"";
-      width:10px;height:10px;border-radius:999px;flex:0 0 auto;
-      background:color-mix(in srgb, var(--line) 35%, transparent);
-    }
+    .stepHd h2::before{content:"";width:10px;height:10px;border-radius:999px;flex:0 0 auto;background:color-mix(in srgb, var(--line) 35%, transparent);}
 
     .step1{background:linear-gradient(90deg, color-mix(in srgb, var(--brand) 18%, #fff), #fff)}
     .step1::before{background:color-mix(in srgb, var(--brand2) 55%, var(--brand))}
@@ -141,13 +74,7 @@
     .step4 h2::before{background:#f59e0b}
 
     .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:#fff;white-space:nowrap}
-
     .pillStatus{display:none!important}
-    .tierNoteInline{font-size:12px;color:var(--muted);font-weight:700;margin-left:8px}
-
-
-    .pillNote{color:#374151}
-
 
     .form{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .field{display:flex;flex-direction:column;gap:6px}
@@ -159,16 +86,13 @@
     .timeRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
     .timeRow .sep{color:var(--muted);font-weight:900;text-align:center}
 
-    
-
-    /* 活動日期：開始/結束永遠同一排（含手機） */
     .dateRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
-    .dateRow .sep{color:var(--muted);font-weight:900;text-align:center}
+    .dateRow .sep{color:var(--muted);font-weight:900;text-align:center; transform: translateY(-14px); margin: 0 4px;}
     .dateCol{display:grid;gap:6px;min-width:0}
     .dateCap{font-size:11px;color:var(--muted);font-weight:900}
     .dateRow input{width:100%;min-width:0}
 
-.tabs{padding:12px 14px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
+    .tabs{padding:12px 14px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
     .tab{padding:10px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000;font-size:14px}
     .tab.active{background:rgba(30,142,111,.12);border-color:rgba(30,142,111,.35);color:var(--brand2)}
 
@@ -194,15 +118,15 @@
     .group{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
     .group .gh{padding:10px 12px;background:#fafafa;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:1000}
     .group .gb{padding:12px;display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
-    .citem{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;display:block}
-    .citem img{width:58px;height:58px;border-radius:12px;object-fit:cover;border:1px solid var(--line)}
+    .citem{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;display:block; padding-right:52px;}
+    .citem img{display:none!important}
     .cmeta .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
     .cmeta .nm{font-weight:1000;line-height:1.2}
-    .cmeta .unit{color:var(--muted);font-size:12px;margin-top:2px}
-    .cline{margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .cmeta .unit{display:none!important}
+    .cline{margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 
     .qtyRow{display:flex;align-items:center;gap:10px}
-    .xbtn{width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer}
+    .xbtn{position:absolute; top:50%; transform:translateY(-50%); right:10px; width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer}
     .subttl{color:var(--muted);font-size:12px}
     .subttl b{color:var(--text)}
     .note{color:var(--muted);font-size:12px;line-height:1.5}
@@ -217,7 +141,6 @@
     .tierBody{padding:12px;display:grid;gap:10px}
     .levelRow{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
 
-    /* ✅ iPhone Safari 修正：不再用 button 包 button（會導致整塊不顯示） */
     .levelBtn{
       padding:12px;
       border-radius:14px;
@@ -227,7 +150,7 @@
       font-weight:1000;
       text-align:left;
       display:flex;
-      flex-direction:column;   /* ✅ 垂直卡片：避免擠在一起 */
+      flex-direction:column; 
       gap:10px;
       user-select:none;
       align-items:stretch;
@@ -243,143 +166,72 @@
     .miniBtn:hover{border-color:rgba(30,142,111,.35)}
     .miniBtn.primaryMini{background:var(--brand);border-color:transparent;color:#fff}
     .miniBtn.primaryMini:hover{background:var(--brand2)}
-    /* ✅ Level card preview image sizing (prevent huge images) */
+    
     .levelMedia{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f3f4f6}
     .levelMedia img{width:100%;height:120px;object-fit:cover;display:block}
-    @media (max-width:620px){
-      .levelMedia img{height:110px}
-    }
 
-    .tierActions{display:flex;gap:10px;flex-wrap:wrap}
+    .tierActions{display:none}
     .hint{font-size:12px;color:var(--muted);line-height:1.55}
     .hint b{color:var(--text)}
     .tierStatus{display:flex;gap:8px;flex-wrap:wrap}
-    /* ✅ 隱藏一鍵套用按鈕（改成每格直接加入） */
-    .tierActions{display:none}
 
     .modalMask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
     .modal{width:min(560px,100%);background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.22);overflow:hidden}
     .modal .mh{padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
-    .modal .mb{padding:14px}
+    .modal .mb{padding:14px 14px 20px;}
     .modal .mb p{margin:0;color:#374151;line-height:1.65}
-    .modal .mf{padding:12px 14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#fafafa}
 
-    /* ✅ 詳情：兩張照片版面 */
     .photoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .packMeta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 6px}
-        .packMeta .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
-        .packList{margin:8px 0 0;padding-left:18px;line-height:1.65}
-        .packList li{margin:4px 0}
-        .modalDesc{margin-top:8px;color:var(--muted);line-height:1.7}
+    .packMeta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 6px}
+    .packMeta .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+    .packList{margin:8px 0 0;padding-left:18px;line-height:1.65}
+    .packList li{margin:4px 0}
+    .modalDesc{margin-top:8px;color:var(--muted);line-height:1.7}
     .photoBox{border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;background:#fff}
     .photoBox img{width:100%;height:140px;object-fit:cover;display:block}
     .photoCap{padding:8px 10px;font-size:12px;color:#6b7280}
 
-    @media (max-width:920px){
-      .levelRow{grid-template-columns:repeat(2, 1fr)}
-      .grid{grid-template-columns:1fr}
-      .tierGrid{grid-template-columns:1fr}
-    }
-    @media (max-width:620px){
-      .levelRow{grid-template-columns:1fr}
-      .items{grid-template-columns:1fr}
-      .form{grid-template-columns:1fr}
-      .item{grid-template-columns:74px 1fr}
-      .price{grid-column:2;text-align:left}
-      .actions{display:none}
-      .levelRow{grid-template-columns:1fr}
-      .timeRow{grid-template-columns:1fr auto 1fr}
-      .photoGrid{grid-template-columns:1fr}
-      .photoBox img{height:170px}
-      .levelBtn{flex-direction:column}
-    }
-  
-    /* === Header cleanup: only keep main title === */
-    header .title small{display:none!important}
-
-    /* === Move top tools into quote header (right side) === */
     #quoteCard .quoteHdrRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     #quoteCard .quoteActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     #quoteCard .quoteActions .btn{padding:8px 10px;font-size:13px;border-radius:999px}
     #jsStatus{display:inline-flex}
 
-
-    /* === 即時報價：三欄精簡（只顯示 名稱 + 小計） === */
-    #cart .citem img{display:none!important}
-    #cart .unit{display:none!important}
-    #cart .cline{margin-top:6px}
-    #cart .qty{display:none!important}            /* 隱藏 +/- 與數量 */
-    #cart .cline .subttl{display:none!important} /* 隱藏重複的小計列 */
-    #cart .xbtn{position:absolute;top:8px;right:8px}
-
-    @media (max-width: 700px){
-      .gb{grid-template-columns:1fr}
-    }
-
-
-    /* === 即時報價：避免刪除按鈕與價格重疊 === */
-    #cart .citem{padding-right:52px}
-    #cart .xbtn{top:50%;transform:translateY(-50%);right:10px}
+    #cart .qty{display:none!important}
+    #cart .cline .subttl{display:none!important}
     #cart .price{padding-right:8px}
 
-
-    /* === 列印成 PDF：醒目顏色（黃） === */
-
-    /* === 送出報價單：先保留按鈕位置（之後可接 Email / 表單） === */
     #quoteCard .sendBar{margin-top:12px;display:flex;justify-content:flex-end}
     #quoteCard .btn.send{background:#0ea5e9;border-color:#0284c7;color:#fff;font-weight:800}
     #quoteCard .btn.send:hover{filter:brightness(.97)}
     @media (max-width:700px){#quoteCard .sendBar{justify-content:stretch} #quoteCard .btn.send{width:100%}}
 
-    /* === 列印成 PDF：醒目顏色（黃） === */
-    .btn.warn{
-      background:#facc15;
-      border-color:#f59e0b;
-      color:#111827;
-      font-weight:800;
-    }
+    .btn.warn{background:#facc15;border-color:#f59e0b;color:#111827;font-weight:800;}
     .btn.warn:hover{filter:brightness(.97)}
-
-    /* === PDF 列印版面（只印：抬頭＋基本資料＋明細＋總計） === */
     #printRoot{display:none}
     body.printing #printRoot{display:block}
-
     @media print{
       body.printing *{visibility:hidden !important}
       body.printing #printRoot, body.printing #printRoot *{visibility:visible !important}
-
-      body.printing #printRoot{
-        position:absolute; inset:0;
-        padding:16mm 12mm;
-        font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-        color:#111827;
-      }
-
+      body.printing #printRoot{position:absolute; inset:0; padding:16mm 12mm; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; color:#111827;}
       .printHdr{margin-bottom:10mm}
       .printBrand{font-size:18px;font-weight:900;margin:0}
       .printTitle{font-size:15px;font-weight:800;margin:6px 0 0 0}
       .printMeta{font-size:11px;color:#6b7280;margin-top:6px}
-
       .printH3{font-size:13px;font-weight:900;margin:10mm 0 4mm 0}
-
       .printTbl{width:100%;border-collapse:collapse;font-size:11px}
       .printTbl th,.printTbl td{border:1px solid #e5e7eb;padding:6px 7px;vertical-align:top}
       .printTbl th{background:#f9fafb;text-align:left}
       .printTbl tr.cat td{background:#f3f4f6;font-weight:900;color:#111827}
       .right{text-align:right}
       .muted{color:#6b7280}
-
       .totalsBox{margin-top:8mm;display:flex;justify-content:flex-end}
       .totals{min-width:260px;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px}
       .trow{display:flex;justify-content:space-between;gap:12px;margin:6px 0}
       .trow b{white-space:nowrap}
       .trow.total{border-top:1px solid #e5e7eb;padding-top:8px;margin-top:8px;font-size:12px;font-weight:900}
-
       @page{size:auto;margin:10mm}
     }
 
-
-    /* === UI cleanup (hide non-essential pills/buttons) === */
     #tierPills{display:none!important;}
     #pickedCount{display:none!important;}
     #cartBadge{display:none!important;}
@@ -387,142 +239,81 @@
     #btnCopy{display:none!important;}
     #catName{display:none!important;}
 
-
-    /* === 加購細項（只在右側報價單出現）=== */
     .mini{font-size:12px;color:var(--muted)}
     .optbox{margin-top:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;background:#fbfdfc}
     .optrow{display:flex;gap:10px;align-items:center;margin:6px 0}
     .optlabel{min-width:92px;font-size:13px;color:var(--muted)}
     .optselect{flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}
-    @media (max-width:520px){
+
+    /* 平板響應式 */
+    @media (max-width:920px){
+      .levelRow{grid-template-columns:repeat(2, 1fr)}
+      .grid{grid-template-columns:1fr}
+      .tierGrid{grid-template-columns:1fr}
+    }
+
+    /* ===== 手機版緊湊與並排優化 (Max-width: 620px) ===== */
+    @media (max-width: 620px) {
+      /* 四步驟進度條微調 */
+      .steps::before { top: 13px; left: 8%; right: 8%; }
+      .stepNum { width: 28px; height: 28px; font-size: 12px; border-width: 1.5px; }
+      .stepText { font-size: 11px; transform: scale(0.95); }
+      .stepBox { gap: 4px; }
+
+      /* 整體與卡片內距 */
+      .wrap { padding: 8px; }
+      .grid { gap: 10px; margin-top: 10px; }
+      .card .hd { padding: 10px 10px 8px; }
+      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
+      
+      /* 表單輸入框與日期修復 */
+      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
+      .field textarea { min-height: 60px; }
+      .field { gap: 4px; }
+      .dateRow { gap: 4px; } 
+      .dateRow input[type="date"] { padding: 8px 4px; font-size: 13px; letter-spacing: -0.5px; }
+      .dateRow .sep { transform: translateY(-10px); }
+      .timeRow { grid-template-columns: 1fr auto 1fr; }
       .optrow{flex-direction:column;align-items:stretch;gap:6px}
       .optlabel{min-width:0}
-    }
-    /* ===== 日期與時間欄位修正（全裝置適用） ===== */
-    /* 讓波浪號垂直置中對齊輸入框，而不是貼在底部 */
-    .dateRow .sep {
-      transform: translateY(-14px); /* 往上推，對齊輸入框正中心 */
-      margin: 0 4px; /* 左右保留一點安全距離，避免卡到 */
-    }
 
-    /* ===== 手機版緊湊優化 (Max-width: 620px) ===== */
-    @media (max-width: 620px) {
-      /* 1. 整體外距與卡片內距大幅縮小 */
-      .wrap { padding: 8px; }
-      .grid { gap: 10px; margin-top: 10px; }
-      .card .hd { padding: 10px 10px 8px; }
-      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
-      
-      /* 2. 輸入框與文字縮小，減少佔用高度 */
-      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
-      .field textarea { min-height: 60px; }
-      .field { gap: 4px; }
-      
-      /* 🌟 3. 修復：日期格子卡到的問題 🌟 */
-      .dateRow { gap: 4px; } /* 縮小三個元素之間的間距 */
-      .dateRow input[type="date"] {
-        padding: 8px 4px; /* 極度縮小左右內距，把空間還給文字 */
-        font-size: 13px;
-        letter-spacing: -0.5px; /* 讓日期文字稍微緊湊一點，防止撐爆格子 */
-      }
-      .dateRow .sep {
-        transform: translateY(-10px); /* 手機版框比較扁，微調往上推的距離 */
-      }
+      /* 🌟 1. 等級選配卡片：並排顯示 (2欄) 🌟 */
+      .levelRow { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .levelBtn { padding: 6px; gap: 6px; }
+      .levelTopRow { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .levelPrice { font-size: 12px; }
+      .levelMedia img { height: 65px; } /* 圖片大幅縮小 */
+      .levelActions { gap: 4px; width: 100%; }
+      .miniBtn { padding: 6px 8px; font-size: 11px; width: 100%; text-align: center; margin: 0; } /* 按鈕垂直滿版疊放 */
 
-      /* 4. 上方四步驟導覽列微調 */
-      .stepBox { padding: 6px 10px; gap: 6px; }
-      .stepNum { width: 24px; height: 24px; font-size: 12px; }
-      .stepText { font-size: 12px; }
-      
-      /* 5. 商品列表緊湊化 (圖片縮小、按鈕縮小) */
-      .item { padding: 8px; gap: 8px; grid-template-columns: 60px 1fr; }
-      .thumb { width: 60px; height: 60px; border-radius: 10px; }
-      .meta .row2 { margin-top: 4px; gap: 6px; }
-      .qty { padding: 4px 6px; gap: 4px; }
-      .qbtn { width: 28px; height: 28px; }
-      .qval { min-width: 30px; }
-      .linkbtn { padding: 6px 8px; }
-      
-      /* 6. 等級選配卡片緊湊化 (預覽圖高度減半) */
-      .levelBtn { padding: 8px; gap: 8px; }
-      .levelTopRow { margin-bottom: 2px; }
-      .levelMedia img { height: 70px; }
-      .miniBtn { padding: 6px 8px; }
-      
-      /* 7. 右側報價單/購物車清單緊湊化 */
-      .group .gh { padding: 8px 10px; }
-      .group .gb { padding: 8px; gap: 6px; }
+      /* 🌟 2. 設備與服務清單：並排顯示 (2欄直式卡片) 🌟 */
+      .items { grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 6px; }
+      .item { 
+        display: flex; flex-direction: column; align-items: stretch;
+        padding: 8px; gap: 8px; 
+      }
+      .thumb { width: 100%; height: 90px; border-radius: 8px; }
+      .meta { display: flex; flex-direction: column; flex: 1; gap: 4px; }
+      .meta .name { font-size: 13px; line-height: 1.3; }
+      .meta .sub { font-size: 11px; }
+      .meta .row2 { margin-top: auto; flex-direction: column; align-items: stretch; gap: 6px; }
+      .qty { justify-content: space-between; padding: 4px 6px; }
+      .qbtn { width: 26px; height: 26px; }
+      .linkbtn { width: 100%; text-align: center; padding: 6px; }
+      .price { text-align: left; font-size: 14px; margin-top: 4px; border-top: 1px dashed var(--line); padding-top: 6px; }
+
+      /* 右側購物車與頁籤 */
+      .group .gh { padding: 8px 10px; font-size: 13px; }
+      .group .gb { padding: 8px; gap: 6px; grid-template-columns: 1fr; }
       .citem { padding: 8px; padding-right: 40px; } 
       .citem .nm { font-size: 13px; }
       #cart .xbtn { width: 28px; height: 28px; right: 6px; font-size: 12px; }
-      
-      /* 8. 頁籤 (分類按鈕) 縮小 */
       .tabs { padding: 8px 10px 10px; gap: 6px; }
       .tab { padding: 6px 10px; font-size: 13px; }
+      .photoGrid { grid-template-columns: 1fr; }
+      .photoBox img { height: 170px; }
     }
-    /* ===== 日期與時間欄位修正（全裝置適用） ===== */
-    /* 讓波浪號垂直置中對齊輸入框，而不是貼在底部 */
-    .dateRow .sep {
-      transform: translateY(-14px); /* 往上推，對齊輸入框正中心 */
-      margin: 0 4px; /* 左右保留一點安全距離，避免卡到 */
-    }
-
-    /* ===== 手機版緊湊優化 (Max-width: 620px) ===== */
-    @media (max-width: 620px) {
-      /* 1. 整體外距與卡片內距大幅縮小 */
-      .wrap { padding: 8px; }
-      .grid { gap: 10px; margin-top: 10px; }
-      .card .hd { padding: 10px 10px 8px; }
-      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
-      
-      /* 2. 輸入框與文字縮小，減少佔用高度 */
-      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
-      .field textarea { min-height: 60px; }
-      .field { gap: 4px; }
-      
-      /* 🌟 3. 修復：日期格子卡到的問題 🌟 */
-      .dateRow { gap: 4px; } /* 縮小三個元素之間的間距 */
-      .dateRow input[type="date"] {
-        padding: 8px 4px; /* 極度縮小左右內距，把空間還給文字 */
-        font-size: 13px;
-        letter-spacing: -0.5px; /* 讓日期文字稍微緊湊一點，防止撐爆格子 */
-      }
-      .dateRow .sep {
-        transform: translateY(-10px); /* 手機版框比較扁，微調往上推的距離 */
-      }
-
-      /* 4. 上方四步驟導覽列微調 */
-      .stepBox { padding: 6px 10px; gap: 6px; }
-      .stepNum { width: 24px; height: 24px; font-size: 12px; }
-      .stepText { font-size: 12px; }
-      
-      /* 5. 商品列表緊湊化 (圖片縮小、按鈕縮小) */
-      .item { padding: 8px; gap: 8px; grid-template-columns: 60px 1fr; }
-      .thumb { width: 60px; height: 60px; border-radius: 10px; }
-      .meta .row2 { margin-top: 4px; gap: 6px; }
-      .qty { padding: 4px 6px; gap: 4px; }
-      .qbtn { width: 28px; height: 28px; }
-      .qval { min-width: 30px; }
-      .linkbtn { padding: 6px 8px; }
-      
-      /* 6. 等級選配卡片緊湊化 (預覽圖高度減半) */
-      .levelBtn { padding: 8px; gap: 8px; }
-      .levelTopRow { margin-bottom: 2px; }
-      .levelMedia img { height: 70px; }
-      .miniBtn { padding: 6px 8px; }
-      
-      /* 7. 右側報價單/購物車清單緊湊化 */
-      .group .gh { padding: 8px 10px; }
-      .group .gb { padding: 8px; gap: 6px; }
-      .citem { padding: 8px; padding-right: 40px; } 
-      .citem .nm { font-size: 13px; }
-      #cart .xbtn { width: 28px; height: 28px; right: 6px; font-size: 12px; }
-      
-      /* 8. 頁籤 (分類按鈕) 縮小 */
-      .tabs { padding: 8px 10px 10px; gap: 6px; }
-      .tab { padding: 6px 10px; font-size: 13px; }
-    }
-</style>
+  </style>
 </head>
 
 <body>
@@ -534,22 +325,21 @@
       <div class="stepsWrap" aria-label="報價流程四步驟">
         <div class="steps">
           <div class="stepBox"><span class="stepNum">1</span><span class="stepText">填寫基本資料</span></div>
-          <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="stepArrow" aria-hidden="true"></span>
           <div class="stepBox"><span class="stepNum">2</span><span class="stepText">選取燈光音響配置</span></div>
-          <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="stepArrow" aria-hidden="true"></span>
           <div class="stepBox"><span class="stepNum">3</span><span class="stepText">選取設備服務加購</span></div>
-          <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="stepArrow" aria-hidden="true"></span>
           <div class="stepBox"><span class="stepNum">4</span><span class="stepText">送出報價單</span></div>
         </div>
-</div>
+      </div>
 
     </div>
-    
   </div>
 </header>
 
 <div class="wrap">
-  <noscript><div style="margin:12px 0;padding:12px;border:1px solid #f59e0b;background:#fffbeb;border-radius:12px;font-weight:900;color:#92400e">⚠️ 你的瀏覽器目前停用了 JavaScript，因此「安全/氣氛/升級等級」與「設備分類」不會顯示。請改用可執行 JS 的瀏覽器或用 Netlify / GitHub Pages 方式開啟此檔案。</div></noscript>
+  <noscript><div style="margin:12px 0;padding:12px;border:1px solid #f59e0b;background:#fffbeb;border-radius:12px;font-weight:900;color:#92400e">⚠️ 你的瀏覽器目前停用了 JavaScript，因此「安全/氣氛/升級等級」與「設備分類」不會顯示。請改用可執行 JS 的瀏覽器。</div></noscript>
 
   <div class="grid">
 
@@ -560,7 +350,7 @@
       </div>
 
       <div class="form">
-                <div class="field">
+        <div class="field">
           <label>姓名 / 單位</label>
           <input id="fName" placeholder="例：柚子樂器 / 王小明">
         </div>
@@ -661,7 +451,7 @@
           </div>
         </div>
 
-<div class="field span2">
+        <div class="field span2">
           <label>活動時間（只提供 00/10/20/30/40/50 分）</label>
           <div class="timeRow">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -790,21 +580,21 @@
         <div class="quoteHdrRight">
           <span class="pill" id="cartBadge">0 項已選</span>
           <div class="quoteActions">
-      <span class="pill" id="jsStatus">JS: loading</span>
-      <button class="btn" id="btnCopy">複製報價內容</button>
-      <button class="btn primary" id="btnMail" style="display:none">送出報價單</button>
-      <button class="btn warn" id="btnPrint" style="display:none">列印成 PDF</button>
-      <button class="btn danger" id="btnClear">清空全部項目</button>
-    </div>
+            <span class="pill" id="jsStatus">JS: loading</span>
+            <button class="btn" id="btnCopy">複製報價內容</button>
+            <button class="btn primary" id="btnMail" style="display:none">送出報價單</button>
+            <button class="btn warn" id="btnPrint" style="display:none">列印成 PDF</button>
+            <button class="btn danger" id="btnClear">清空全部項目</button>
+          </div>
         </div>
       </div>
 
       <div class="summary">
         <div class="totals">
           <div class="trow" id="grandTotalRow"><span class="subttl">目前合計</span><b id="grandTotal">NT$0</b></div>
-<div class="trow" id="daySurchargeRow" style="display:none"><span class="subttl">跨天加價</span><b id="daySurcharge">NT$0</b></div>
+          <div class="trow" id="daySurchargeRow" style="display:none"><span class="subttl">跨天加價</span><b id="daySurcharge">NT$0</b></div>
           <div class="trow" id="session2SurchargeRow" style="display:none"><span class="subttl">同日第二場加價</span><b id="session2Surcharge">NT$0</b></div>
-<div class="trow"><span class="subttl">總計</span><b id="finalTotal">NT$0</b></div>
+          <div class="trow"><span class="subttl">總計</span><b id="finalTotal">NT$0</b></div>
         </div>
 
         <div class="cart" id="cart"></div>
@@ -825,14 +615,10 @@
       <button class="xbtn" id="mClose" title="關閉">✕</button>
     </div>
     <div class="mb"><p id="mBody">—</p></div>
-    <div class="mf">
-      <button class="btn primary" id="mBack">返回估價單</button>
-    </div>
   </div>
 </div>
 
 <script>
-  // v5: debug status + safety guards
   const BRAND_NAME = "柚子樂器";
   const PRINT_TITLE = "活動企劃｜設備與器材報價單";
 
@@ -840,7 +626,6 @@
     try{
       const el = document.querySelector('#jsStatus');
       if(el) el.textContent = 'JS: error';
-      alert('JS 錯誤：' + (e && e.message ? e.message : e));
     }catch(_){ }
   });
 
@@ -875,7 +660,7 @@
         img:svgThumb("舞台板"),
         desc:"舞台板（2x1m）。可依尺寸、階梯、圍裙等調整。\n\n數量優惠（可修改）：1–19片 1200/片；20–49片 1100/片；50片以上 1000/片。\n可選細項：顏色/高度（會在右側報價單顯示）。"
       },
-{ id:"stage-step", name:"舞台階梯（含扶手）", unit:"座", price:900, img:svgThumb("階梯"), desc:"舞台上下台階梯，適合典禮/表演。" },
+      { id:"stage-step", name:"舞台階梯（含扶手）", unit:"座", price:900, img:svgThumb("階梯"), desc:"舞台上下台階梯，適合典禮/表演。" },
       { id:"stage-truss", name:"TRUSS 桁架（3m）", unit:"支", price:1800, img:svgThumb("TRUSS"), desc:"基本桁架結構，用於燈具/背板/布幕。" },
       { id:"stage-backdrop", name:"主視覺背板（基本）", unit:"組", price:6500, img:svgThumb("背板"), desc:"基本背板（含架設）。主視覺輸出另計或可包套。" },
       { id:"stage-drape", name:"舞台布幕/遮擋（基本）", unit:"組", price:4800, img:svgThumb("布幕"), desc:"舞台側布/後布/遮擋，提升整體質感。" },
@@ -995,8 +780,7 @@
     document.head.appendChild(s);
   }
 
-  function ynToBool(v){ return !(String(v??"").trim()==="否" || String(v??"").trim()==="false" || String(v??"").trim()==="0"); }
-  function applySheetData(data){ /* 本段落原封不動 */ }
+  function applySheetData(data){ }
 
   const TW = {
     "台北市":["中正區","大同區","中山區","松山區","大安區","萬華區","信義區","士林區","北投區","內湖區","南港區","文山區"],
@@ -1407,16 +1191,10 @@
   (function(){
     const mask = document.getElementById("modalMask");
     const btnClose = document.getElementById("mClose");
-    const btnBack = document.getElementById("mBack");
     function closeModalSafe(){ try{ closeModal(); }catch(e){ if(mask) mask.style.display="none"; } }
     if(btnClose) btnClose.addEventListener("click", closeModalSafe);
     if(mask) mask.addEventListener("click", (e)=>{ if(e.target===mask) closeModalSafe(); });
     document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && mask && mask.style.display==="flex") closeModalSafe(); });
-    if(btnBack) btnBack.addEventListener("click", ()=>{
-      closeModalSafe();
-      const qc = document.getElementById("quoteCard");
-      if(qc) qc.scrollIntoView({behavior:"smooth", block:"start"});
-    });
   })();
 
   function getItemPhotos(catId, itemId){
@@ -1606,27 +1384,6 @@
     return "第二場時間：已勾選";
   }
 
-  function collectPrintLines(){
-    const rows=[];
-    const order=[["safety","安全等級"],["ambience","氣氛等級"],["upgrade","升級等級"]];
-    if(state.cart?.packs){
-      for(const [k,title] of order){
-        const p=state.cart.packs[k];
-        if(!p) continue;
-        rows.push({ kind:"pack", name:`${title}｜${p.name}`, unit:"套", qty:1, unitPrice:Number(p.price||0), subtotal:Number(p.price||0) });
-      }
-    }
-    for(const [id,qty] of Object.entries(state.cart||{})){
-      if(id==="packs") continue;
-      const f=findItem(id); if(!f) continue;
-      const q=Number(qty||0); if(q<=0) continue;
-      const up = getUnitPrice(f.item, q);
-      const optText = formatOptText(id);
-      rows.push({ kind:"item", catId:f.cat.id, catName:f.cat.name, name:`${f.item.name}${optText}`, unit:f.item.unit||"件", qty:q, unitPrice:up, subtotal:up*q });
-    }
-    return rows;
-  }
-
   function renderCart(){
     const el=$("#cart");
     const dayLabel = $("#daySurchargeRow")?.querySelector(".subttl");
@@ -1756,9 +1513,6 @@
     renderCart();
   }
 
-  // ============================
-  // 送出報價單：後台產 PDF 並送出報價單（客人 + 店家）
-  // ============================
   const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
 
   function buildQuoteItemsForSend(){
@@ -1819,7 +1573,6 @@
     };
   }
 
-  // ✅ 最核心的打包修正：把 fDateEnd, fAddr, fBldg, time 等欄位通通送進去
   function submitQuoteToAppsScript(){
     try{
       const payload = {
