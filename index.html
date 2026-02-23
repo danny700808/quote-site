@@ -6,19 +6,20 @@
   <title>活動企劃｜燈光音響配置區｜設備選配與即時報價</title>
 
   <style>
-    #btnMail{display:none !important;}
-    :root{
-      --bg:#f7fbf9;
-      --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --line:#e6efe9;
-      --brand:#63bfae;
-      --brand2:#2f8f7b;
-      --blush:#f4b7c4;
-      --mintSoft:#eaf7f3;
-      --blushSoft:#fff1f4;
-      --danger:#e25a6a;
+    
+#btnMail{display:none !important;}
+:root{
+      --bg:#f7fbf9;               /* 淡薄荷白（整體底色） */
+      --card:#ffffff;             /* 卡片白 */
+      --text:#1f2937;             /* 深灰字 */
+      --muted:#6b7280;            /* 次要字 */
+      --line:#e6efe9;             /* 薄荷邊線 */
+      --brand:#63bfae;            /* 主綠（粉嫩薄荷） */
+      --brand2:#2f8f7b;           /* 深綠（hover/重點） */
+      --blush:#f4b7c4;            /* 粉嫩點綴 */
+      --mintSoft:#eaf7f3;         /* 淡薄荷底 */
+      --blushSoft:#fff1f4;        /* 淡粉底 */
+      --danger:#e25a6a;           /* 警示紅（偏粉嫩） */
       --shadow:0 10px 28px rgba(0,0,0,.08);
       --radius:16px;
     }
@@ -29,207 +30,498 @@
     .head{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding:14px 18px}
     .title{grid-column:2;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
     .title h1{margin:0;font-size:18px}
+    .title small{color:var(--muted)}
+    .actions{grid-column:3;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 
-    /* 四步驟導覽 */
+    /* ===== 四步驟導覽（連貫進度條樣式） ===== */
     .stepsWrap { width: 100%; margin-top: 4px; }
-    .steps { display: flex; justify-content: space-between; position: relative; padding: 0; margin: 0; }
-    .steps::before { content: ""; position: absolute; top: 15px; left: 10%; right: 10%; height: 2px; background: var(--line); z-index: 0; }
-    .stepBox { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-    .stepNum { width: 32px; height: 32px; background: var(--card); border: 2px solid var(--brand); color: var(--brand2); font-weight: 900; border-radius: 999px; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-    .stepText { font-size: 13px; font-weight: 800; color: var(--text); text-align: center; line-height: 1.25; }
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+    /* 建立背後貫穿的連貫線條 */
+    .steps::before {
+      content: "";
+      position: absolute;
+      top: 15px; /* 對齊數字圓圈正中間 */
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: var(--line);
+      z-index: 0;
+    }
+    /* 隱藏原本的箭頭圖示 */
+    .stepArrow { display: none !important; }
 
+    /* 每個步驟變成上下排列：圓圈在上，文字在下 */
+    .stepBox {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      flex: 1;
+      white-space: normal;
+    }
+    /* 數字圓圈設計 */
+    .stepNum {
+      width: 32px; height: 32px;
+      background: var(--card); /* 蓋住背後的線 */
+      border: 2px solid var(--brand);
+      color: var(--brand2);
+      font-weight: 900;
+      border-radius: 999px;
+      display: grid; place-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex: 0 0 auto;
+    }
+    /* 步驟文字設計 */
+    .stepText {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
+
+    /* 手機版微調：縮小圓圈與文字，確保四個步驟能並排 */
+    @media (max-width: 620px) {
+      .steps::before { top: 13px; left: 8%; right: 8%; }
+      .stepNum { width: 28px; height: 28px; font-size: 12px; border-width: 1.5px; }
+      .stepText { font-size: 11px; transform: scale(0.95); }
+      .stepBox { gap: 4px; }
+    }
     .btn{border:1px solid var(--line);background:var(--card);padding:10px 12px;border-radius:999px;cursor:pointer;font-weight:900;font-size:13px}
     .btn.primary{background:var(--brand);border-color:transparent;color:#fff}
+    .btn.primary:hover{background:var(--brand2)}
     .btn.danger{background:var(--danger);border-color:transparent;color:#fff}
     .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;align-items:start}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-    .card .hd{padding:14px 14px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+    .card .hd{padding:14px 14px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
     .card .hd h2{margin:0;font-size:16px}
 
+    /* ===== 四步驟區塊標題：顏色呼應 1/2/3/4（只改外觀，不影響功能） ===== */
     .stepHd{position:relative;border-bottom:1px solid var(--line)}
+    .stepHd::before{
+      content:"";
+      position:absolute;left:0;top:0;bottom:0;width:10px;
+      border-radius:0 10px 10px 0;
+      background:color-mix(in srgb, var(--line) 35%, transparent);
+    }
+    .stepHd h2{display:flex;align-items:center;gap:10px}
+    .stepHd h2::before{
+      content:"";
+      width:10px;height:10px;border-radius:999px;flex:0 0 auto;
+      background:color-mix(in srgb, var(--line) 35%, transparent);
+    }
+
     .step1{background:linear-gradient(90deg, color-mix(in srgb, var(--brand) 18%, #fff), #fff)}
+    .step1::before{background:color-mix(in srgb, var(--brand2) 55%, var(--brand))}
+    .step1 h2::before{background:var(--brand2)}
+
     .step2{background:linear-gradient(90deg, color-mix(in srgb, var(--blush) 18%, #fff), #fff)}
+    .step2::before{background:color-mix(in srgb, var(--blush) 70%, #fff)}
+    .step2 h2::before{background:var(--danger)}
+
     .step3{background:linear-gradient(90deg, #eff6ff, #fff)}
+    .step3::before{background:#60a5fa}
+    .step3 h2::before{background:#2563eb}
+
     .step4{background:linear-gradient(90deg, #fffbeb, #fff)}
+    .step4::before{background:#f59e0b}
+    .step4 h2::before{background:#f59e0b}
 
     .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:#fff;white-space:nowrap}
 
+    .pillStatus{display:none!important}
+    .tierNoteInline{font-size:12px;color:var(--muted);font-weight:700;margin-left:8px}
+
+
+    .pillNote{color:#374151}
+
+
     .form{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:12px;color:var(--muted);font-weight:900}
-    .field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none;font-size:14px;min-width:0;max-width:100%}
+    .field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none;font-size:14px}
     .field textarea{min-height:84px;resize:vertical}
     .span2{grid-column:1/-1}
 
-    .mutedNote{font-size:12px;color:var(--muted);line-height:1.35}
-    .detailsBox{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
-    .detailsBox > summary{cursor:pointer;list-style:none;padding:12px 12px;font-weight:1000;color:var(--text);display:flex;align-items:center;justify-content:space-between}
-    .detailsBox > summary::-webkit-details-marker{display:none}
-    .detailsBody{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
-    .dayList{display:flex;flex-direction:column;gap:10px}
-    .dayRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb, var(--mintSoft) 55%, #fff)}
-    .dayRow .dleft{display:flex;flex-direction:column;gap:4px;min-width:0}
-    .dayRow .dtitle{font-weight:1000}
-    .dayRow .dsub{font-size:12px;color:var(--muted)}
-    .dayRow label{display:flex;align-items:center;gap:8px;font-weight:900;color:var(--muted);white-space:nowrap}
-    .dateSummary{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px dashed var(--line);background:color-mix(in srgb, var(--blushSoft) 55%, #fff);font-weight:1000}
+    .timeRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+    .timeRow .sep{color:var(--muted);font-weight:900;text-align:center}
 
-    /* ✅ 日期：固定把「～」放在中間欄，不要壓到輸入框 */
-    .dateRow{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);
-      gap:10px;
-      align-items:end;
-      min-width:0;
-    }
-    .dateRow .sep{
-      width:28px;
-      justify-self:center;
-      text-align:center;
-      color:var(--muted);
-      font-weight:900;
-      transform: translateY(-14px);
-      pointer-events:none;
-      user-select:none;
-    }
+    
+
+    /* 活動日期：開始/結束永遠同一排（含手機） */
+    .dateRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+    .dateRow .sep{color:var(--muted);font-weight:900;text-align:center}
     .dateCol{display:grid;gap:6px;min-width:0}
     .dateCap{font-size:11px;color:var(--muted);font-weight:900}
     .dateRow input{width:100%;min-width:0}
 
-    .timeRow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
-    .timeRow .sep{color:var(--muted);font-weight:900;text-align:center}
-    .timeInputGroup{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-
-    .tabs{padding:12px 14px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.tabs{padding:12px 14px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
     .tab{padding:10px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000;font-size:14px}
     .tab.active{background:rgba(30,142,111,.12);border-color:rgba(30,142,111,.35);color:var(--brand2)}
 
     .items{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
-    .item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center;min-width:0}
+    .item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center}
     .thumb{width:74px;height:74px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:#f3f4f6}
     .meta{min-width:0}
     .meta .name{font-weight:1000}
     .meta .sub{color:var(--muted);font-size:12px;margin-top:2px}
     .meta .row2{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .linkbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;cursor:pointer;font-weight:1000;font-size:12px}
     .price{font-weight:1000;text-align:right}
 
     .qty{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:6px 8px;background:#fff}
     .qbtn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000}
     .qval{min-width:44px;text-align:center;font-weight:1000}
+    .linkbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;cursor:pointer;font-weight:1000;font-size:12px}
 
     .summary{padding:14px;display:grid;gap:12px}
     .totals{border:1px dashed var(--line);border-radius:14px;padding:12px;display:grid;gap:8px;background:linear-gradient(180deg, rgba(30,142,111,.06), transparent)}
     .trow{display:flex;justify-content:space-between;align-items:center;gap:10px}
 
     .cart{display:grid;gap:12px}
-    .citem{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;display:block; padding-right:52px;}
-    .xbtn{position:absolute; top:50%; transform:translateY(-50%); right:10px; width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer}
+    .group{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+    .group .gh{padding:10px 12px;background:#fafafa;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:1000}
+    .group .gb{padding:12px;display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .citem{position:relative;border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;display:block}
+    .citem img{width:58px;height:58px;border-radius:12px;object-fit:cover;border:1px solid var(--line)}
+    .cmeta .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .cmeta .nm{font-weight:1000;line-height:1.2}
+    .cmeta .unit{color:var(--muted);font-size:12px;margin-top:2px}
+    .cline{margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 
+    .qtyRow{display:flex;align-items:center;gap:10px}
+    .xbtn{width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer}
+    .subttl{color:var(--muted);font-size:12px}
+    .subttl b{color:var(--text)}
+    .note{color:var(--muted);font-size:12px;line-height:1.5}
+    .note-inline{color:var(--muted);font-size:12px;font-weight:800;margin-left:6px}
+
+    /* Three-layer selector */
     .tierWrap{padding:14px;display:grid;gap:12px}
     .tierGrid{display:grid;grid-template-columns:1fr;gap:12px}
     .tierCard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
     .tierHead{padding:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .levelRow{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;padding:12px;min-width:0}
-    .levelBtn{border:1px solid var(--line);border-radius:14px;padding:8px;cursor:pointer;background:#fff;display:flex;flex-direction:column;gap:8px;min-width:0}
-    .levelTopRow{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;min-width:0}
-    .levelName{font-size:13px;font-weight:900;min-width:0}
-    .levelPrice{font-size:12px;font-weight:1000;white-space:nowrap}
-    .levelMedia img{width:100%;height:120px;object-fit:cover;display:block;border-radius:8px}
+    .tierHead b{font-size:14px}
+    .tierBody{padding:12px;display:grid;gap:10px}
+    .levelRow{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
 
+    /* ✅ iPhone Safari 修正：不再用 button 包 button（會導致整塊不顯示） */
+    .levelBtn{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-weight:1000;
+      text-align:left;
+      display:flex;
+      flex-direction:column;   /* ✅ 垂直卡片：避免擠在一起 */
+      gap:10px;
+      user-select:none;
+      align-items:stretch;
+      justify-content:flex-start;
+    }
+
+    .levelText{min-width:0;display:flex;flex-direction:column;gap:6px}
     .levelTopRow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-    .levelTopRow .lvlName{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .levelTopRow .lvlPrice{flex-shrink:0;white-space:nowrap}
-    .miniBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;cursor:pointer;font-weight:1000;font-size:13px}
-    .miniBtn.ghost{background:rgba(99,191,174,.10);border-color:rgba(47,143,123,.25);color:var(--brand2)}
-
-    .levelActions{display:flex;gap:8px;flex-wrap:wrap}
+    .levelName{font-size:13px;line-height:1.25;word-break:break-word}
+    .levelPrice{font-size:12px;font-weight:1000;white-space:nowrap}
+    .levelActions{margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .miniBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;cursor:pointer;font-weight:1000;font-size:12px}
-    .primaryMini{background:var(--brand);border-color:transparent;color:#fff}
-    .miniBtn:active{transform:translateY(1px)}
+    .miniBtn:hover{border-color:rgba(30,142,111,.35)}
+    .miniBtn.primaryMini{background:var(--brand);border-color:transparent;color:#fff}
+    .miniBtn.primaryMini:hover{background:var(--brand2)}
+    /* ✅ Level card preview image sizing (prevent huge images) */
+    .levelMedia{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f3f4f6}
+    .levelMedia img{width:100%;height:120px;object-fit:cover;display:block}
+    @media (max-width:620px){
+      .levelMedia img{height:110px}
+    }
 
-    .sendBar{display:flex;justify-content:flex-end}
-    .btn.send{background:#0ea5e9;border-color:#0284c7;color:#fff;font-weight:900}
-    .btn.send:hover{filter:brightness(.97)}
+    .tierActions{display:flex;gap:10px;flex-wrap:wrap}
+    .hint{font-size:12px;color:var(--muted);line-height:1.55}
+    .hint b{color:var(--text)}
+    .tierStatus{display:flex;gap:8px;flex-wrap:wrap}
+    /* ✅ 隱藏一鍵套用按鈕（改成每格直接加入） */
+    .tierActions{display:none}
 
-    /* Modal */
     .modalMask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
     .modal{width:min(560px,100%);background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.22);overflow:hidden}
     .modal .mh{padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
-    .modal .mb{padding:14px 14px 20px;}
-    .modal .mb p{margin:0;color:#374151;line-height:1.65;white-space:pre-line}
+    .modal .mb{padding:14px}
+    .modal .mb p{margin:0;color:#374151;line-height:1.65}
+    .modal .mf{padding:12px 14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#fafafa}
 
-    @media (max-width: 620px) {
-      .form { grid-template-columns: 1fr !important; }
-      .field input, .field select, .field textarea { font-size: 16px !important; }
-      .timeRow { gap: 4px; }
-      .timeInputGroup { gap: 4px; }
-      .timeInputGroup select { padding: 8px 4px !important; font-size: 13px !important; }
+    /* ✅ 詳情：兩張照片版面 */
+    .photoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .packMeta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 6px}
+        .packMeta .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+        .packList{margin:8px 0 0;padding-left:18px;line-height:1.65}
+        .packList li{margin:4px 0}
+        .modalDesc{margin-top:8px;color:var(--muted);line-height:1.7}
+    .photoBox{border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;background:#fff}
+    .photoBox img{width:100%;height:140px;object-fit:cover;display:block}
+    .photoCap{padding:8px 10px;font-size:12px;color:#6b7280}
 
-      /* ✅ 手機日期：固定中間欄寬，避免「～」跑進去輸入框 */
-      .dateRow{grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr); gap:6px}
-      .dateRow .sep{width:22px; transform:translateY(-10px)}
-
-      /* ✅ 手機：等級標題不要被價格擠到斷字（把價格放下一行） */
-      .levelTopRow{flex-direction:column;align-items:flex-start;gap:2px}
-      .levelName{line-height:1.2}
-
-      .levelRow { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-      .levelMedia img { height: 75px; }
-      .items { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-      .item { display: flex; flex-direction: column; align-items: stretch; padding: 8px; }
-      .thumb { width: 100%; height: 90px; }
-      .sendBar{justify-content:stretch}
-      .btn.send{width:100%}
-      .miniBtn{width:100%} /* 兩顆按鈕在手機改成滿版疊放，避免擠壓 */
+    @media (max-width:920px){
+      .levelRow{grid-template-columns:repeat(2, 1fr)}
+      .grid{grid-template-columns:1fr}
+      .tierGrid{grid-template-columns:1fr}
+    }
+    @media (max-width:620px){
+      .levelRow{grid-template-columns:1fr}
+      .items{grid-template-columns:1fr}
+      .form{grid-template-columns:1fr}
+      .item{grid-template-columns:74px 1fr}
+      .price{grid-column:2;text-align:left}
+      .actions{display:none}
+      .levelRow{grid-template-columns:1fr}
+      .timeRow{grid-template-columns:1fr auto 1fr}
+      .photoGrid{grid-template-columns:1fr}
+      .photoBox img{height:170px}
+      .levelBtn{flex-direction:column}
     }
   
-    /* ✅ 加價規則提示（短版＋可展開） */
-    .form > .feeHint{grid-column:1/-1}
-    .feeHint{
-      margin-top:10px;
-      border:1px dashed var(--line);
-      border-radius:14px;
-      padding:10px 12px;
-      background:linear-gradient(180deg, rgba(99,191,174,.10), transparent);
-      font-size:12px;
-      line-height:1.55;
+    /* === Header cleanup: only keep main title === */
+    header .title small{display:none!important}
+
+    /* === Move top tools into quote header (right side) === */
+    #quoteCard .quoteHdrRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    #quoteCard .quoteActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    #quoteCard .quoteActions .btn{padding:8px 10px;font-size:13px;border-radius:999px}
+    #jsStatus{display:inline-flex}
+
+
+    /* === 即時報價：三欄精簡（只顯示 名稱 + 小計） === */
+    #cart .citem img{display:none!important}
+    #cart .unit{display:none!important}
+    #cart .cline{margin-top:6px}
+    #cart .qty{display:none!important}            /* 隱藏 +/- 與數量 */
+    #cart .cline .subttl{display:none!important} /* 隱藏重複的小計列 */
+    #cart .xbtn{position:absolute;top:8px;right:8px}
+
+    @media (max-width: 700px){
+      .gb{grid-template-columns:1fr}
     }
-    .feeHint b{font-weight:1000}
-    .feeHint .muted{color:var(--muted);font-weight:900}
-    .feeDetails{margin-top:6px}
-    .feeDetails summary{
-      cursor:pointer;
-      font-weight:1000;
-      color:var(--brand2);
-      list-style:none;
-      outline:none;
+
+
+    /* === 即時報價：避免刪除按鈕與價格重疊 === */
+    #cart .citem{padding-right:52px}
+    #cart .xbtn{top:50%;transform:translateY(-50%);right:10px}
+    #cart .price{padding-right:8px}
+
+
+    /* === 列印成 PDF：醒目顏色（黃） === */
+
+    /* === 送出報價單：先保留按鈕位置（之後可接 Email / 表單） === */
+    #quoteCard .sendBar{margin-top:12px;display:flex;justify-content:flex-end}
+    #quoteCard .btn.send{background:#0ea5e9;border-color:#0284c7;color:#fff;font-weight:800}
+    #quoteCard .btn.send:hover{filter:brightness(.97)}
+    @media (max-width:700px){#quoteCard .sendBar{justify-content:stretch} #quoteCard .btn.send{width:100%}}
+
+    /* === 列印成 PDF：醒目顏色（黃） === */
+    .btn.warn{
+      background:#facc15;
+      border-color:#f59e0b;
+      color:#111827;
+      font-weight:800;
     }
-    .feeDetails summary::-webkit-details-marker{display:none}
-    .feeDetails summary:before{content:"＋ ";font-weight:1000}
-    details[open].feeDetails summary:before{content:"－ "}
-    .feeDetails ul{margin:8px 0 0 18px;padding:0;color:var(--muted)}
-    .feeDetails li{margin:4px 0}
+    .btn.warn:hover{filter:brightness(.97)}
 
-    /* ✅ 等級卡片：避免手機上文字尷尬斷行 + 顯示「詳情」 */
-    .levelTopRow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-    .levelName{font-size:13px;font-weight:1000;line-height:1.2}
-    .levelPrice{font-size:12px;font-weight:1000;white-space:nowrap}
-    .levelActions{display:flex;gap:8px;margin-top:8px}
-    .levelActions .miniBtn{flex:1}
+    /* === PDF 列印版面（只印：抬頭＋基本資料＋明細＋總計） === */
+    #printRoot{display:none}
+    body.printing #printRoot{display:block}
 
-    /* ✅ 品項卡：讓「詳情」在手機也明顯可點 */
-    .row2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
-    .linkbtn{white-space:nowrap}
+    @media print{
+      body.printing *{visibility:hidden !important}
+      body.printing #printRoot, body.printing #printRoot *{visibility:visible !important}
 
+      body.printing #printRoot{
+        position:absolute; inset:0;
+        padding:16mm 12mm;
+        font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+        color:#111827;
+      }
+
+      .printHdr{margin-bottom:10mm}
+      .printBrand{font-size:18px;font-weight:900;margin:0}
+      .printTitle{font-size:15px;font-weight:800;margin:6px 0 0 0}
+      .printMeta{font-size:11px;color:#6b7280;margin-top:6px}
+
+      .printH3{font-size:13px;font-weight:900;margin:10mm 0 4mm 0}
+
+      .printTbl{width:100%;border-collapse:collapse;font-size:11px}
+      .printTbl th,.printTbl td{border:1px solid #e5e7eb;padding:6px 7px;vertical-align:top}
+      .printTbl th{background:#f9fafb;text-align:left}
+      .printTbl tr.cat td{background:#f3f4f6;font-weight:900;color:#111827}
+      .right{text-align:right}
+      .muted{color:#6b7280}
+
+      .totalsBox{margin-top:8mm;display:flex;justify-content:flex-end}
+      .totals{min-width:260px;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px}
+      .trow{display:flex;justify-content:space-between;gap:12px;margin:6px 0}
+      .trow b{white-space:nowrap}
+      .trow.total{border-top:1px solid #e5e7eb;padding-top:8px;margin-top:8px;font-size:12px;font-weight:900}
+
+      @page{size:auto;margin:10mm}
+    }
+
+
+    /* === UI cleanup (hide non-essential pills/buttons) === */
+    #tierPills{display:none!important;}
+    #pickedCount{display:none!important;}
+    #cartBadge{display:none!important;}
+    #jsStatus{display:none!important;}
+    #btnCopy{display:none!important;}
+    #catName{display:none!important;}
+
+
+    /* === 加購細項（只在右側報價單出現）=== */
+    .mini{font-size:12px;color:var(--muted)}
+    .optbox{margin-top:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;background:#fbfdfc}
+    .optrow{display:flex;gap:10px;align-items:center;margin:6px 0}
+    .optlabel{min-width:92px;font-size:13px;color:var(--muted)}
+    .optselect{flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}
+    @media (max-width:520px){
+      .optrow{flex-direction:column;align-items:stretch;gap:6px}
+      .optlabel{min-width:0}
+    }
+    /* ===== 日期與時間欄位修正（全裝置適用） ===== */
+    /* 讓波浪號垂直置中對齊輸入框，而不是貼在底部 */
+    .dateRow .sep {
+      transform: translateY(-14px); /* 往上推，對齊輸入框正中心 */
+      margin: 0 4px; /* 左右保留一點安全距離，避免卡到 */
+    }
+
+    /* ===== 手機版緊湊優化 (Max-width: 620px) ===== */
     @media (max-width: 620px) {
-      .levelTopRow{display:block}
-      .levelPrice{display:block;text-align:right;margin-top:4px}
-      .levelActions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-      .levelActions .miniBtn{padding:10px 8px;font-size:13px}
-      .row2{gap:8px}
+      /* 1. 整體外距與卡片內距大幅縮小 */
+      .wrap { padding: 8px; }
+      .grid { gap: 10px; margin-top: 10px; }
+      .card .hd { padding: 10px 10px 8px; }
+      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
+      
+      /* 2. 輸入框與文字縮小，減少佔用高度 */
+      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
+      .field textarea { min-height: 60px; }
+      .field { gap: 4px; }
+      
+      /* 🌟 3. 修復：日期格子卡到的問題 🌟 */
+      .dateRow { gap: 4px; } /* 縮小三個元素之間的間距 */
+      .dateRow input[type="date"] {
+        padding: 8px 4px; /* 極度縮小左右內距，把空間還給文字 */
+        font-size: 13px;
+        letter-spacing: -0.5px; /* 讓日期文字稍微緊湊一點，防止撐爆格子 */
+      }
+      .dateRow .sep {
+        transform: translateY(-10px); /* 手機版框比較扁，微調往上推的距離 */
+      }
+
+      /* 4. 上方四步驟導覽列微調 */
+      .stepBox { padding: 6px 10px; gap: 6px; }
+      .stepNum { width: 24px; height: 24px; font-size: 12px; }
+      .stepText { font-size: 12px; }
+      
+      /* 5. 商品列表緊湊化 (圖片縮小、按鈕縮小) */
+      .item { padding: 8px; gap: 8px; grid-template-columns: 60px 1fr; }
+      .thumb { width: 60px; height: 60px; border-radius: 10px; }
+      .meta .row2 { margin-top: 4px; gap: 6px; }
+      .qty { padding: 4px 6px; gap: 4px; }
+      .qbtn { width: 28px; height: 28px; }
+      .qval { min-width: 30px; }
+      .linkbtn { padding: 6px 8px; }
+      
+      /* 6. 等級選配卡片緊湊化 (預覽圖高度減半) */
+      .levelBtn { padding: 8px; gap: 8px; }
+      .levelTopRow { margin-bottom: 2px; }
+      .levelMedia img { height: 70px; }
+      .miniBtn { padding: 6px 8px; }
+      
+      /* 7. 右側報價單/購物車清單緊湊化 */
+      .group .gh { padding: 8px 10px; }
+      .group .gb { padding: 8px; gap: 6px; }
+      .citem { padding: 8px; padding-right: 40px; } 
+      .citem .nm { font-size: 13px; }
+      #cart .xbtn { width: 28px; height: 28px; right: 6px; font-size: 12px; }
+      
+      /* 8. 頁籤 (分類按鈕) 縮小 */
+      .tabs { padding: 8px 10px 10px; gap: 6px; }
+      .tab { padding: 6px 10px; font-size: 13px; }
+    }
+    /* ===== 日期與時間欄位修正（全裝置適用） ===== */
+    /* 讓波浪號垂直置中對齊輸入框，而不是貼在底部 */
+    .dateRow .sep {
+      transform: translateY(-14px); /* 往上推，對齊輸入框正中心 */
+      margin: 0 4px; /* 左右保留一點安全距離，避免卡到 */
     }
 
+    /* ===== 手機版緊湊優化 (Max-width: 620px) ===== */
+    @media (max-width: 620px) {
+      /* 1. 整體外距與卡片內距大幅縮小 */
+      .wrap { padding: 8px; }
+      .grid { gap: 10px; margin-top: 10px; }
+      .card .hd { padding: 10px 10px 8px; }
+      .form, .items, .tierWrap, .summary, .tierBody { padding: 10px; gap: 8px; }
+      
+      /* 2. 輸入框與文字縮小，減少佔用高度 */
+      .field input, .field select, .field textarea { padding: 8px 10px; font-size: 13px; }
+      .field textarea { min-height: 60px; }
+      .field { gap: 4px; }
+      
+      /* 🌟 3. 修復：日期格子卡到的問題 🌟 */
+      .dateRow { gap: 4px; } /* 縮小三個元素之間的間距 */
+      .dateRow input[type="date"] {
+        padding: 8px 4px; /* 極度縮小左右內距，把空間還給文字 */
+        font-size: 13px;
+        letter-spacing: -0.5px; /* 讓日期文字稍微緊湊一點，防止撐爆格子 */
+      }
+      .dateRow .sep {
+        transform: translateY(-10px); /* 手機版框比較扁，微調往上推的距離 */
+      }
+
+      /* 4. 上方四步驟導覽列微調 */
+      .stepBox { padding: 6px 10px; gap: 6px; }
+      .stepNum { width: 24px; height: 24px; font-size: 12px; }
+      .stepText { font-size: 12px; }
+      
+      /* 5. 商品列表緊湊化 (圖片縮小、按鈕縮小) */
+      .item { padding: 8px; gap: 8px; grid-template-columns: 60px 1fr; }
+      .thumb { width: 60px; height: 60px; border-radius: 10px; }
+      .meta .row2 { margin-top: 4px; gap: 6px; }
+      .qty { padding: 4px 6px; gap: 4px; }
+      .qbtn { width: 28px; height: 28px; }
+      .qval { min-width: 30px; }
+      .linkbtn { padding: 6px 8px; }
+      
+      /* 6. 等級選配卡片緊湊化 (預覽圖高度減半) */
+      .levelBtn { padding: 8px; gap: 8px; }
+      .levelTopRow { margin-bottom: 2px; }
+      .levelMedia img { height: 70px; }
+      .miniBtn { padding: 6px 8px; }
+      
+      /* 7. 右側報價單/購物車清單緊湊化 */
+      .group .gh { padding: 8px 10px; }
+      .group .gb { padding: 8px; gap: 6px; }
+      .citem { padding: 8px; padding-right: 40px; } 
+      .citem .nm { font-size: 13px; }
+      #cart .xbtn { width: 28px; height: 28px; right: 6px; font-size: 12px; }
+      
+      /* 8. 頁籤 (分類按鈕) 縮小 */
+      .tabs { padding: 8px 10px 10px; gap: 6px; }
+      .tab { padding: 6px 10px; font-size: 13px; }
+    }
 </style>
 </head>
 
@@ -238,85 +530,146 @@
   <div class="head">
     <div class="title">
       <h1>活動企劃｜設備選配與即時報價</h1>
-      <div class="stepsWrap">
+      
+      <div class="stepsWrap" aria-label="報價流程四步驟">
         <div class="steps">
           <div class="stepBox"><span class="stepNum">1</span><span class="stepText">填寫基本資料</span></div>
+          <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <div class="stepBox"><span class="stepNum">2</span><span class="stepText">選取燈光音響配置</span></div>
+          <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <div class="stepBox"><span class="stepNum">3</span><span class="stepText">選取設備服務加購</span></div>
+          <span class="stepArrow" aria-hidden="true"><svg class="stepIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <div class="stepBox"><span class="stepNum">4</span><span class="stepText">送出報價單</span></div>
         </div>
-      </div>
+</div>
+
     </div>
+    
   </div>
 </header>
 
 <div class="wrap">
+  <noscript><div style="margin:12px 0;padding:12px;border:1px solid #f59e0b;background:#fffbeb;border-radius:12px;font-weight:900;color:#92400e">⚠️ 你的瀏覽器目前停用了 JavaScript，因此「安全/氣氛/升級等級」與「設備分類」不會顯示。請改用可執行 JS 的瀏覽器或用 Netlify / GitHub Pages 方式開啟此檔案。</div></noscript>
+
   <div class="grid">
+
     <section class="card">
       <div class="hd stepHd step1">
         <h2>1) 基本資料</h2>
         <span class="pill" id="pickedCount">0 項已選</span>
       </div>
 
-      
       <div class="form">
-        <div class="field"><label>姓名 / 單位</label><input id="fName" placeholder="例：柚子樂器 / 王小明"></div>
-        <div class="field"><label>行動電話</label><input id="fPhone" type="tel" placeholder="09xx-xxx-xxx"></div>
+                <div class="field">
+          <label>姓名 / 單位</label>
+          <input id="fName" placeholder="例：柚子樂器 / 王小明">
+        </div>
 
-        <div class="field"><label>Email</label><input id="fEmail" type="email" placeholder="example@gmail.com"></div>
-        <div class="field"><label>活動類型</label><select id="fEventType"></select></div>
+        <div class="field">
+          <label>行動電話</label>
+          <input id="fPhone" type="tel" inputmode="tel" placeholder="例：09xx-xxx-xxx">
+        </div>
 
-        <div class="field"><label>預估人數</label><select id="fCrowd"></select></div>
-        <div class="field"><label>室內 / 戶外</label>
-          <select id="fIndoor">
-            <option value="">未填</option>
-            <option value="室內">室內</option>
-            <option value="戶外">戶外</option>
-            <option value="半室內">半室內</option>
+        <div class="field">
+          <label>Email</label>
+          <input id="fEmail" type="email" placeholder="例：you@example.com">
+        </div>
+
+        <div class="field span2">
+          <label>活動地點（縣市/區）</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <select id="fCity"></select>
+            <select id="fArea"></select>
+          </div>
+        </div>
+
+        <div class="field span2">
+          <label>詳細地址（路名/號）</label>
+          <input id="fAddr" placeholder="例：中山路 100 號">
+        </div>
+
+        <div class="field span2">
+          <label>大樓/棟別/樓層/入口（讓地址更清楚）</label>
+          <input id="fBldg" placeholder="例：XX大樓 A棟 3F（從側門進）">
+        </div>
+
+        <div class="field">
+          <label>活動類型</label>
+          <select id="fEventType">
+            <option value="">請選擇活動類型</option>
+            <option>開幕典禮／剪綵儀式</option>
+            <option>記者會／產品發表會</option>
+            <option>品牌活動／快閃活動（商場/戶外）</option>
+            <option>展覽開幕／展場活動（含舞台時段）</option>
+            <option>校慶活動（運動會/園遊會/舞台）</option>
+            <option>畢業典禮</option>
+            <option>成果發表會（學校/才藝/社團）</option>
+            <option>社團成發／迎新送舊晚會</option>
+            <option>演講／講座／論壇</option>
+            <option>研討會／學術會議（含分場）</option>
+            <option>公司內訓／教育訓練／大會</option>
+            <option>尾牙／春酒</option>
+            <option>公司家庭日／園遊會</option>
+            <option>餐會／晚宴（含抽獎、致詞、表演）</option>
+            <option>商務交流會／同業公會活動</option>
+            <option>演唱會／Live Band 表演</option>
+            <option>DJ 派對／電音活動</option>
+            <option>舞蹈表演／舞蹈比賽</option>
+            <option>戲劇／舞台劇／音樂劇</option>
+            <option>親子活動／兒童舞台秀</option>
+            <option>慶生會／派對（含包場）</option>
+            <option>婚禮（證婚/宴客/After party）</option>
+            <option>告別式／追思會（殯儀館/會館/戶外追思）</option>
+            <option>宗教活動（廟會/法會/禮拜/慶典）</option>
+            <option>社區活動／里民大會／宣導活動（戶外廣播）</option>
           </select>
         </div>
 
-        <div class="field"><label>縣市（選填）</label><select id="fCity"><option value="">請選擇縣市</option></select></div>
-        <div class="field"><label>區域（選填）</label><select id="fArea" disabled><option value="">請先選縣市</option></select></div>
-
-        <div class="field span2"><label>詳細地址</label><input id="fAddr" placeholder="例：中山路 100 號"></div>
-        <div class="field span2"><label>樓層 / 場地補充（選填）</label><input id="fBldg" placeholder="例：4樓 / 禮堂 / 操場"></div>
-
-        <div class="field span2">
-          <label>活動日期</label>
-          <div class="dateRow" style="grid-template-columns:1fr auto 1fr;">
-            <input id="fDateStart" type="date">
-            <div id="dateSep" class="sep" style="display:none">～</div>
-            <input id="fDateEnd" type="date" style="display:none">
-          </div>
-          <label style="margin-top:8px;display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
-            <input type="checkbox" id="fHasExtraDate" style="width:18px;height:18px">
-            活動不只一天（連續多日；第2天 50%、第3天起每天 30%）
-          </label>
-
-          <div id="multiDayWrap" style="display:none;margin-top:10px;">
-            <details class="detailsBox" id="dailyDetails">
-              <summary>每日場次設定（選填）</summary>
-              <div class="detailsBody">
-                <div class="mutedNote">預設每天 1 場；勾選該天第二場則加收：原始總價 × 30%。</div>
-                <div id="dailySecondSessionList" class="dayList"></div>
-              </div>
-            </details>
-          </div>
-
-          <div id="dateSummary" class="dateSummary">—</div>
-
+        <div class="field">
+          <label>預估人數</label>
+          <select id="fCrowd">
+            <option value="">請選擇</option>
+            <option value="100">100人以內</option>
+            <option value="400">100到400人</option>
+            <option value="1000">400至1000人</option>
+            <option value="2000">1000人至2000人</option>
+            <option value="9999">2000人至以上</option>
+          </select>
         </div>
 
+        <div class="field">
+          <label>室內 / 戶外</label>
+          <select id="fIndoor">
+            <option value="">請選擇</option>
+            <option>室內</option>
+            <option>戶外</option>
+            <option>半戶外</option>
+          </select>
+        </div>
         <div class="field span2">
-          <label>活動時間</label>
+          <label>活動日期（開始 ～ 結束）</label>
+          <div class="dateRow">
+            <div class="dateCol">
+              <div class="dateCap">開始</div>
+              <input id="fDateStart" type="date">
+            </div>
+            <div class="sep">～</div>
+            <div class="dateCol">
+              <div class="dateCap">結束</div>
+              <input id="fDateEnd" type="date">
+            </div>
+          </div>
+        </div>
+
+<div class="field span2">
+          <label>活動時間（只提供 00/10/20/30/40/50 分）</label>
           <div class="timeRow">
-            <div class="timeInputGroup">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <select id="tStartH"></select>
               <select id="tStartM"></select>
             </div>
             <div class="sep">～</div>
-            <div class="timeInputGroup">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <select id="tEndH"></select>
               <select id="tEndM"></select>
             </div>
@@ -325,55 +678,100 @@
           <input id="fTimeEnd" type="hidden">
         </div>
 
-        <div class="field span2" id="singleDaySession2Wrap">
-          <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
-            <input type="checkbox" id="fHasSession2" style="width:18px;height:18px">
-            同一天有第二場同性質活動（第二場加價：原始總價 × 30%）
-          </label>
-        </div>
+        <div class="field span2">
+          <label>同日第二場（選填）</label>
+          <div style="display:grid;gap:10px">
+            <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted)">
+              <input type="checkbox" id="fHasSession2" style="width:18px;height:18px">
+              同一天有第二場（勾選後可設定第二場時間；第二場加價：原始總價 x 30%）
+            </label>
 
-
-        <div class="field span2" id="session2TimeWrap" style="display:none">
-          <label>第二場時間（選填）</label>
-          <div class="timeRow">
-            <div class="timeInputGroup">
-              <select id="t2StartH"></select>
-              <select id="t2StartM"></select>
-            </div>
-            <div class="sep">～</div>
-            <div class="timeInputGroup">
-              <select id="t2EndH"></select>
-              <select id="t2EndM"></select>
+            <div id="session2Wrap" style="display:none;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff">
+              <div style="font-weight:1000;margin-bottom:8px">第二場時間</div>
+              <div class="timeRow">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <select id="t2StartH"></select>
+                  <select id="t2StartM"></select>
+                </div>
+                <div class="sep">～</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <select id="t2EndH"></select>
+                  <select id="t2EndM"></select>
+                </div>
+              </div>
+              <input id="fTime2Start" type="hidden">
+              <input id="fTime2End" type="hidden">
+              <div class="hint" style="margin-top:8px">提示：第二場只算同一天內的加價，不影響跨天判定。</div>
+              <div id="session2DaysWrap" style="margin-top:10px;display:none">
+                <div style="font-weight:1000;margin-bottom:8px">（跨天時）第2天起的第二場日別</div>
+                <div id="session2Days" style="display:grid;gap:8px"></div>
+              </div>
             </div>
           </div>
-          <input id="fTime2Start" type="hidden">
-          <input id="fTime2End" type="hidden">
-          <div class="mutedNote">若你勾選多日的「每日第二場」，此時間會套用在有第二場的日期。</div>
         </div>
 
+        <div class="field span2">
+          <label>備註 / 需求</label>
+          <textarea id="fNote" placeholder="例：室內婚禮120人，需四支無線麥，場地有220V插座，需含進退場..."></textarea>
+        </div>
 
-        <div class="field span2"><label>備註需求</label><textarea id="fNote"></textarea></div>
       </div>
-
 
       <div class="hd stepHd step2" style="border-top:1px solid var(--line);border-bottom:none">
         <h2>2) 燈光音響配置區</h2>
+        <span class="pill" id="tierPills">安全—｜氣氛—｜升級—</span>
       </div>
 
       <div class="tierWrap">
         <div class="tierGrid">
+
           <div class="tierCard">
-            <div class="tierHead"><b>安全等級</b></div>
-            <div id="levelsSafety" class="levelRow"></div>
+            <div class="tierHead">
+              <b>安全等級</b>
+              <span class="pill pillStatus" id="pillSafety">未選</span>
+            </div>
+            <div class="tierBody">
+              <div class="levelRow" id="levelsSafety"></div>
+              <div class="tierActions">
+                <button class="btn primary" id="applySafety">一鍵套用（安全）</button>
+              </div>
+              <div class="hint">建議：一般活動多數選 <b>第3級</b>；戶外建議至少 <b>第3級</b>。</div>
+            </div>
           </div>
+
           <div class="tierCard">
-            <div class="tierHead"><b>氣氛等級</b></div>
-            <div id="levelsAmbience" class="levelRow"></div>
+            <div class="tierHead">
+              <b>氣氛等級</b>
+              <span class="pill pillStatus" id="pillAmbience">未選</span>
+            </div>
+            <div class="tierBody">
+              <div class="levelRow" id="levelsAmbience"></div>
+              <div class="tierActions">
+                <button class="btn primary" id="applyAmbience">一鍵套用（氣氛）</button>
+              </div>
+              <div class="hint">想要「看起來不寒酸」：至少選到 <b>第2級</b>；有表演感：選到 <b>第4級</b>。</div>
+            </div>
           </div>
+
           <div class="tierCard">
-            <div class="tierHead"><b>升級等級</b></div>
-            <div id="levelsUpgrade" class="levelRow"></div>
+            <div class="tierHead">
+              <b>升級等級</b>
+              <span class="pill pillStatus" id="pillUpgrade">未選</span>
+            </div>
+            <div class="tierBody">
+              <div class="levelRow" id="levelsUpgrade"></div>
+              <div class="tierActions">
+                <button class="btn primary" id="applyUpgrade">一鍵套用（升級）</button>
+              </div>
+              <div class="hint">升級是高滿意度來源：先看內容與價格再選等級，之後再微調。</div>
+            </div>
           </div>
+
+        </div>
+
+        <div class="tierStatus">
+          <span class="pill">提示：每個 1–6 級都可以按「詳情」先看包含什麼。</span>
+          <button class="btn" id="btnSuggest">依人數/室內外建議等級</button>
         </div>
       </div>
 
@@ -381,60 +779,144 @@
         <h2>3) 設備/服務分類（自由加減）</h2>
         <span class="pill" id="catName">—</span>
       </div>
+
       <div class="tabs" id="tabs"></div>
       <div class="items" id="items"></div>
     </section>
 
     <aside class="card" id="quoteCard">
-      <div class="hd stepHd step4"><h2>4) 即時報價</h2></div>
+      <div class="hd stepHd step4">
+        <h2>4) 即時報價</h2>
+        <div class="quoteHdrRight">
+          <span class="pill" id="cartBadge">0 項已選</span>
+          <div class="quoteActions">
+      <span class="pill" id="jsStatus">JS: loading</span>
+      <button class="btn" id="btnCopy">複製報價內容</button>
+      <button class="btn primary" id="btnMail" style="display:none">送出報價單</button>
+      <button class="btn warn" id="btnPrint" style="display:none">列印成 PDF</button>
+      <button class="btn danger" id="btnClear">清空全部項目</button>
+    </div>
+        </div>
+      </div>
+
       <div class="summary">
         <div class="totals">
-          <div class="trow"><span>設備小計</span><b id="subTotal">NT$0</b></div>
-          <div class="trow"><span>日期加價</span><b id="dayFee">NT$0</b></div>
-          <div class="trow"><span>第二場加價</span><b id="session2Fee">NT$0</b></div>
-          <div class="trow" style="border-top:1px dashed var(--line);padding-top:10px;margin-top:6px;"><span>總計</span><b id="finalTotal">NT$0</b></div>
+          <div class="trow" id="grandTotalRow"><span class="subttl">目前合計</span><b id="grandTotal">NT$0</b></div>
+<div class="trow" id="daySurchargeRow" style="display:none"><span class="subttl">跨天加價</span><b id="daySurcharge">NT$0</b></div>
+          <div class="trow" id="session2SurchargeRow" style="display:none"><span class="subttl">同日第二場加價</span><b id="session2Surcharge">NT$0</b></div>
+<div class="trow"><span class="subttl">總計</span><b id="finalTotal">NT$0</b></div>
         </div>
+
         <div class="cart" id="cart"></div>
-        <div class="sendBar"><button class="btn send" id="btnSendQuote" type="button">送出報價單</button></div>
+
+        <div class="sendBar">
+          <button class="btn send" id="btnSendQuote">送出報價單</button>
+        </div>
       </div>
     </aside>
+
   </div>
 </div>
 
-<div class="modalMask" id="modalMask" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <div class="mh"><b id="mTitle">詳情</b><button class="xbtn" id="mClose" type="button">✕</button></div>
+<div class="modalMask" id="modalMask">
+  <div class="modal">
+    <div class="mh">
+      <b id="mTitle">詳情</b>
+      <button class="xbtn" id="mClose" title="關閉">✕</button>
+    </div>
     <div class="mb"><p id="mBody">—</p></div>
+    <div class="mf">
+      <button class="btn primary" id="mBack">返回估價單</button>
+    </div>
   </div>
 </div>
 
 <script>
-  /* -----------------------------------------------------------
-     你的資料（保持原樣）
-     ----------------------------------------------------------- */
+  // v5: debug status + safety guards
+  const BRAND_NAME = "柚子樂器";
+  const PRINT_TITLE = "活動企劃｜設備與器材報價單";
+
+  window.addEventListener('error', function(e){
+    try{
+      const el = document.querySelector('#jsStatus');
+      if(el) el.textContent = 'JS: error';
+      alert('JS 錯誤：' + (e && e.message ? e.message : e));
+    }catch(_){ }
+  });
+
+  function svgThumb(label){
+    const safe = (label||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const svg =
+`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e8f5f0"/>
+      <stop offset="1" stop-color="#f6f7fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="22" fill="url(#g)"/>
+  <circle cx="160" cy="40" r="26" fill="#1e8e6f" opacity="0.18"/>
+  <circle cx="40" cy="160" r="36" fill="#156e56" opacity="0.12"/>
+  <text x="18" y="102" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" fill="#156e56" font-weight="700">${safe}</text>
+</svg>`;
+    return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+  }
+
   const CATEGORIES = [
     { id:"stage", name:"舞台結構與桁架系統", items:[
-      { id:"stage-deck", name:"舞台板（2x1m）", unit:"片", price:1200, img:svgThumb("舞台板"), desc:"標準舞台板。數量優惠：1-19片 1200；20-49片 1100；50片以上 1000。" },
-      { id:"stage-backdrop", name:"主視覺背板", unit:"組", price:6500, img:svgThumb("背板"), desc:"基本背板輸出與架設。" },
-      { id:"stage-truss", name:"TRUSS 桁架", unit:"支", price:1800, img:svgThumb("TRUSS"), desc:"燈光/布幕架設用。" }
-    ]},
-    { id:"audio", name:"音響與舞台收音", items:[
-      { id:"audio-main", name:"主喇叭組", unit:"組", price:6000, img:svgThumb("主喇叭"), desc:"適合 100-400 人場地。" },
-      { id:"audio-wireless2", name:"無線麥克風(2支組)", unit:"組", price:2200, img:svgThumb("無線麥"), desc:"專業等級無線收音。" },
-      { id:"staff-audio", name:"音控工程師", unit:"人/場", price:6500, img:svgThumb("音控"), desc:"全程現場控場。" }
+      { id:"stage-deck", name:"舞台板（2x1m）", unit:"片", price:1200,
+        priceTiers:[{min:1,price:1200},{min:20,price:1100},{min:50,price:1000}],
+        options:{
+          carpet:{label:"是否要鋪地毯", values:["請選擇","要","不要"], omitValues:["不要"]},
+          carpet_color:{label:"地毯顏色", values:["請選擇","黑","灰","紅","藍","綠","米白"], when:{opt:"carpet", is:"要"}},
+          color:{label:"舞台板顏色", values:["請選擇","黑","灰","紅","藍"]},
+          height:{label:"舞台高度", values:["請選擇","20cm","40cm","60cm","80cm","100cm"]}
+        },
+        img:svgThumb("舞台板"),
+        desc:"舞台板（2x1m）。可依尺寸、階梯、圍裙等調整。\n\n數量優惠（可修改）：1–19片 1200/片；20–49片 1100/片；50片以上 1000/片。\n可選細項：顏色/高度（會在右側報價單顯示）。"
+      },
+{ id:"stage-step", name:"舞台階梯（含扶手）", unit:"座", price:900, img:svgThumb("階梯"), desc:"舞台上下台階梯，適合典禮/表演。" },
+      { id:"stage-truss", name:"TRUSS 桁架（3m）", unit:"支", price:1800, img:svgThumb("TRUSS"), desc:"基本桁架結構，用於燈具/背板/布幕。" },
+      { id:"stage-backdrop", name:"主視覺背板（基本）", unit:"組", price:6500, img:svgThumb("背板"), desc:"基本背板（含架設）。主視覺輸出另計或可包套。" },
+      { id:"stage-drape", name:"舞台布幕/遮擋（基本）", unit:"組", price:4800, img:svgThumb("布幕"), desc:"舞台側布/後布/遮擋，提升整體質感。" },
     ]},
     { id:"light", name:"燈光與氣氛效果", items:[
-      { id:"light-par", name:"LED 染色燈", unit:"盞", price:900, img:svgThumb("染色燈"), desc:"氛圍營造染色。" },
-      { id:"light-moving", name:"光束燈", unit:"盞", price:2500, img:svgThumb("光束燈"), desc:"動態舞台燈光效果。" }
+      { id:"light-par", name:"LED PAR（染色燈）", unit:"盞", price:900, img:svgThumb("染色燈"), desc:"典禮/氛圍底色必備。可搭配燈控/場景變換。" },
+      { id:"light-moving", name:"Moving Head（光束燈）", unit:"盞", price:2500, img:svgThumb("光束燈"), desc:"動態光束效果，適合表演/高潮段落。" },
+      { id:"light-follow", name:"追光燈（含操作）", unit:"組", price:6000, img:svgThumb("追光"), desc:"追光燈含操作人員，適合走位/得獎/表演主角。" },
+      { id:"light-console", name:"燈控台（基本）", unit:"套", price:3500, img:svgThumb("燈控"), desc:"燈光場景切換/節奏控制。演出感提升。" },
+      { id:"fx-haze", name:"薄霧機（Hazer）", unit:"台", price:2200, img:svgThumb("薄霧"), desc:"讓光束更立體。小心場地方規定/消防。" },
     ]},
-    { id:"video", name:"影像與投影系統", items:[
-      { id:"video-projector", name:"投影機(基本)", unit:"台", price:6500, img:svgThumb("投影"), desc:"會議簡報必備。" }
+    { id:"audio", name:"音響與舞台收音", items:[
+      { id:"audio-main", name:"主喇叭（全頻）", unit:"組", price:6000, img:svgThumb("主喇叭"), desc:"主擴聲系統（示意）。可依品牌/功率/場域調整。" },
+      { id:"audio-sub", name:"低音喇叭（Sub）", unit:"顆", price:4500, img:svgThumb("Sub"), desc:"增加低頻能量，適合戶外/音樂活動。" },
+      { id:"audio-mixer", name:"混音器（基本）", unit:"台", price:3000, img:svgThumb("混音"), desc:"基本混音控制。多路數需求可升級。" },
+      { id:"audio-wireless2", name:"無線麥克風（2支組）", unit:"組", price:2200, img:svgThumb("無線麥"), desc:"常見典禮/講座用。可加到 4/6/8 支。" },
+      { id:"audio-monitor", name:"舞台監聽喇叭", unit:"顆", price:1800, img:svgThumb("監聽"), desc:"給主持/表演者聽到自己的聲音。" },
+      { id:"audio-di", name:"DI Box（主動式）", unit:"顆", price:400, img:svgThumb("DI"), desc:"鍵盤/木吉他/電貝斯等訊號轉換。" },
+      { id:"audio-drumkit", name:"鼓組收音套裝（基本）", unit:"組", price:6500, img:svgThumb("鼓組"), desc:"適合 Live Band / 表演。細項可拆分。" },
     ]},
-    { id:"site", name:"帳篷桌椅器材", items:[
-      { id:"site-tent", name:"快帳(3x3m)", unit:"頂", price:1800, img:svgThumb("快帳"), desc:"戶外遮陽必備。" }
+    { id:"video", name:"影像、投影與直播導播", items:[
+      { id:"video-projector", name:"投影機（基本）", unit:"台", price:6500, img:svgThumb("投影"), desc:"會議/典禮簡報。亮度/鏡頭依場地調整。" },
+      { id:"video-screen", name:"投影布幕（120吋）", unit:"面", price:1800, img:svgThumb("布幕"), desc:"投影布幕（示意）。也可用電動布幕。" },
+      { id:"video-tv", name:"電視（75吋）", unit:"台", price:4800, img:svgThumb("75吋TV"), desc:"展場/小型場地更方便。" },
+      { id:"video-camera", name:"活動攝影機（基本）", unit:"台", price:5000, img:svgThumb("攝影"), desc:"活動錄影/直播機位（示意）。" },
+      { id:"video-switcher", name:"直播導播/切換台（基本）", unit:"套", price:9000, img:svgThumb("導播"), desc:"多機位切換/字幕/畫面輸出（示意）。" },
     ]},
-    { id:"power", name:"電力營運與安全", items:[
-      { id:"power-dist", name:"配電箱組", unit:"套", price:1800, img:svgThumb("配電"), desc:"基本電力分配。" }
+    { id:"site", name:"帳篷桌子椅子", items:[
+      { id:"site-tent", name:"快帳（3x3m）", unit:"頂", price:1800, img:svgThumb("快帳"), desc:"戶外遮陽遮雨。可加配重/側布。" },
+      { id:"site-chair", name:"折疊椅", unit:"張", price:30, img:svgThumb("椅子"), desc:"觀眾座位（示意）。" },
+      { id:"site-table", name:"折疊桌", unit:"張", price:150, img:svgThumb("桌子"), desc:"報到/設備區用。" },
+      { id:"site-queue", name:"紅龍/排隊動線（2m）", unit:"支", price:120, img:svgThumb("紅龍"), desc:"控場動線、入口區排隊。" },
+      { id:"site-cableramp", name:"護線板（1m）", unit:"條", price:120, img:svgThumb("護線"), desc:"走線安全必備，避免絆倒。" },
+    ]},
+    { id:"power", name:"電力、控場人員與安全營運", items:[
+      { id:"power-gen", name:"發電機（基本）", unit:"台", price:12000, img:svgThumb("發電"), desc:"戶外/電力不足時必備。功率可升級。" },
+      { id:"power-dist", name:"配電箱/延長線組（基本）", unit:"套", price:1800, img:svgThumb("配電"), desc:"含基本配電、延長線、整理。" },
+      { id:"staff-audio", name:"音控工程師（含彩排）", unit:"人/場", price:6500, img:svgThumb("音控"), desc:"含設定、彩排、全程控場（示意）。" },
+      { id:"staff-light", name:"燈控工程師（含彩排）", unit:"人/場", price:6500, img:svgThumb("燈控"), desc:"燈光場景、節奏控制（示意）。" },
+      { id:"staff-stage", name:"舞台監督/控場（舞監）", unit:"人/場", price:7000, img:svgThumb("舞監"), desc:"流程控場、演出串接、後台協調（示意）。" },
+      { id:"staff-host", name:"主持人（基本）", unit:"人/場", price:9000, img:svgThumb("主持"), desc:"主持/串場/互動（示意）。" },
     ]}
   ];
 
@@ -444,1077 +926,984 @@
     upgrade:["① 亮點入門","② 氣氛效果","③ 儀式震撼","④ 演出支援","⑤ 全方位","⑥ 尊榮規格"]
   };
 
-  const LEVEL_DETAILS = {
-  "safety": [
-    "基本舞台與器材安全配置，適合小型活動。",
-    "標準安全配置，含必要固定與防護。",
-    "專業活動安全配置，適合一般商演。",
-    "進階安全配置，含更多備援與控管。",
-    "旗艦級安全配置，適合大型舞台。",
-    "全盛典藏規格，最高等級備援與控場。"
-  ],
-  "ambience": [
-    "簡潔燈色，明亮乾淨。",
-    "典禮質感燈色與氛圍。",
-    "層次氛圍，增加視覺變化。",
-    "舞台焦點與視覺主題。",
-    "沉浸式視覺，適合演出。",
-    "全感體驗，氛圍拉滿。"
-  ],
-  "upgrade": [
-    "入門亮點與基本效果。",
-    "增加氣氛效果與小型特效。",
-    "儀式感震撼效果更完整。",
-    "支援演出需求與舞台效果。",
-    "全方位升級，涵蓋多面向。",
-    "尊榮規格，最高等級呈現。"
-  ]
-};
   const LEVEL_PRICES = {
-    safety: [10000, 15000, 20000, 25000, 35000, 50000],
-    ambience:[20000, 25000, 35000, 45000, 60000, 80000],
-    upgrade: [30000, 40000, 50000, 80000, 100000, 150000]
+    safety:  [ 10000, 15000, 20000, 25000, 35000, 50000 ],
+    ambience:[ 20000, 25000, 35000, 45000, 60000, 80000 ],
+    upgrade: [ 30000, 40000, 50000, 80000, 100000, 150000 ],
   };
 
-  function svgThumb(label){ return `https://picsum.photos/seed/${encodeURIComponent(label)}/200`; }
-  const state = { catId: "audio", cart: { packs: {} }, tiers: { safety: 0, ambience: 0, upgrade: 0 } };
+  const PACKS_SAFETY = {
+    1: [{id:"audio-main",qty:1},{id:"audio-mixer",qty:1},{id:"audio-wireless2",qty:1}],
+    2: [{id:"audio-main",qty:1},{id:"audio-mixer",qty:1},{id:"audio-wireless2",qty:2},{id:"audio-monitor",qty:1},{id:"power-dist",qty:1}],
+    3: [{id:"audio-main",qty:2},{id:"audio-sub",qty:1},{id:"audio-mixer",qty:1},{id:"audio-wireless2",qty:2},{id:"audio-monitor",qty:2},{id:"power-dist",qty:1},{id:"staff-audio",qty:1}],
+    4: [{id:"audio-main",qty:2},{id:"audio-sub",qty:2},{id:"audio-mixer",qty:1},{id:"audio-wireless2",qty:3},{id:"audio-monitor",qty:3},{id:"power-dist",qty:1},{id:"staff-audio",qty:1}],
+    5: [{id:"audio-main",qty:3},{id:"audio-sub",qty:3},{id:"audio-mixer",qty:1},{id:"audio-wireless2",qty:4},{id:"audio-monitor",qty:4},{id:"power-gen",qty:1},{id:"power-dist",qty:2},{id:"staff-audio",qty:1}],
+    6: [{id:"audio-main",qty:4},{id:"audio-sub",qty:4},{id:"audio-mixer",qty:1},{id:"audio-wireless2",qty:5},{id:"audio-monitor",qty:5},{id:"power-gen",qty:1},{id:"power-dist",qty:3},{id:"staff-audio",qty:1}],
+  };
+  const PACKS_AMBIENCE = {
+    1: [{id:"light-par",qty:4}],
+    2: [{id:"stage-backdrop",qty:1},{id:"light-par",qty:6},{id:"light-console",qty:1}],
+    3: [{id:"stage-deck",qty:4},{id:"stage-backdrop",qty:1},{id:"light-par",qty:8},{id:"light-console",qty:1},{id:"staff-light",qty:1}],
+    4: [{id:"stage-deck",qty:6},{id:"stage-truss",qty:2},{id:"stage-backdrop",qty:1},{id:"light-par",qty:10},{id:"light-moving",qty:4},{id:"light-console",qty:1},{id:"fx-haze",qty:1},{id:"staff-light",qty:1}],
+    5: [{id:"stage-deck",qty:8},{id:"stage-truss",qty:4},{id:"stage-drape",qty:1},{id:"stage-backdrop",qty:1},{id:"light-par",qty:12},{id:"light-moving",qty:6},{id:"light-console",qty:1},{id:"fx-haze",qty:1},{id:"staff-light",qty:1}],
+    6: [{id:"stage-deck",qty:10},{id:"stage-truss",qty:6},{id:"stage-drape",qty:1},{id:"stage-backdrop",qty:1},{id:"light-par",qty:16},{id:"light-moving",qty:8},{id:"light-console",qty:1},{id:"fx-haze",qty:2},{id:"staff-light",qty:1}],
+  };
+  const PACKS_UPGRADE = {
+    1: [{id:"light-follow",qty:1}],
+    2: [{id:"fx-haze",qty:1}],
+    3: [{id:"video-projector",qty:1},{id:"video-screen",qty:1}],
+    4: [{id:"audio-drumkit",qty:1},{id:"audio-di",qty:4},{id:"audio-monitor",qty:2}],
+    5: [{id:"staff-host",qty:1},{id:"staff-stage",qty:1},{id:"staff-audio",qty:1}],
+    6: [{id:"staff-host",qty:1},{id:"staff-stage",qty:1},{id:"staff-audio",qty:1},{id:"staff-light",qty:1}],
+  };
+
+  const TIER_PHOTOS = {
+    safety: Array.from({length:6},(_,i)=>[
+      `https://picsum.photos/seed/safety-${i+1}-a/800/600`,
+      `https://picsum.photos/seed/safety-${i+1}-b/800/600`
+    ]),
+    ambience: Array.from({length:6},(_,i)=>[
+      `https://picsum.photos/seed/ambience-${i+1}-a/800/600`,
+      `https://picsum.photos/seed/ambience-${i+1}-b/800/600`
+    ]),
+    upgrade: Array.from({length:6},(_,i)=>[
+      `https://picsum.photos/seed/upgrade-${i+1}-a/800/600`,
+      `https://picsum.photos/seed/upgrade-${i+1}-b/800/600`
+    ])
+  };
+
+  const ENABLE_SHEET = false;
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
+
+  function loadSheetData(){
+    if(!ENABLE_SHEET) return;
+    if(!SHEET_API_URL) return;
+    const cbName = "__applySheetPayload__" + Date.now();
+    window[cbName] = (payload)=>{
+      try{
+        if(!payload || !payload.ok) throw new Error("API 回傳不正確");
+        applySheetData(payload.data);
+        try{ if(!CATEGORIES.find(c=>c.id===state.catId) && CATEGORIES[0]) state.catId = CATEGORIES[0].id; }catch(_){}
+        renderAll();
+      }catch(err){
+      }finally{
+        try{ delete window[cbName]; }catch(_){}
+      }
+    };
+    const s = document.createElement("script");
+    s.src = SHEET_API_URL + (SHEET_API_URL.includes("?") ? "&" : "?") + "callback=" + cbName + "&_=" + Date.now();
+    document.head.appendChild(s);
+  }
+
+  function ynToBool(v){ return !(String(v??"").trim()==="否" || String(v??"").trim()==="false" || String(v??"").trim()==="0"); }
+  function applySheetData(data){ /* 本段落原封不動 */ }
+
+  const TW = {
+    "台北市":["中正區","大同區","中山區","松山區","大安區","萬華區","信義區","士林區","北投區","內湖區","南港區","文山區"],
+    "新北市":["板橋區","新莊區","中和區","永和區","三重區","土城區","新店區","汐止區","淡水區","林口區"],
+    "桃園市":["桃園區","中壢區","平鎮區","八德區","龜山區","蘆竹區"],
+    "台中市":["西屯區","北屯區","南屯區","中區","東區","西區","南區","北區","豐原區"],
+    "台南市":["中西區","東區","南區","北區","永康區","安平區"],
+    "高雄市":["三民區","左營區","鼓山區","苓雅區","前鎮區","鳳山區"]
+  };
+
   const $ = (s)=>document.querySelector(s);
-  const fmt = (n)=>"NT$"+Number(n||0).toLocaleString();
+  const escapeHtml = (v)=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  const fmt = (n)=>"NT$"+Number(n||0).toLocaleString("zh-Hant-TW");
+  const state = { 
+    catId: CATEGORIES[0].id, 
+    cart: { packs: {} }, 
+    tiers: { safety: 0, ambience: 0, upgrade: 0 },
+    itemOpts: {},
+    shipping: { fee: 0, km: null },
+    surcharges: { day: 0, session2: 0, dayCount: 1, extraDays: 0 }
+  };
 
-  function initBasicSelects(){
-    const eventTypes = ["開幕典禮","成果發表","畢業典禮","校慶活動","社團成發","尾牙春酒","婚禮宴會","喪禮追思","市集活動","演唱會/表演"];
-    const crowds = ["未填","100人以下","100-400人","500人","1000人","3000人"];
-    const et = document.getElementById("fEventType");
-    if(et){
-      et.innerHTML = `<option value="">請選擇</option>` + eventTypes.map(v=>`<option value="${v}">${v}</option>`).join("");
+  function getUnitPrice(item, qty){
+    const q = Math.max(1, Number(qty||1));
+    const tiers = item?.priceTiers;
+    if(Array.isArray(tiers) && tiers.length){
+      let price = Number(item.price||0);
+      for(const t of tiers){
+        const min = Number(t.min||1);
+        const p = Number(t.price||0);
+        if(q >= min) price = p;
+      }
+      return price;
     }
-    const cr = document.getElementById("fCrowd");
-    if(cr){
-      cr.innerHTML = crowds.map(v=>`<option value="${v==='未填'?'':v}">${v}</option>`).join("");
-    }
+    return Number(item?.price||0);
   }
 
-  function bindToggles(){
-    const cbMulti = document.getElementById("fHasExtraDate"); // 連續多日
-    const sep = document.getElementById("dateSep");
-    const end = document.getElementById("fDateEnd");
-    const multiWrap = document.getElementById("multiDayWrap");
-    const dayList = document.getElementById("dailySecondSessionList");
-    const summaryEl = document.getElementById("dateSummary");
+  function formatTiers(item){
+    const tiers = item?.priceTiers;
+    if(!Array.isArray(tiers) || !tiers.length) return "";
+    const sorted = [...tiers].sort((a,b)=>Number(a.min||1)-Number(b.min||1));
+    const parts=[];
+    for(let i=0;i<sorted.length;i++){
+      const cur=sorted[i];
+      const next=sorted[i+1];
+      const min=Number(cur.min||1);
+      const max = next ? (Number(next.min||1)-1) : null;
+      if(max && max>=min) parts.push(`${min}–${max}${item.unit} ${fmt(cur.price)} / ${item.unit}`);
+      else parts.push(`${min}${item.unit}以上 ${fmt(cur.price)} / ${item.unit}`);
+    }
+    return parts.join("；");
+  }
 
-    const singleS2Wrap = document.getElementById("singleDaySession2Wrap");
-    const singleS2 = document.getElementById("fHasSession2");
-    const s2TimeWrap = document.getElementById("session2TimeWrap");
-
-    const isoToDate = (iso)=>{
-      if(!iso) return null;
-      const [y,m,d] = iso.split("-").map(n=>Number(n));
-      if(!y || !m || !d) return null;
-      return new Date(y, m-1, d);
-    };
-    const dateToISO = (dt)=>{
-      const y = dt.getFullYear();
-      const m = String(dt.getMonth()+1).padStart(2,"0");
-      const d = String(dt.getDate()).padStart(2,"0");
-      return `${y}-${m}-${d}`;
-    };
-    const enumerateDateISOs = (startIso, endIso, maxDays=60)=>{
-      const s = isoToDate(startIso);
-      const e = isoToDate(endIso);
-      if(!s || !e) return [];
-      if(e < s) return [];
-      const out = [];
-      const cur = new Date(s.getTime());
-      let guard = 0;
-      while(cur <= e && guard < maxDays){
-        out.push(dateToISO(cur));
-        cur.setDate(cur.getDate()+1);
-        guard++;
+  function getItemOpts(itemId){ return (state.itemOpts && state.itemOpts[itemId]) ? state.itemOpts[itemId] : {}; }
+  function isOptVisible(def, opts){
+    if(!def) return true;
+    const w = def.when;
+    if(w && w.opt) return String(opts?.[w.opt] ?? "") === String(w.is ?? "");
+    return true;
+  }
+  function normalizeOptValue(def, value){
+    const v = (value==null) ? "" : String(value);
+    if(v==="請選擇") return "";
+    return v;
+  }
+  function cleanupHiddenOpts(itemId){
+    const f=findItem(itemId); if(!f) return;
+    const item=f.item;
+    if(!item?.options) return;
+    const opts = getItemOpts(itemId) || {};
+    let changed=false;
+    for(const [k,def] of Object.entries(item.options)){
+      if(opts[k]==null) continue;
+      if(!isOptVisible(def, opts)){
+        delete opts[k];
+        changed=true;
       }
-      return out;
-    };
-
-    const getSelectedSecondDates = ()=>{
-      return Array.from(document.querySelectorAll('#dailySecondSessionList input[type="checkbox"][data-date]'))
-        .filter(cb=>cb.checked)
-        .map(cb=>cb.dataset.date);
-    };
-
-    const renderDayList = ()=>{
-      if(!dayList) return;
-
-      const isMulti = !!cbMulti?.checked;
-      if(!isMulti){
-        dayList.innerHTML = "";
-        return;
-      }
-
-      const start = document.getElementById("fDateStart")?.value || "";
-      const endVal = document.getElementById("fDateEnd")?.value || "";
-      if(!start || !endVal){
-        dayList.innerHTML = `<div class="mutedNote">請先選擇開始與結束日期，才會產生每日場次設定。</div>`;
-        return;
-      }
-
-      const keep = new Set(getSelectedSecondDates());
-      const dates = enumerateDateISOs(start, endVal, 60);
-
-      if(dates.length === 0){
-        dayList.innerHTML = `<div class="mutedNote">結束日期不可早於開始日期。</div>`;
-        return;
-      }
-      if(dates.length >= 60){
-        dayList.innerHTML = `<div class="mutedNote">日期天數過多（已限制最多 60 天）。若超過需求，請改用「備註需求」說明。</div>`;
-        return;
-      }
-
-      // 若剛從「單日第二場」切換到多日，把 Day1 的第二場同步過來
-      if(singleS2?.checked && dates[0] && !keep.has(dates[0])){
-        keep.add(dates[0]);
-      }
-
-      dayList.innerHTML = dates.map((iso, idx)=>{
-        const dayNo = idx + 1;
-        const tag = (dayNo===1) ? "Day1（原價）" : (dayNo===2 ? "Day2（+50%）" : `Day${dayNo}（+30%）`);
-        const checked = keep.has(iso) ? "checked" : "";
-        return `
-          <div class="dayRow">
-            <div class="dleft">
-              <div class="dtitle">${iso}</div>
-              <div class="dsub">${tag}；若勾第二場：+30%</div>
-            </div>
-            <label><input type="checkbox" data-date="${iso}" ${checked} style="width:18px;height:18px">第二場</label>
-          </div>
-        `;
+    }
+    if(changed){
+      if(!state.itemOpts) state.itemOpts={};
+      state.itemOpts[itemId]=opts;
+      if(Object.keys(opts).length===0) delete state.itemOpts[itemId];
+    }
+  }
+  function setItemOpt(itemId, key, value){
+    const f=findItem(itemId);
+    const def = f?.item?.options?.[key];
+    const v = normalizeOptValue(def, value);
+    if(!state.itemOpts) state.itemOpts = {};
+    if(!state.itemOpts[itemId]) state.itemOpts[itemId] = {};
+    if(v===""){
+      delete state.itemOpts[itemId][key];
+      if(Object.keys(state.itemOpts[itemId]).length===0) delete state.itemOpts[itemId];
+    }else{
+      state.itemOpts[itemId][key] = v;
+    }
+    cleanupHiddenOpts(itemId);
+  }
+  function clearItemOpts(itemId){ if(state.itemOpts && state.itemOpts[itemId]) delete state.itemOpts[itemId]; }
+  function formatOptText(itemId){
+    const f=findItem(itemId); if(!f) return "";
+    const item=f.item;
+    const opts=getItemOpts(itemId) || {};
+    if(!item?.options) return "";
+    const parts=[];
+    for(const [k,def] of Object.entries(item.options)){
+      if(!isOptVisible(def, opts)) continue;
+      const v = opts[k];
+      if(v==null || v==="") continue;
+      if(def && Array.isArray(def.omitValues) && def.omitValues.includes(String(v))) continue;
+      parts.push(`${def.label||k}：${v}`);
+    }
+    return parts.length ? `（${parts.join("，")}）` : "";
+  }
+  
+  function buildOptionsHTML(item){
+    if(!item?.options) return "";
+    const optsState = getItemOpts(item.id) || {};
+    const rows = Object.entries(item.options).map(([k,def])=>{
+      if(!isOptVisible(def, optsState)) return "";
+      const values = Array.isArray(def.values) ? def.values : [];
+      const curRaw = (optsState[k] != null) ? String(optsState[k]) : "";
+      const cur = normalizeOptValue(def, curRaw);
+      const optionsHTML = values.map(v=>{
+        const vv = String(v);
+        const valueAttr = (vv==="請選擇") ? "" : vv;
+        const selected = (valueAttr === cur) || (cur==="" && valueAttr==="");
+        return `<option value="${escapeHtml(valueAttr)}" ${selected?"selected":""}>${escapeHtml(vv)}</option>`;
       }).join("");
-
-      Array.from(dayList.querySelectorAll('input[type="checkbox"][data-date]')).forEach(cb=>{
-        cb.addEventListener("change", updateAll);
-      });
-    };
-
-    const getPricingInfo = ()=>{
-      const start = document.getElementById("fDateStart")?.value || "";
-      const isMulti = !!cbMulti?.checked;
-      const endIso = (isMulti ? (document.getElementById("fDateEnd")?.value || "") : "");
-
-      let dayCount = 1;
-      if(isMulti && start && endIso){
-        const dates = enumerateDateISOs(start, endIso, 60);
-        dayCount = dates.length || 1;
-      }
-
-      const extraDaysMultiplier = (dayCount>=2) ? (0.5 + Math.max(0, dayCount-2)*0.3) : 0;
-
-      let session2Dates = [];
-      if(isMulti && dayCount>=2){
-        session2Dates = getSelectedSecondDates();
-      }else{
-        const on = !!singleS2?.checked;
-        session2Dates = (on && start) ? [start] : [];
-      }
-
-      const session2Count = session2Dates.length;
-      const session2Multiplier = session2Count * 0.3;
-      const multiplier = 1 + extraDaysMultiplier + session2Multiplier;
-
-      const parts = [];
-      parts.push("Day1：1場（100%）");
-      if(dayCount>=2) parts.push("Day2：1場（+50%）");
-      if(dayCount>=3) parts.push(`Day3起：${dayCount-2}天 ×（+30%）`);
-      if(session2Count>0) parts.push(`第二場：${session2Count}場 ×（+30%）`);
-      return { start, end: endIso, isMulti, dayCount, session2Count, session2Dates, extraDaysMultiplier, session2Multiplier, multiplier, breakdownText: parts.join("；") };
-    };
-
-    // 供 renderCart / buildQuotePayload 使用
-    window.__getDatePricingInfo = getPricingInfo;
-
-    const updateSummary = ()=>{
-      if(!summaryEl) return;
-      const info = getPricingInfo();
-      summaryEl.textContent = `共 ${info.dayCount} 天、第二場 ${info.session2Count} 場｜日期倍率：${info.multiplier.toFixed(2)} 倍`;
-    };
-
-    const updateSession2TimeVisibility = ()=>{
-      if(!s2TimeWrap) return;
-      const info = getPricingInfo();
-      s2TimeWrap.style.display = (info.session2Count > 0) ? "block" : "none";
-    };
-
-    const updateCart = ()=>{
-      if(typeof renderCart === "function") renderCart();
-    };
-
-    function updateAll(){
-      updateSummary();
-      updateSession2TimeVisibility();
-      updateCart();
-    }
-
-    const apply = ()=>{
-      const isMulti = !!cbMulti?.checked;
-
-      if(sep) sep.style.display = isMulti ? "block" : "none";
-      if(end) end.style.display = isMulti ? "block" : "none";
-      if(multiWrap) multiWrap.style.display = isMulti ? "block" : "none";
-      if(singleS2Wrap) singleS2Wrap.style.display = isMulti ? "none" : "block";
-
-      if(!isMulti){
-        // 從多日回到單日：把 Day1 第二場同步回單日 checkbox
-        const selected = getSelectedSecondDates();
-        const start = document.getElementById("fDateStart")?.value || "";
-        if(singleS2) singleS2.checked = (start && selected.includes(start));
-        if(end) end.value = "";
-        if(dayList) dayList.innerHTML = "";
-      }else{
-        // 多日模式：單日 checkbox 不再使用
-        if(singleS2) singleS2.checked = false;
-      }
-
-      const s = document.getElementById("fDateStart")?.value || "";
-      if(end && s) end.min = s;
-
-      renderDayList();
-      updateAll();
-    };
-
-    cbMulti?.addEventListener("change", apply);
-    document.getElementById("fDateStart")?.addEventListener("change", ()=>{
-      const s = document.getElementById("fDateStart")?.value || "";
-      if(end && s) end.min = s;
-      if(cbMulti?.checked) renderDayList();
-      updateAll();
-    });
-    end?.addEventListener("change", ()=>{
-      if(cbMulti?.checked) renderDayList();
-      updateAll();
-    });
-    singleS2?.addEventListener("change", updateAll);
-
-    apply();
-  }
-const TW_CITY_AREAS = {
-  "臺北市": [
-    "中正區",
-    "大同區",
-    "中山區",
-    "松山區",
-    "大安區",
-    "萬華區",
-    "信義區",
-    "士林區",
-    "北投區",
-    "內湖區",
-    "南港區",
-    "文山區"
-  ],
-  "新北市": [
-    "板橋區",
-    "三重區",
-    "中和區",
-    "永和區",
-    "新莊區",
-    "新店區",
-    "樹林區",
-    "鶯歌區",
-    "三峽區",
-    "淡水區",
-    "汐止區",
-    "瑞芳區",
-    "土城區",
-    "蘆洲區",
-    "五股區",
-    "泰山區",
-    "林口區",
-    "深坑區",
-    "石碇區",
-    "坪林區",
-    "三芝區",
-    "石門區",
-    "八里區",
-    "平溪區",
-    "雙溪區",
-    "貢寮區",
-    "金山區",
-    "萬里區",
-    "烏來區"
-  ],
-  "桃園市": [
-    "桃園區",
-    "中壢區",
-    "平鎮區",
-    "八德區",
-    "楊梅區",
-    "蘆竹區",
-    "大溪區",
-    "龍潭區",
-    "龜山區",
-    "大園區",
-    "觀音區",
-    "新屋區",
-    "復興區"
-  ],
-  "臺中市": [
-    "中區",
-    "東區",
-    "南區",
-    "西區",
-    "北區",
-    "北屯區",
-    "西屯區",
-    "南屯區",
-    "太平區",
-    "大里區",
-    "霧峰區",
-    "烏日區",
-    "豐原區",
-    "后里區",
-    "石岡區",
-    "東勢區",
-    "和平區",
-    "新社區",
-    "潭子區",
-    "大雅區",
-    "神岡區",
-    "大肚區",
-    "沙鹿區",
-    "龍井區",
-    "梧棲區",
-    "清水區",
-    "大甲區",
-    "外埔區",
-    "大安區"
-  ],
-  "臺南市": [
-    "中西區",
-    "東區",
-    "南區",
-    "北區",
-    "安平區",
-    "安南區",
-    "永康區",
-    "歸仁區",
-    "新化區",
-    "左鎮區",
-    "玉井區",
-    "楠西區",
-    "南化區",
-    "仁德區",
-    "關廟區",
-    "龍崎區",
-    "官田區",
-    "麻豆區",
-    "佳里區",
-    "西港區",
-    "七股區",
-    "將軍區",
-    "學甲區",
-    "北門區",
-    "新營區",
-    "後壁區",
-    "白河區",
-    "東山區",
-    "六甲區",
-    "下營區",
-    "柳營區",
-    "鹽水區",
-    "善化區",
-    "大內區",
-    "山上區",
-    "新市區",
-    "安定區"
-  ],
-  "高雄市": [
-    "新興區",
-    "前金區",
-    "苓雅區",
-    "鹽埕區",
-    "鼓山區",
-    "旗津區",
-    "前鎮區",
-    "三民區",
-    "楠梓區",
-    "小港區",
-    "左營區",
-    "仁武區",
-    "大社區",
-    "東沙群島",
-    "南沙群島",
-    "岡山區",
-    "路竹區",
-    "阿蓮區",
-    "田寮區",
-    "燕巢區",
-    "橋頭區",
-    "梓官區",
-    "彌陀區",
-    "永安區",
-    "湖內區",
-    "鳳山區",
-    "大寮區",
-    "林園區",
-    "鳥松區",
-    "大樹區",
-    "旗山區",
-    "美濃區",
-    "六龜區",
-    "內門區",
-    "杉林區",
-    "甲仙區",
-    "桃源區",
-    "那瑪夏區",
-    "茂林區"
-  ],
-  "基隆市": [
-    "仁愛區",
-    "信義區",
-    "中正區",
-    "中山區",
-    "安樂區",
-    "暖暖區",
-    "七堵區"
-  ],
-  "新竹市": [
-    "東區",
-    "北區",
-    "香山區"
-  ],
-  "新竹縣": [
-    "竹北市",
-    "竹東鎮",
-    "新埔鎮",
-    "關西鎮",
-    "湖口鄉",
-    "新豐鄉",
-    "芎林鄉",
-    "橫山鄉",
-    "北埔鄉",
-    "寶山鄉",
-    "峨眉鄉",
-    "尖石鄉",
-    "五峰鄉"
-  ],
-  "苗栗縣": [
-    "苗栗市",
-    "苑裡鎮",
-    "通霄鎮",
-    "竹南鎮",
-    "頭份市",
-    "後龍鎮",
-    "卓蘭鎮",
-    "大湖鄉",
-    "公館鄉",
-    "銅鑼鄉",
-    "南庄鄉",
-    "頭屋鄉",
-    "三義鄉",
-    "西湖鄉",
-    "造橋鄉",
-    "三灣鄉",
-    "獅潭鄉",
-    "泰安鄉"
-  ],
-  "彰化縣": [
-    "彰化市",
-    "鹿港鎮",
-    "和美鎮",
-    "線西鄉",
-    "伸港鄉",
-    "福興鄉",
-    "秀水鄉",
-    "花壇鄉",
-    "芬園鄉",
-    "員林市",
-    "溪湖鎮",
-    "田中鎮",
-    "大村鄉",
-    "埔鹽鄉",
-    "埔心鄉",
-    "永靖鄉",
-    "社頭鄉",
-    "二水鄉",
-    "北斗鎮",
-    "二林鎮",
-    "田尾鄉",
-    "埤頭鄉",
-    "芳苑鄉",
-    "大城鄉",
-    "竹塘鄉",
-    "溪州鄉"
-  ],
-  "南投縣": [
-    "南投市",
-    "埔里鎮",
-    "草屯鎮",
-    "竹山鎮",
-    "集集鎮",
-    "名間鄉",
-    "鹿谷鄉",
-    "中寮鄉",
-    "魚池鄉",
-    "國姓鄉",
-    "水里鄉",
-    "信義鄉",
-    "仁愛鄉"
-  ],
-  "雲林縣": [
-    "斗六市",
-    "斗南鎮",
-    "虎尾鎮",
-    "西螺鎮",
-    "土庫鎮",
-    "北港鎮",
-    "古坑鄉",
-    "大埤鄉",
-    "莿桐鄉",
-    "林內鄉",
-    "二崙鄉",
-    "崙背鄉",
-    "麥寮鄉",
-    "東勢鄉",
-    "褒忠鄉",
-    "臺西鄉",
-    "元長鄉",
-    "四湖鄉",
-    "口湖鄉",
-    "水林鄉"
-  ],
-  "嘉義市": [
-    "東區",
-    "西區"
-  ],
-  "嘉義縣": [
-    "太保市",
-    "朴子市",
-    "布袋鎮",
-    "大林鎮",
-    "民雄鄉",
-    "溪口鄉",
-    "新港鄉",
-    "六腳鄉",
-    "東石鄉",
-    "義竹鄉",
-    "鹿草鄉",
-    "水上鄉",
-    "中埔鄉",
-    "竹崎鄉",
-    "梅山鄉",
-    "番路鄉",
-    "大埔鄉",
-    "阿里山鄉"
-  ],
-  "屏東縣": [
-    "屏東市",
-    "潮州鎮",
-    "東港鎮",
-    "恆春鎮",
-    "萬丹鄉",
-    "長治鄉",
-    "麟洛鄉",
-    "九如鄉",
-    "里港鄉",
-    "鹽埔鄉",
-    "高樹鄉",
-    "萬巒鄉",
-    "內埔鄉",
-    "竹田鄉",
-    "新埤鄉",
-    "枋寮鄉",
-    "新園鄉",
-    "崁頂鄉",
-    "林邊鄉",
-    "南州鄉",
-    "佳冬鄉",
-    "琉球鄉",
-    "車城鄉",
-    "滿州鄉",
-    "枋山鄉",
-    "三地門鄉",
-    "霧臺鄉",
-    "瑪家鄉",
-    "泰武鄉",
-    "來義鄉",
-    "春日鄉",
-    "獅子鄉",
-    "牡丹鄉"
-  ],
-  "宜蘭縣": [
-    "宜蘭市",
-    "羅東鎮",
-    "蘇澳鎮",
-    "頭城鎮",
-    "礁溪鄉",
-    "壯圍鄉",
-    "員山鄉",
-    "冬山鄉",
-    "五結鄉",
-    "三星鄉",
-    "大同鄉",
-    "南澳鄉"
-  ],
-  "花蓮縣": [
-    "花蓮市",
-    "鳳林鎮",
-    "玉里鎮",
-    "新城鄉",
-    "吉安鄉",
-    "壽豐鄉",
-    "光復鄉",
-    "豐濱鄉",
-    "瑞穗鄉",
-    "富里鄉",
-    "秀林鄉",
-    "萬榮鄉",
-    "卓溪鄉"
-  ],
-  "臺東縣": [
-    "臺東市",
-    "成功鎮",
-    "關山鎮",
-    "卑南鄉",
-    "鹿野鄉",
-    "池上鄉",
-    "東河鄉",
-    "長濱鄉",
-    "太麻里鄉",
-    "大武鄉",
-    "綠島鄉",
-    "海端鄉",
-    "延平鄉",
-    "金峰鄉",
-    "達仁鄉",
-    "蘭嶼鄉"
-  ],
-  "澎湖縣": [
-    "馬公市",
-    "湖西鄉",
-    "白沙鄉",
-    "西嶼鄉",
-    "望安鄉",
-    "七美鄉"
-  ],
-  "金門縣": [
-    "金城鎮",
-    "金湖鎮",
-    "金沙鎮",
-    "金寧鄉",
-    "烈嶼鄉",
-    "烏坵鄉"
-  ],
-  "連江縣": [
-    "南竿鄉",
-    "北竿鄉",
-    "莒光鄉",
-    "東引鄉"
-  ]
-};
-
-  function initCityAreaPickers(){
-    const cityEl = document.getElementById("fCity");
-    const areaEl = document.getElementById("fArea");
-    if(!cityEl || !areaEl) return;
-
-    const cities = Object.keys(TW_CITY_AREAS);
-    cityEl.innerHTML = ['<option value="">請選擇縣市</option>']
-      .concat(cities.map(c=>`<option value="${c}">${c}</option>`)).join("");
-
-    function fillAreas(city){
-      const areas = (city && TW_CITY_AREAS[city]) ? TW_CITY_AREAS[city] : [];
-      areaEl.disabled = !city;
-      areaEl.innerHTML = city
-        ? ['<option value="">請選擇區域</option>'].concat(areas.map(a=>`<option value="${a}">${a}</option>`)).join("")
-        : '<option value="">請先選縣市</option>';
-    }
-
-    cityEl.addEventListener("change", ()=> fillAreas(cityEl.value));
-
-    // 若使用者重新整理，保留先前值（若瀏覽器有記住）
-    setTimeout(()=>{
-      const c = cityEl.value;
-      fillAreas(c);
-      if(areaEl.value && c && TW_CITY_AREAS[c] && !TW_CITY_AREAS[c].includes(areaEl.value)){
-        areaEl.value = "";
-      }
-    }, 0);
+      return `
+        <div class="optrow">
+          <div class="optlabel">${escapeHtml(def.label||k)}</div>
+          <select class="optselect" data-act="opt" data-id="${item.id}" data-opt="${k}">
+            ${optionsHTML}
+          </select>
+        </div>
+      `;
+    }).join("");
+    return rows.trim() ? `<div class="optbox">${rows}</div>` : "";
   }
 
-  /* -----------------------------------------------------------
-     ✅ Modal：恢復「詳情」功能
-     ----------------------------------------------------------- */
-  function openModal(title, bodyText){
-    const mask = $("#modalMask");
-    const t = $("#mTitle");
-    const b = $("#mBody");
-    if(t) t.textContent = title || "詳情";
-    if(b) b.textContent = bodyText || "—";
-    if(mask){
-      mask.style.display = "flex";
-      mask.setAttribute("aria-hidden","false");
+  function getLineSubtotal(item, qty){ return getUnitPrice(item, qty) * Number(qty||0); }
+  function getItemSubPriceText(item, qty){
+    const hasTiers = Array.isArray(item?.priceTiers) && item.priceTiers.length;
+    if(!hasTiers) return `${fmt(item.price)} / ${item.unit}`;
+    const q = Number(qty||0);
+    if(q>0){
+      const up = getUnitPrice(item, q);
+      const base = Number(item.price||0);
+      const tag = up < base ? "（優惠）" : "";
+      return `${fmt(up)}${tag} / ${item.unit} <span class="mini">｜${formatTiers(item)}</span>`;
     }
+    return `${fmt(item.price)} 起 / ${item.unit} <span class="mini">｜${formatTiers(item)}</span>`;
   }
-  function closeModal(){
-    const mask = $("#modalMask");
-    if(mask){
-      mask.style.display = "none";
-      mask.setAttribute("aria-hidden","true");
+  function updateShipping(){
+    try{
+      state.shipping = state.shipping || { fee: 0, km: null };
+      state.shipping.fee = 0;
+      state.shipping.km  = null;
+    }catch(e){}
+  }
+
+  function initCity(){
+    const city=$("#fCity"), area=$("#fArea");
+    if(!city || !area) return;
+    city.innerHTML=Object.keys(TW).map(c=>`<option value="${c}">${c}</option>`).join("");
+    function fillArea(){ area.innerHTML=(TW[city.value]||[]).map(a=>`<option value="${a}">${a}</option>`).join(""); }
+    city.addEventListener("change", ()=>{ fillArea(); updateShipping(); renderCart(); });
+    area.addEventListener("change", ()=>{ updateShipping(); renderCart(); });
+    fillArea();
+    if(Object.keys(TW).includes("台中市")){
+      city.value="台中市";
+      fillArea();
+      if((TW["台中市"]||[]).includes("豐原區")) area.value="豐原區";
     }
   }
 
-  (function(){
-    const mask = $("#modalMask");
-    const btn = $("#mClose");
-    btn?.addEventListener("click", closeModal);
-    mask?.addEventListener("click", (e)=>{ if(e.target===mask) closeModal(); });
-    document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
-  })();
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function parseDateTime(dateStr, timeStr){
+    if(!dateStr) return null;
+    const [hh,mm] = String(timeStr||"00:00").split(":").map(x=>Number(x||0));
+    const d = new Date(dateStr+"T00:00:00");
+    if(Number.isNaN(d.getTime())) return null;
+    d.setHours(hh, mm, 0, 0);
+    return d;
+  }
+  function initTimePickers(){
+    const hours = Array.from({length:24}, (_,i)=>pad2(i));
+    const mins = ["00","10","20","30","40","50"];
+    function fill(sel, arr, suffix){ sel.innerHTML = arr.map(v=>`<option value="${v}">${v}${suffix||""}</option>`).join(""); }
+    fill($("#tStartH"), hours, ""); fill($("#tEndH"), hours, "");
+    fill($("#tStartM"), mins, ""); fill($("#tEndM"), mins, "");
+    if($("#t2StartH")){
+      fill($("#t2StartH"), hours, ""); fill($("#t2EndH"), hours, "");
+      fill($("#t2StartM"), mins, ""); fill($("#t2EndM"), mins, "");
+    }
+    $("#tStartH").value="09"; $("#tStartM").value="00";
+    $("#tEndH").value="12"; $("#tEndM").value="00";
+    if($("#t2StartH")){
+      $("#t2StartH").value="18"; $("#t2StartM").value="00";
+      $("#t2EndH").value="21"; $("#t2EndM").value="00";
+    }
+    function sync(){
+      $("#fTimeStart").value = `${$("#tStartH").value}:${$("#tStartM").value}`;
+      $("#fTimeEnd").value   = `${$("#tEndH").value}:${$("#tEndM").value}`;
+    }
+    function sync2(){
+      if(!$("#t2StartH")) return;
+      $("#fTime2Start").value = `${$("#t2StartH").value}:${$("#t2StartM").value}`;
+      $("#fTime2End").value   = `${$("#t2EndH").value}:${$("#t2EndM").value}`;
+    }
+    ["tStartH","tStartM","tEndH","tEndM"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("change", ()=>{ sync(); renderCart(); }); });
+    sync();
+    if($("#t2StartH")){
+      ["t2StartH","t2StartM","t2EndH","t2EndM"].forEach(id=>{ const el=$("#"+id); if(el) el.addEventListener("change", ()=>{ sync2(); renderCart(); }); });
+      sync2();
+    }
+  }
 
-  function findItemById(itemId){
+  function renderSession2Days(){
+    const wrap = $("#session2DaysWrap");
+    const box  = $("#session2Days");
+    if(!wrap || !box) return;
+    const ds = $("#fDateStart")?.value || "";
+    const de = $("#fDateEnd")?.value || ds;
+    if(!ds){ wrap.style.display="none"; box.innerHTML=""; return; }
+    let dayCount = 1;
+    if(ds && de){
+      const s = new Date(ds+"T00:00:00");
+      const e = new Date(de+"T00:00:00");
+      if(!isNaN(s) && !isNaN(e)){
+        const diff = Math.round((e.getTime()-s.getTime())/(24*60*60*1000));
+        dayCount = Math.max(1, diff + 1);
+      }
+    }
+    if(dayCount <= 1){ wrap.style.display="none"; box.innerHTML=""; return; }
+    wrap.style.display="block";
+    const prev = new Set(Array.from(box.querySelectorAll('input[data-s2day="1"]')).filter(x=>x.checked).map(x=>x.value));
+    const rows=[];
+    for(let d=2; d<=dayCount; d++){
+      const key = `day${d}`;
+      const checked = prev.has(key) ? "checked" : "";
+      rows.push(`
+        <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted)">
+          <input type="checkbox" data-s2day="1" value="${key}" ${checked} style="width:18px;height:18px">
+          第${d}天有第二場（加價：基準 E × 30%）
+        </label>
+      `);
+    }
+    box.innerHTML = rows.join("");
+    box.querySelectorAll('input[data-s2day="1"]').forEach(cb=>{ cb.addEventListener("change", ()=>{ renderCart(); }); });
+  }
+
+  function renderTabs(){
+    const el=$("#tabs");
+    el.innerHTML=CATEGORIES.map(c=>`<button class="tab ${c.id===state.catId?"active":""}" data-cat="${c.id}">${c.name}</button>`).join("");
+    el.querySelectorAll(".tab").forEach(b=>b.addEventListener("click", ()=>{ state.catId=b.dataset.cat; renderAll(); }));
+  }
+
+  function findItem(itemId){
     for(const c of CATEGORIES){
-      const it = c.items.find(x=>x.id===itemId);
-      if(it) return {cat:c, item:it};
+      const it=c.items.find(x=>x.id===itemId);
+      if(it) return {cat:c,item:it};
     }
     return null;
   }
 
+  function setQty(itemId, qty){
+    if(qty<=0){ delete state.cart[itemId]; clearItemOpts(itemId); }
+    else state.cart[itemId]=qty;
+    renderAll();
+  }
+
+  function renderItems(){
+    const cat=CATEGORIES.find(c=>c.id===state.catId);
+    $("#catName").textContent=cat?.name||"—";
+    const el=$("#items");
+    el.innerHTML=(cat?.items||[]).map(it=>{
+      const qty=state.cart[it.id]||0;
+      return `
+        <div class="item">
+          <img class="thumb" src="${getItemPhotos(state.catId, it.id)[0]}" alt="${it.name}" loading="lazy" onerror="this.onerror=null;this.src=svgThumb(it.name);">
+          <div class="meta">
+            <div class="name">${it.name}</div>
+            <div class="sub">${getItemSubPriceText(it, qty)}</div>
+            <div class="row2">
+              <div class="qty">
+                <button class="qbtn" data-act="dec" data-id="${it.id}">-</button>
+                <div class="qval">${qty}</div>
+                <button class="qbtn" data-act="inc" data-id="${it.id}">+</button>
+              </div>
+              <button class="linkbtn" data-act="detail" data-id="${it.id}">詳情</button>
+            </div>
+            ${qty>0 ? buildOptionsHTML(it) : ""}
+          </div>
+          <div class="price">${fmt(getLineSubtotal(it, qty))}</div>
+        </div>
+      `;
+    }).join("");
+
+    el.querySelectorAll("button").forEach(b=>{
+      const act=b.dataset.act, id=b.dataset.id;
+      if(!act||!id) return;
+      if(act==="inc") b.addEventListener("click", ()=>setQty(id,(state.cart[id]||0)+1));
+      if(act==="dec") b.addEventListener("click", ()=>setQty(id,Math.max(0,(state.cart[id]||0)-1)));
+      if(act==="detail") b.addEventListener("click", ()=>openItemDetail(id));
+    });
+
+    el.querySelectorAll('select[data-act="opt"]').forEach(s=>{
+      s.addEventListener("change", ()=>{
+        const id=s.dataset.id;
+        const key=s.dataset.opt;
+        setItemOpt(id, key, s.value);
+        renderItems();
+        renderCart();
+      });
+    });
+
+    const pickedItemCount = Object.keys(state.cart).filter(k=>k!=="packs" && state.cart[k]>0).length;
+    const pickedPackCount = Object.keys(state.cart.packs||{}).filter(k=>state.cart.packs[k]).length;
+    $("#pickedCount").textContent = `${pickedItemCount + pickedPackCount} 項已選`;
+  }
+
+  function groupCart(){
+    const groups=new Map();
+    for(const [id,qty] of Object.entries(state.cart)){
+      if(id==="packs") continue;
+      const f=findItem(id); if(!f) continue;
+      const key=f.cat.name;
+      if(!groups.has(key)) groups.set(key, []);
+      groups.get(key).push({item:f.item, qty});
+    }
+    return groups;
+  }
+
+  function updateSurcharges(baseSum){
+    const ds = $("#fDateStart")?.value || "";
+    const de = $("#fDateEnd")?.value || ds;
+    const ts = $("#fTimeStart")?.value || "00:00";
+    const te = $("#fTimeEnd")?.value || "00:00";
+
+    let start = parseDateTime(ds, ts);
+    let end   = parseDateTime(de, te);
+    let dayCount = 1;
+    if(start && end){
+      if(de===ds && end.getTime() <= start.getTime()){
+        end = new Date(end.getTime() + 24*60*60*1000);
+      }
+      const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
+      const endDay   = new Date(end.getFullYear(), end.getMonth(), end.getDate()).getTime();
+      dayCount = Math.max(1, Math.round((endDay - startDay)/(24*60*60*1000)) + 1);
+    }
+
+    const has2 = !!$("#fHasSession2") && $("#fHasSession2").checked;
+    let day1SecondFee = 0;
+    if(has2){
+      const t2s = $("#fTime2Start")?.value || "";
+      const t2e = $("#fTime2End")?.value || "";
+      if(t2s && t2e){ day1SecondFee = Math.round(baseSum * 0.30); }
+    }
+
+    const E = baseSum + day1SecondFee;
+    const extraDays = Math.max(0, dayCount - 1);
+    let dayFee = 0;
+    if(extraDays >= 1) dayFee += Math.round(E * 0.50);
+    if(extraDays >= 2) dayFee += Math.round(E * 0.30 * (extraDays - 1));
+
+    let s2DaysFee = 0;
+    if(dayCount >= 2){
+      document.querySelectorAll('input[data-s2day="1"]').forEach(cb=>{
+        if(cb.checked) s2DaysFee += Math.round(E * 0.30);
+      });
+    }
+
+    const session2Fee = day1SecondFee + s2DaysFee;
+    state.surcharges = { day: dayFee, session2: session2Fee, day1SecondFee, s2DaysFee, dayCount, extraDays, E, baseSum };
+    return state.surcharges;
+  }
+
+  function calc(){
+    let sum=0;
+    if(state.cart.packs){
+      for(const [tierKey, pack] of Object.entries(state.cart.packs)){
+        if(!pack) continue;
+        sum += Number(pack.price||0);
+      }
+    }
+    for(const [id,qty] of Object.entries(state.cart)){
+      if(id==="packs") continue;
+      const f=findItem(id); if(!f) continue;
+      sum += getUnitPrice(f.item, qty) * qty;
+    }
+    const sur = updateSurcharges(sum);
+    const dayFee = Number(sur.day||0);
+    const session2Fee = Number(sur.session2||0);
+    const adj=0;
+    const ship = 0;
+    return {sum, adj, ship, dayFee, session2Fee, total: sum + ship + dayFee + session2Fee};
+  }
+
+  function openModal(title, htmlBody){
+    $("#mTitle").textContent = title || "詳情";
+    $("#mBody").innerHTML = htmlBody || "—";
+    $("#modalMask").style.display="flex";
+  }
+  function closeModal(){ $("#modalMask").style.display="none"; }
+
+  (function(){
+    const mask = document.getElementById("modalMask");
+    const btnClose = document.getElementById("mClose");
+    const btnBack = document.getElementById("mBack");
+    function closeModalSafe(){ try{ closeModal(); }catch(e){ if(mask) mask.style.display="none"; } }
+    if(btnClose) btnClose.addEventListener("click", closeModalSafe);
+    if(mask) mask.addEventListener("click", (e)=>{ if(e.target===mask) closeModalSafe(); });
+    document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && mask && mask.style.display==="flex") closeModalSafe(); });
+    if(btnBack) btnBack.addEventListener("click", ()=>{
+      closeModalSafe();
+      const qc = document.getElementById("quoteCard");
+      if(qc) qc.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  })();
+
+  function getItemPhotos(catId, itemId){
+    const seedBase = `${catId||"cat"}-${itemId||"item"}`;
+    return [
+      `https://picsum.photos/seed/${seedBase}-a/800/600`,
+      `https://picsum.photos/seed/${seedBase}-b/800/600`
+    ];
+  }
+
   function openItemDetail(itemId){
-    const f = findItemById(itemId);
-    if(!f) return;
-    const it = f.item;
-    const title = `詳情｜${it.name}`;
-    const body = `分類：${f.cat.name}\n單價：${fmt(it.price)} / ${it.unit}\n\n${it.desc || "—"}`;
-    openModal(title, body);
+    const f=findItem(itemId); if(!f) return;
+    const photos = getItemPhotos(f.cat.id, f.item.id);
+    const desc = ((f.item.desc||"—")+"").replace(/\n/g,"<br>");
+    openModal(`商品詳情｜${f.item.name}`, `
+      ${buildPhotoHTML(photos)}
+      <div class="modalDesc">${desc}</div>
+    `);
+  }
+
+  function buildPhotoHTML(urls){
+    const a = (urls && urls[0]) ? urls[0] : "https://picsum.photos/seed/event-fallback/800/600";
+    const b = (urls && urls[1]) ? urls[1] : "https://picsum.photos/seed/stage-fallback/800/600";
+    return `
+      <div class="photoGrid">
+        <div class="photoBox">
+          <img src="${a}" alt="示意照片 1" loading="lazy">
+          <div class="photoCap">示意照片 1（可換成你的照片連結）</div>
+        </div>
+        <div class="photoBox">
+          <img src="${b}" alt="示意照片 2" loading="lazy">
+          <div class="photoCap">示意照片 2（可換成你的照片連結）</div>
+        </div>
+      </div>
+    `;
   }
 
   function openTierDetail(tierKey, level){
-    const name = LEVELS[tierKey]?.[level-1] || `第${level}級`;
-    const price = LEVEL_PRICES[tierKey]?.[level-1] || 0;
-    const label = ({safety:"安全等級", ambience:"氣氛等級", upgrade:"升級等級"}[tierKey]) || "等級";
-    openModal(`詳情｜${label}｜${name}`, `參考價：${fmt(price)}\n\n（此處可放你之後要寫的「包含內容」說明。）`);
+    const tierLabel = ({safety:"安全", ambience:"氣氛", upgrade:"升級"}[tierKey]) || "套裝";
+    const levelName = (LEVELS[tierKey] && LEVELS[tierKey][level-1]) ? LEVELS[tierKey][level-1] : `第${level}級`;
+    const price = LEVEL_PRICES[tierKey]?.[level-1];
+    const packs = tierKey==="safety" ? PACKS_SAFETY : (tierKey==="ambience" ? PACKS_AMBIENCE : PACKS_UPGRADE);
+    const list = packs[level] || [];
+    const photos = TIER_PHOTOS[tierKey]?.[level-1];
+
+    const itemsHTML = list.map(p=>{
+      const f = findItem(p.id);
+      const name = f ? f.item.name : p.id;
+      const unit = f ? f.item.unit : "";
+      return `<li><b>${name}</b> × ${p.qty}${unit?` ${unit}`:""}</li>`;
+    }).join("");
+
+    const usage = (()=>{
+      if(tierKey==="safety"){
+        if(level<=2) return "適合：室內/小型活動、主持/致詞、背景音樂；以穩定清晰為主。";
+        if(level<=4) return "適合：中型活動/表演，有基本監聽與工程配置；可應付較複雜流程。";
+        return "適合：大型戶外/舞台演出，多監聽與電力配套；更適合人多與需求較高的活動。";
+      }
+      if(tierKey==="ambience"){
+        if(level<=2) return "適合：典禮/活動基礎氛圍，主色染色與基本控制。";
+        if(level<=4) return "適合：表演/進退場需要視覺焦點，含移動燈/薄霧等效果提升。";
+        return "適合：舞台感更強的活動，視覺層次與整體質感加強。";
+      }
+      if(level<=2) return "加值：追光或薄霧等單點升級，快速提升舞台感。";
+      if(level<=4) return "加值：投影/螢幕或演出支援（鼓組/DI/監聽），適合有表演需求。";
+      return "加值：人力/控場/全方位支援，適合大型或流程複雜的活動。";
+    })();
+
+    openModal(`套裝詳情｜${tierLabel} ${levelName}`, `
+      ${buildPhotoHTML(photos)}
+      <div class="packMeta">
+        <span class="tag">${tierLabel}</span>
+        <span class="tag">等級：${levelName}</span>
+        <span class="tag">參考價：${price?fmt(price):"—"}</span>
+      </div>
+      <div class="subttl">包含內容</div>
+      <ul class="packList">${itemsHTML || "<li>—</li>"}</ul>
+      <div class="subttl" style="margin-top:10px">說明</div>
+      <div class="modalDesc">${usage}</div>
+    `);
   }
 
-  function setHiddenTime(hId, mId, outId){
-    const h = document.getElementById(hId)?.value ?? "00";
-    const m = document.getElementById(mId)?.value ?? "00";
-    const out = document.getElementById(outId);
-    if(out) out.value = `${h}:${m}`;
+  function applyPackLevel(tierKey, level){
+    const packs = tierKey==="safety" ? PACKS_SAFETY : (tierKey==="ambience" ? PACKS_AMBIENCE : PACKS_UPGRADE);
+    const list = (packs && packs[level]) ? packs[level] : [];
+    if(!level || !list.length){ alert("此等級尚未設定套裝內容。"); return; }
+    state.tiers[tierKey] = level;
+    const packLabel = tierKey==="safety" ? "安全等級" : (tierKey==="ambience" ? "氣氛等級" : "升級等級");
+    const name = (LEVELS[tierKey]?.[level-1]) || `第${level}級`;
+    const price = (LEVEL_PRICES[tierKey]?.[level-1]) || 0;
+    state.cart = state.cart || {};
+    state.cart.packs = state.cart.packs || {};
+    state.cart.packs[tierKey] = { tierKey, label: packLabel, level, name, price, items: list };
+    if(tierKey==="safety") state.catId="audio";
+    if(tierKey==="ambience") state.catId="light";
+    if(tierKey==="upgrade") state.catId="video";
+    renderAll();
   }
 
-  function initTimePickers(){
-    const hours = Array.from({length:24}, (_,i)=>String(i).padStart(2,"0"));
-    const mins = ["00","10","20","30","40","50"];
-    const fill = (id, arr)=> {
-      const el = document.getElementById(id);
-      if(el) el.innerHTML = arr.map(v=>`<option value="${v}">${v}</option>`).join("");
-    };
-
-    fill("tStartH", hours); fill("tStartM", mins);
-    fill("tEndH", hours); fill("tEndM", mins);
-    fill("t2StartH", hours); fill("t2StartM", mins);
-    fill("t2EndH", hours); fill("t2EndM", mins);
-
-    const safeSet = (id,val)=>{ const el=document.getElementById(id); if(el) el.value=val; }
-    safeSet("tStartH","09"); safeSet("tStartM","00");
-    safeSet("tEndH","12"); safeSet("tEndM","00");
-    safeSet("t2StartH","14"); safeSet("t2StartM","00");
-    safeSet("t2EndH","17"); safeSet("t2EndM","00");
-
-    const bind = (hId,mId,outId)=>{
-      const h=document.getElementById(hId), m=document.getElementById(mId);
-      const fn=()=>setHiddenTime(hId,mId,outId);
-      h?.addEventListener("change", fn);
-      m?.addEventListener("change", fn);
-      fn();
-    };
-    bind("tStartH","tStartM","fTimeStart");
-    bind("tEndH","tEndM","fTimeEnd");
-    bind("t2StartH","t2StartM","fTime2Start");
-    bind("t2EndH","t2EndM","fTime2End");
+  function removePack(tierKey){
+    if(state.cart.packs) delete state.cart.packs[tierKey];
+    state.tiers[tierKey]=0;
+    renderAll();
   }
 
-  
   function renderTierButtons(){
     const mk = (tierKey, containerSel) => {
       const el = $(containerSel);
       el.innerHTML = LEVELS[tierKey].map((name, idx)=>{
         const n = idx+1;
-        const active = state.tiers[tierKey] === n ? "active" : "";
+        const on = state.tiers[tierKey]===n ? "active" : "";
+        const price = LEVEL_PRICES[tierKey]?.[idx];
         return `
-          <div class="levelBtn ${active}">
-            <div class="levelTopRow" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
-              <span style="font-size:13px;font-weight:1000;line-height:1.2">${name}</span>
-              <span style="font-size:12px;font-weight:1000;white-space:nowrap">${fmt(LEVEL_PRICES[tierKey][idx])}</span>
+          <div class="levelBtn ${on}" data-tier="${tierKey}" data-level="${n}">
+            <div class="levelText">
+              <div class="levelTopRow">
+                <span class="levelName">${name}</span>
+                <span class="levelPrice">${price?fmt(price):"—"}</span>
+              </div>
+              <div class="levelActions">
+                <button type="button" class="miniBtn primaryMini" data-act="apply" data-tier="${tierKey}" data-level="${n}">加入報價</button>
+                <button type="button" class="miniBtn" data-tier="${tierKey}" data-level="${n}">詳情</button>
+              </div>
             </div>
-            <div class="levelMedia"><img src="https://picsum.photos/seed/${tierKey}${n}/200/120" alt=""></div>
-            <div style="display:grid;gap:8px">
-              <button type="button" class="miniBtn primaryMini" style="width:100%" onclick="selectTier('${tierKey}', ${n});event.stopPropagation();">加入報價</button>
-              <button type="button" class="miniBtn" style="width:100%" onclick="showTierDetail('${tierKey}', ${n});event.stopPropagation();">詳情</button>
+            <div class="levelMedia">
+              <img src="${(TIER_PHOTOS[tierKey]?.[idx]?.[0]) || 'https://picsum.photos/seed/stage-fallback/800/600'}" alt="示意照片" loading="lazy">
             </div>
-          </div>`;
+          </div>
+        `;
       }).join("");
+
+      el.querySelectorAll(".levelBtn").forEach(box=>{
+        box.addEventListener("click", (e)=>{
+          if(e.target && e.target.closest(".miniBtn")) return;
+          const tier = box.dataset.tier;
+          const level = Number(box.dataset.level);
+          state.tiers[tier]=level;
+          renderTierPills();
+          renderTierButtons();
+        });
+      });
+
+      el.querySelectorAll(".miniBtn").forEach(b=>{
+        b.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          const act = b.dataset.act || "";
+          if(act==="apply"){ applyPackLevel(b.dataset.tier, Number(b.dataset.level)); return; }
+          openTierDetail(b.dataset.tier, Number(b.dataset.level));
+        });
+      });
     };
+
     mk("safety","#levelsSafety");
     mk("ambience","#levelsAmbience");
     mk("upgrade","#levelsUpgrade");
+
+    $("#pillSafety").textContent = state.tiers.safety ? `第${state.tiers.safety}級` : "未選";
+    $("#pillAmbience").textContent = state.tiers.ambience ? `第${state.tiers.ambience}級` : "未選";
+    $("#pillUpgrade").textContent = state.tiers.upgrade ? `第${state.tiers.upgrade}級` : "未選";
   }
 
+  function renderTierPills(){
+    const s = state.tiers.safety ? `安全第${state.tiers.safety}級` : "安全—";
+    const a = state.tiers.ambience ? `氣氛第${state.tiers.ambience}級` : "氣氛—";
+    const u = state.tiers.upgrade ? `升級第${state.tiers.upgrade}級` : "升級—";
+    $("#tierPills").textContent = `${s}｜${a}｜${u}`;
+  }
 
-  window.selectTier = (key, n) => {
-    state.tiers[key] = n;
-    state.cart.packs[key] = { name: LEVELS[key][n-1], price: LEVEL_PRICES[key][n-1] };
-    renderAll();
-  };
+  function getEventDateText(){
+    const ds = $("#fDateStart")?.value || "";
+    const de = $("#fDateEnd")?.value || ds;
+    const ts = $("#fTimeStart")?.value || "";
+    const te = $("#fTimeEnd")?.value || "";
+    if(!ds) return "";
+    const dpart = (de && de!==ds) ? `${ds} ～ ${de}` : ds;
+    const tpart = (ts && te) ? ` ${ts}～${te}` : "";
+    return dpart + tpart;
+  }
 
-  window.openTierDetail = openTierDetail;
+  function getSession2Text(){
+    const has = $("#fHasSession2")?.checked;
+    if(!has) return "";
+    const s = $("#fTime2Start")?.value || "";
+    const e = $("#fTime2End")?.value || "";
+    if(s && e) return `第二場時間：${s}～${e}`;
+    if(s) return `第二場時間：${s}`;
+    return "第二場時間：已勾選";
+  }
 
-  
-  function findItemById(id){
-    for(const c of CATEGORIES){
-      const it = (c.items||[]).find(x=>x.id===id);
-      if(it) return {cat:c, item:it};
+  function collectPrintLines(){
+    const rows=[];
+    const order=[["safety","安全等級"],["ambience","氣氛等級"],["upgrade","升級等級"]];
+    if(state.cart?.packs){
+      for(const [k,title] of order){
+        const p=state.cart.packs[k];
+        if(!p) continue;
+        rows.push({ kind:"pack", name:`${title}｜${p.name}`, unit:"套", qty:1, unitPrice:Number(p.price||0), subtotal:Number(p.price||0) });
+      }
     }
-    return null;
+    for(const [id,qty] of Object.entries(state.cart||{})){
+      if(id==="packs") continue;
+      const f=findItem(id); if(!f) continue;
+      const q=Number(qty||0); if(q<=0) continue;
+      const up = getUnitPrice(f.item, q);
+      const optText = formatOptText(id);
+      rows.push({ kind:"item", catId:f.cat.id, catName:f.cat.name, name:`${f.item.name}${optText}`, unit:f.item.unit||"件", qty:q, unitPrice:up, subtotal:up*q });
+    }
+    return rows;
   }
-
-  window.showItemDetail = (id) => {
-    const hit = findItemById(id);
-    if(!hit) return;
-    const it = hit.item;
-    openModal(it.name, it.desc || "—");
-  };
-
-  window.showTierDetail = (tierKey, n) => {
-    const name = LEVELS[tierKey][n-1];
-    const price = LEVEL_PRICES[tierKey][n-1];
-    const lines = [
-      `等級：${name}`,
-      `價格：${fmt(price)}`,
-      "",
-      "（此區可放該等級包含內容的說明；若您之後要接 Google Sheet 的「等級包含內容」，我可以再幫您串。）"
-    ].join("\n");
-    openModal("等級詳情", lines);
-  };
-
-  function renderItems(){
-    const cat = CATEGORIES.find(c=>c.id===state.catId) || CATEGORIES[0];
-    $("#catName").textContent = cat.name;
-    $("#items").innerHTML = cat.items.map(it=>{
-      const q = state.cart[it.id] || 0;
-      return `
-        <div class="item">
-          <img class="thumb" src="${it.img}" alt="">
-          <div class="meta">
-            <div class="name">${it.name}</div>
-            <div class="sub">${fmt(it.price)} / ${it.unit}</div>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap">
-              <div class="qty">
-                <button class="qbtn" onclick="updateQty('${it.id}',-1)">-</button>
-                <div class="qval">${q}</div>
-                <button class="qbtn" onclick="updateQty('${it.id}',1)">+</button>
-              </div>
-              <button class="btn" style="padding:8px 10px;border-radius:12px" onclick="showItemDetail('${it.id}')">詳情</button>
-            </div>
-          </div>
-          <div class="price">${fmt(it.price * q)}</div>
-        </div>`;
-    }).join("");
-  }
-
-
-  window.updateQty = (id, delta) => {
-    state.cart[id] = Math.max(0, (state.cart[id]||0) + delta);
-    if(state.cart[id]===0) delete state.cart[id];
-    renderAll();
-  };
 
   function renderCart(){
-    let sum = 0;
-    const items = [];
+    const el=$("#cart");
+    const dayLabel = $("#daySurchargeRow")?.querySelector(".subttl");
+    if(dayLabel){ dayLabel.innerHTML = `跨天加價 <span class="note-inline">（第2天：E×50%；第3天起：每一天 E×30%）</span>`; }
+    const s2Label = $("#session2SurchargeRow")?.querySelector(".subttl");
+    if(s2Label){ s2Label.innerHTML = `第二場加價 <span class="note-inline">（第一天/跨天每勾一天：E×30%）</span>`; }
+    
+    const groups=groupCart();
+    const packCount = state.cart.packs ? Object.keys(state.cart.packs).filter(k=>state.cart.packs[k]).length : 0;
+    const itemCount = Object.keys(state.cart).filter(k=>k!=="packs").length;
+    $("#cartBadge").textContent = `${packCount + itemCount} 項已選`;
 
-    Object.entries(state.cart.packs).forEach(([k, p]) => {
-      sum += p.price;
-      items.push(`<div class="citem"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:1000">${p.name}</div><div style="font-weight:1000">${fmt(p.price)}</div></div><button class="xbtn" type="button" onclick="deletePack('${k}')">✕</button></div>`);
-    });
-
-    CATEGORIES.forEach(c => c.items.forEach(it => {
-      const q = state.cart[it.id];
-      if(q > 0) {
-        sum += it.price * q;
-        items.push(`<div class="citem"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-weight:1000">${it.name} x ${q}</div><div style="font-weight:1000">${fmt(it.price*q)}</div></div><button class="xbtn" type="button" onclick="updateQty('${it.id}',-${q})">✕</button></div>`);
+    const parts=[];
+    if(state.cart.packs){
+      const order = [["safety","安全等級"],["ambience","氣氛等級"],["upgrade","升級等級"]];
+      for(const [tierKey, title] of order){
+        const pack = state.cart.packs[tierKey];
+        if(!pack) continue;
+        const lv = Number(pack.level||0);
+        const packName = `${title}｜${pack.name || ((LEVELS[tierKey]?.[lv-1]) || `第${lv}級`)}`;
+        const price = Number(pack.price||0);
+        parts.push(`
+          <div class="group">
+            <div class="gh"><span>${title}（套裝）</span><span class="subttl">已選 <b>1</b> 項</span></div>
+            <div class="gb">
+              <div class="citem">
+                <img src="${(TIER_PHOTOS[tierKey]?.[lv-1]?.[0]) || svgThumb("套裝")}" alt="${packName}">
+                <div class="cmeta">
+                  <div class="top">
+                    <div><div class="nm">${packName}</div><div class="unit">套裝價格（示範）</div></div>
+                    <div style="font-weight:1000">${fmt(price)}</div>
+                  </div>
+                  <div class="cline">
+                    <div class="qtyRow">
+                      <div class="qty" style="padding:6px 10px"><b>套裝</b></div>
+                      <button class="xbtn" data-act="delpack" data-tier="${tierKey}" title="刪除套裝">✕</button>
+                    </div>
+                    <div class="subttl">小計：<b>${fmt(price)}</b></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
       }
-    }));
+    }
 
-    $("#cart").innerHTML = items.join("");
-    const fees = (typeof window.__getDatePricingInfo === "function") ? window.__getDatePricingInfo() : {extraDaysMultiplier:0, session2Multiplier:0};
-    const dayFee = Math.round(sum * (fees.extraDaysMultiplier || 0));
-    const session2Fee = Math.round(sum * (fees.session2Multiplier || 0));
-    const total = sum + dayFee + session2Fee;
-    if($("#subTotal")) $("#subTotal").textContent = fmt(sum);
-    if($("#dayFee")) $("#dayFee").textContent = fmt(dayFee);
-    if($("#session2Fee")) $("#session2Fee").textContent = fmt(session2Fee);
-    $("#finalTotal").textContent = fmt(total);
+    for(const [gname, rows] of groups.entries()){
+      parts.push(`
+        <div class="group">
+          <div class="gh"><span>${gname}</span><span class="subttl">已選 <b>${rows.length}</b> 項</span></div>
+          <div class="gb">
+            ${rows.map(({item,qty})=>{
+              const up=getUnitPrice(item, qty);
+              const line=up*qty;
+              const optText = formatOptText(item.id);
+              const tiersHint = formatTiers(item);
+              return `
+                <div class="citem">
+                  <img src="${item.img}" alt="${item.name}">
+                  <div class="cmeta">
+                    <div class="top">
+                      <div>
+                        <div class="nm">${item.name}${optText}</div>
+                        <div class="unit">${fmt(up)} / ${item.unit}${tiersHint?` <span class="mini">｜${tiersHint}</span>`:""}</div>
+                      </div>
+                      <div style="font-weight:1000">${fmt(line)}</div>
+                    </div>
+                    <div class="cline">
+                      <div class="qtyRow">
+                        <div class="qty">
+                          <button class="qbtn" data-act="dec" data-id="${item.id}">-</button>
+                          <div class="qval">${qty}</div>
+                          <button class="qbtn" data-act="inc" data-id="${item.id}">+</button>
+                        </div>
+                        <button class="xbtn" data-act="del" data-id="${item.id}" title="刪除">✕</button>
+                      </div>
+                      <div class="subttl">小計：<b>${fmt(line)}</b></div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `);
+    }
 
-    const itemCount = Object.keys(state.cart).filter(k => k !== "packs").length;
-    const packCount = Object.keys(state.cart.packs || {}).length;
-    $("#pickedCount").textContent = (itemCount + packCount) + " 項已選";
+    el.innerHTML = parts.join("") || `<div class="note" style="display:none"></div>`;
+    el.querySelectorAll("button").forEach(b=>{
+      const act=b.dataset.act, id=b.dataset.id;
+      if(act==="inc") b.addEventListener("click", ()=>setQty(id,(state.cart[id]||0)+1));
+      if(act==="dec") b.addEventListener("click", ()=>setQty(id,Math.max(0,(state.cart[id]||0)-1)));
+      if(act==="del") b.addEventListener("click", ()=>setQty(id,0));
+      if(act==="delpack") b.addEventListener("click", ()=>removePack(b.dataset.tier));
+    });
+    
+    const {sum,dayFee,session2Fee,total}=calc();
+    $("#grandTotal").textContent=fmt(sum);
+    const subRow=$("#grandTotalRow");
+    if(subRow){
+      const hasFee = Number(dayFee||0)>0 || Number(session2Fee||0)>0;
+      subRow.style.display = hasFee ? "flex" : "none";
+    }
+    const dayRow=$("#daySurchargeRow");
+    const dayEl=$("#daySurcharge");
+    if(dayRow && dayEl){
+      const v = Number(dayFee||0);
+      dayRow.style.display = v>0 ? "flex" : "none";
+      dayEl.textContent = fmt(v);
+    }
+    const s2Row=$("#session2SurchargeRow");
+    const s2El=$("#session2Surcharge");
+    if(s2Row && s2El){
+      const v2 = Number(session2Fee||0);
+      s2Row.style.display = v2>0 ? "flex" : "none";
+      s2El.textContent = fmt(v2);
+    }
+    $("#finalTotal").textContent=fmt(total);
   }
 
-  window.deletePack = (key) => { delete state.cart.packs[key]; state.tiers[key]=0; renderAll(); };
-
-  function renderTabs(){
-    $("#tabs").innerHTML = CATEGORIES.map(c => `<button type="button" class="tab ${c.id===state.catId?'active':''}" onclick="state.catId='${c.id}';renderAll()">${c.name}</button>`).join("");
+  function renderAll(){
+    renderTierPills();
+    renderTierButtons();
+    renderTabs();
+    renderItems();
+    renderCart();
   }
 
-  function renderAll(){ renderTierButtons(); renderTabs(); renderItems(); renderCart(); }
+  // ============================
+  // 送出報價單：後台產 PDF 並送出報價單（客人 + 店家）
+  // ============================
+  const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
 
-
-  /* -----------------------------------------------------------
-     ✅ 送出報價單（Apps Script / Google Sheet Web App）
-     - 你只要把 ORDER_API_URL 換成你自己的 Web App /exec 連結
-     ----------------------------------------------------------- */
-  const ORDER_API_URL = ""; // 例如：https://script.google.com/macros/s/XXXX/exec
-
-  
-  function buildQuotePayload(){
-    const form = {
-      name: ($("#fName")?.value || "").trim(),
-      phone: ($("#fPhone")?.value || "").trim(),
-      email: ($("#fEmail")?.value || "").trim(),
-      addr: ($("#fAddr")?.value || "").trim(),
-      dateStart: ($("#fDateStart")?.value || "").trim(),
-      dateEnd: ($("#fDateEnd")?.value || "").trim(),
-      timeStart: ($("#fTimeStart")?.value || "").trim(),
-      timeEnd: ($("#fTimeEnd")?.value || "").trim(),
-      time2Start: ($("#fTime2Start")?.value || "").trim(),
-      time2End: ($("#fTime2End")?.value || "").trim(),
-      hasExtraDate: $("#fHasExtraDate")?.checked ? "是" : "否", // 是=連續多日模式
-      hasSession2: $("#fHasSession2")?.checked ? "是" : "否", // 單日模式用；多日改由每日設定
-      ,dateMode: $("#fHasExtraDate")?.checked ? "連續多日" : "單日"
-      ,dayCount: (typeof window.__getDatePricingInfo==="function" ? window.__getDatePricingInfo().dayCount : 1)
-      ,session2Count: (typeof window.__getDatePricingInfo==="function" ? window.__getDatePricingInfo().session2Count : ( $("#fHasSession2")?.checked ? 1 : 0))
-      ,session2Dates: (typeof window.__getDatePricingInfo==="function" ? (window.__getDatePricingInfo().session2Dates||[]).join(", ") : "")
-      ,dateMultiplier: (typeof window.__getDatePricingInfo==="function" ? window.__getDatePricingInfo().multiplier.toFixed(2) : "1.00")
-      ,dateBreakdown: (typeof window.__getDatePricingInfo==="function" ? window.__getDatePricingInfo().breakdownText : ""),
-      note: ($("#fNote")?.value || "").trim(),
-      // 以下為選填（後端 PDFTemplate 已支援）
-      eventType: ($("#fEventType")?.value || "").trim(),
-      crowd: ($("#fCrowd")?.value || "").trim(),
-      indoor: ($("#fIndoor")?.value || "").trim(),
-      city: ($("#fCity")?.value || "").trim(),
-      area: ($("#fArea")?.value || "").trim(),
-      bldg: ($("#fBldg")?.value || "").trim()
-      // 其餘欄位（若沒填會是空字串）
-    };
-
-    // 等級
-    const levels = {
-      safety: state.tiers.safety,
-      ambience: state.tiers.ambience,
-      upgrade: state.tiers.upgrade
-    };
-
-    // 明細 items：後端 PDFTemplate 期待 categoryName / lineTotal 等欄位
+  function buildQuoteItemsForSend(){
     const items = [];
-
-    // 1) 等級包（當作 qty=1 的品項）
     if(state.cart?.packs){
-      for(const [k, p] of Object.entries(state.cart.packs)){
+      const order=[["safety","安全等級"],["ambience","氣氛等級"],["upgrade","升級等級"]];
+      for(const [k,label] of order){
+        const p = state.cart.packs[k];
         if(!p) continue;
         items.push({
-          categoryName: "燈光音響配置",
-          id: `pack-${k}`,
-          name: String(p.name || ""),
+          categoryName: "套裝",
+          name: `套裝｜${label}｜${p.name||""}`,
+          id: `pack_${k}`,
+          unit: "套",
+          price: Number(p.price||0),
           qty: 1,
-          unit: "組",
-          price: Number(p.price || 0),
-          lineTotal: Number(p.price || 0)
+          lineTotal: Number(p.price||0),
+          options: {}
         });
       }
     }
-
-    // 2) 分類商品
-    for(const c of CATEGORIES){
-      for(const it of c.items){
-        const q = Number(state.cart[it.id] || 0);
-        if(q>0){
-          const price = Number(it.price || 0);
-          items.push({
-            categoryName: c.name,
-            id: it.id,
-            name: it.name,
-            qty: q,
-            unit: it.unit,
-            price,
-            lineTotal: price * q
-          });
-        }
+    const groups = groupCart();
+    for(const [catName, rows] of groups.entries()){
+      for(const {item, qty} of rows){
+        const up = getUnitPrice(item, qty);
+        items.push({
+          categoryName: catName,
+          name: item.name,
+          id: item.id,
+          unit: item.unit || "",
+          price: Number(up||0),
+          qty: Number(qty||0),
+          lineTotal: Number(up||0) * Number(qty||0),
+          options: state.itemOpts?.[item.id] || {}
+        });
       }
     }
+    return items;
+  }
 
-    const subtotal = items.reduce((s, it)=> s + Number(it.lineTotal || 0), 0);
-
-    // 日期/場次加價（依你的規則）
-    const info = (typeof window.__getDatePricingInfo === "function") ? window.__getDatePricingInfo() : {extraDaysMultiplier:0, session2Multiplier:0};
-    const session2Fee = Math.round(subtotal * (info.session2Multiplier || 0));
-    const dayFee = Math.round(subtotal * (info.extraDaysMultiplier || 0));
-
-    const total = subtotal + dayFee + session2Fee;
-
+  function calcQuoteSummaryForSend(){
+    const r = calc();
     return {
-      action: "submitQuote",
-      form,
-      levels,
-      items,
-      summary: { subtotal, dayFee, session2Fee, total }
+      subtotal: Number(r.sum||0),
+      discount: 0,
+      tax: 0,
+      dayFee: Number(r.dayFee||0),
+      session2Fee: Number(r.session2Fee||0),
+      total: Number(r.total||0)
     };
   }
 
+  function getLevelsForSend(){
+    return {
+      safety: state.cart?.packs?.safety?.name || "",
+      ambience: state.cart?.packs?.ambience?.name || "",
+      upgrade: state.cart?.packs?.upgrade?.name || ""
+    };
+  }
 
-  function submitQuote(){
-    if(!ORDER_API_URL){
-      alert("尚未設定 ORDER_API_URL（Apps Script Web App 連結）。\n請把程式碼裡的 ORDER_API_URL 貼上你的 /exec 連結後再試。");
-      return;
-    }
-    const payload = buildQuotePayload();
-
-    // 基本檢查（可依你需求調整）
-    if(!payload.form.name){
-      alert("請先填寫：姓名 / 單位");
-      return;
-    }
-    if(!payload.form.email){
-      alert("請先填寫：Email（用來寄出報價單）");
-      return;
-    }
-
+  // ✅ 最核心的打包修正：把 fDateEnd, fAddr, fBldg, time 等欄位通通送進去
+  function submitQuoteToAppsScript(){
     try{
+      const payload = {
+        action: "submitQuote",
+        ownerEmail: "", 
+        form: {
+          name: $("#fName")?.value?.trim() || "",
+          phone: $("#fPhone")?.value?.trim() || "",
+          email: $("#fEmail")?.value?.trim() || "",
+          dateStart: $("#fDateStart")?.value || "",
+          dateEnd: $("#fDateEnd")?.value || "",
+          timeStart: $("#fTimeStart")?.value || "",
+          timeEnd: $("#fTimeEnd")?.value || "",
+          city: $("#fCity")?.value || "",
+          area: $("#fArea")?.value || "",
+          addr: $("#fAddr")?.value?.trim() || "",
+          bldg: $("#fBldg")?.value?.trim() || "",
+          eventType: $("#fEventType")?.value || "",
+          crowd: $("#fCrowd")?.value || "",
+          indoor: $("#fIndoor")?.value || "",
+          hasSession2: $("#fHasSession2")?.checked ? "是" : "否",
+          session2Start: $("#fTime2Start")?.value || "",
+          session2End: $("#fTime2End")?.value || "",
+          note: $("#fNote")?.value?.trim() || ""
+        },
+        levels: getLevelsForSend(),
+        items: buildQuoteItemsForSend(),
+        summary: calcQuoteSummaryForSend()
+      };
+
       const ok = navigator.sendBeacon(ORDER_API_URL, JSON.stringify(payload));
-      if(ok){
-        alert("已送出！系統將依 Apps Script 設定寄出報價單，請至信箱查收。");
-      }else{
-        // 備援：fetch
-        fetch(ORDER_API_URL, {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify(payload)
-        }).then(r=>r.text()).then(()=>{
-          alert("已送出！系統將依 Apps Script 設定寄出報價單，請至信箱查收。");
-        }).catch(err=>{
-          alert("送出失敗：" + (err?.message || err));
-        });
+      if(ok) {
+        alert("已送出！系統會產生 PDF 報價單並寄給您，請至信箱查收。");
+      } else {
+        alert("送出失敗（瀏覽器未送出）。請重新整理後再試一次。");
       }
     }catch(e){
-      alert("送出失敗：" + (e?.message || e));
+      console.error(e);
+      alert("送出失敗：" + (e?.message||e));
     }
   }
 
-  (function bindSubmitBtn(){
-    const btn = document.getElementById("btnSendQuote");
-    if(btn){
-      btn.addEventListener("click", submitQuote);
-    }
-  })();
+  const __btnMail = $("#btnMail");
+  if(__btnMail) __btnMail.addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
+  const __btnSendQuote = $("#btnSendQuote");
+  if(__btnSendQuote) __btnSendQuote.addEventListener("click", ()=>{ submitQuoteToAppsScript(); });
 
-  window.addEventListener('load', ()=>{ initBasicSelects(); initTimePickers(); initCityAreaPickers(); bindToggles(); renderAll(); });
+  try{
+    initCity();
+    initTimePickers();
+    renderSession2Days();
+
+    const c2 = $("#fHasSession2");
+    const w2 = $("#session2Wrap");
+    if(c2){
+      c2.addEventListener("change", ()=>{
+        if(w2) w2.style.display = c2.checked ? "block" : "none";
+        renderCart();
+      });
+      if(w2) w2.style.display = c2.checked ? "block" : "none";
+    }
+
+    ["t2StartH","t2StartM","t2EndH","t2EndM"].forEach(id=>{
+      const el=$("#"+id);
+      if(el) el.addEventListener("change", ()=>renderCart());
+    });
+
+    ["fAddr","fBldg"].forEach(id=>{
+      const el=$("#"+id);
+      if(el) el.addEventListener("input", ()=>{ updateShipping(); renderCart(); });
+    });
+
+    ["fDateStart","fDateEnd"].forEach(id=>{
+      const el=$("#"+id);
+      if(el) el.addEventListener("change", ()=>{ renderSession2Days(); renderCart(); });
+    });
+
+  }catch(err){
+  }finally{
+    try{
+      renderAll();
+      loadSheetData();
+    }catch(err){}
+  }
 </script>
 </body>
 </html>
