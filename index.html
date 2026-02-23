@@ -53,6 +53,8 @@
     .step3{background:linear-gradient(90deg, #eff6ff, #fff)}
     .step4{background:linear-gradient(90deg, #fffbeb, #fff)}
 
+    .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:#fff;white-space:nowrap}
+
     .form{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .field{display:flex;flex-direction:column;gap:6px}
     .field label{font-size:12px;color:var(--muted);font-weight:900}
@@ -61,7 +63,12 @@
     .span2{grid-column:1/-1}
 
     /* 🚀 排版修正：日期與時間格子 */
-    .dateRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center}
+    .dateRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+    .dateRow .sep{color:var(--muted);font-weight:900;text-align:center; transform: translateY(-14px);}
+    .dateCol{display:grid;gap:6px;min-width:0}
+    .dateCap{font-size:11px;color:var(--muted);font-weight:900}
+    .dateRow input{width:100%;min-width:0}
+
     .timeRow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
     .timeRow .sep{color:var(--muted);font-weight:900;text-align:center}
     .timeInputGroup{display:grid;grid-template-columns:1fr 1fr;gap:6px} /* 分開小時與分鐘格子 */
@@ -72,7 +79,10 @@
     .items{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
     .item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center}
     .thumb{width:74px;height:74px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:#f3f4f6}
+    .meta{min-width:0}
     .meta .name{font-weight:1000}
+    .meta .sub{color:var(--muted);font-size:12px;margin-top:2px}
+    .meta .row2{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .price{font-weight:1000;text-align:right}
     .qty{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:6px 8px;background:#fff}
     .qbtn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000}
@@ -87,11 +97,26 @@
     .xbtn{position:absolute; top:50%; transform:translateY(-50%); right:10px; width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer}
 
     .tierWrap{padding:14px;display:grid;gap:12px}
+    .tierGrid{display:grid;grid-template-columns:1fr;gap:12px}
     .tierCard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
     .tierHead{padding:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
     .levelRow{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;padding:12px}
     .levelBtn{border:1px solid var(--line);border-radius:14px;padding:8px;cursor:pointer;background:#fff;display:flex;flex-direction:column;gap:8px}
+    .levelTopRow{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
     .levelMedia img{width:100%;height:120px;object-fit:cover;display:block;border-radius:8px}
+    .miniBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;cursor:pointer;font-weight:1000;font-size:12px}
+    .primaryMini{background:var(--brand);border-color:transparent;color:#fff}
+
+    .sendBar{display:flex;justify-content:flex-end}
+    .btn.send{background:#0ea5e9;border-color:#0284c7;color:#fff;font-weight:900}
+    .btn.send:hover{filter:brightness(.97)}
+
+    /* Modal（原本缺少，導致遮罩可能永遠顯示/或樣式跑掉） */
+    .modalMask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .modal{width:min(560px,100%);background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.22);overflow:hidden}
+    .modal .mh{padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+    .modal .mb{padding:14px 14px 20px;}
+    .modal .mb p{margin:0;color:#374151;line-height:1.65}
 
     @media (max-width: 620px) {
       .form { grid-template-columns: 1fr !important; }
@@ -99,11 +124,15 @@
       .timeRow { gap: 4px; }
       .timeInputGroup { gap: 4px; }
       .timeInputGroup select { padding: 8px 4px !important; font-size: 13px !important; }
+      .dateRow{gap:4px}
+      .dateRow .sep{transform:translateY(-10px)}
       .levelRow { grid-template-columns: repeat(2, 1fr); gap: 6px; }
       .levelMedia img { height: 75px; }
       .items { grid-template-columns: repeat(2, 1fr); gap: 6px; }
       .item { display: flex; flex-direction: column; align-items: stretch; padding: 8px; }
       .thumb { width: 100%; height: 90px; }
+      .sendBar{justify-content:stretch}
+      .btn.send{width:100%}
     }
   </style>
 </head>
@@ -139,10 +168,17 @@
         <div class="field span2"><label>詳細地址</label><input id="fAddr" placeholder="例：中山路 100 號"></div>
 
         <div class="field span2">
-          <label>活動日期</label>
+          <label>活動日期（開始 ～ 結束）</label>
           <div class="dateRow">
-            <input id="fDateStart" type="date">
-            <input id="fDateEnd" type="date">
+            <div class="dateCol">
+              <div class="dateCap">開始</div>
+              <input id="fDateStart" type="date">
+            </div>
+            <div class="sep">～</div>
+            <div class="dateCol">
+              <div class="dateCap">結束</div>
+              <input id="fDateEnd" type="date">
+            </div>
           </div>
         </div>
 
@@ -151,6 +187,19 @@
             <input type="checkbox" id="fHasExtraDate" style="width:18px;height:18px">
             新增不連續的活動日期 (依原價計算)
           </label>
+          <div id="extraDateWrap" style="display:none; margin-top:8px; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
+            <div class="dateRow">
+              <div class="dateCol">
+                <div class="dateCap">額外開始</div>
+                <input id="fExtraDateStart" type="date">
+              </div>
+              <div class="sep">～</div>
+              <div class="dateCol">
+                <div class="dateCap">額外結束</div>
+                <input id="fExtraDateEnd" type="date">
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="field span2">
@@ -175,6 +224,23 @@
             <input type="checkbox" id="fHasSession2" style="width:18px;height:18px">
             同一天有第二場同性質活動（勾選後可設定第二場時間；第二場加價：原始總價 x 30%）
           </label>
+
+          <div id="session2Wrap" style="display:none; margin-top:8px; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
+            <div style="font-weight:1000; margin-bottom:8px; color:var(--text);">第二場時間</div>
+            <div class="timeRow">
+              <div class="timeInputGroup">
+                <select id="t2StartH"></select>
+                <select id="t2StartM"></select>
+              </div>
+              <div class="sep">～</div>
+              <div class="timeInputGroup">
+                <select id="t2EndH"></select>
+                <select id="t2EndM"></select>
+              </div>
+            </div>
+            <input id="fTime2Start" type="hidden">
+            <input id="fTime2End" type="hidden">
+          </div>
         </div>
 
         <div class="field span2"><label>備註需求</label><textarea id="fNote"></textarea></div>
@@ -207,7 +273,7 @@
           <div class="trow"><span>總計</span><b id="finalTotal">NT$0</b></div>
         </div>
         <div class="cart" id="cart"></div>
-        <div class="sendBar"><button class="btn send" id="btnSendQuote">送出報價單</button></div>
+        <div class="sendBar"><button class="btn send" id="btnSendQuote" type="button">送出報價單</button></div>
       </div>
     </aside>
   </div>
@@ -215,7 +281,7 @@
 
 <div class="modalMask" id="modalMask">
   <div class="modal">
-    <div class="mh"><b id="mTitle">詳情</b><button class="xbtn" id="mClose">✕</button></div>
+    <div class="mh"><b id="mTitle">詳情</b><button class="xbtn" id="mClose" type="button">✕</button></div>
     <div class="mb"><p id="mBody">—</p></div>
   </div>
 </div>
@@ -262,12 +328,19 @@
     upgrade: [30000, 40000, 50000, 80000, 100000, 150000]
   };
 
-  function svgThumb(label){ return `https://picsum.photos/seed/${label}/200`; }
+  function svgThumb(label){ return `https://picsum.photos/seed/${encodeURIComponent(label)}/200`; }
   const state = { catId: "audio", cart: { packs: {} }, tiers: { safety: 0, ambience: 0, upgrade: 0 } };
   const $ = (s)=>document.querySelector(s);
   const fmt = (n)=>"NT$"+Number(n||0).toLocaleString();
 
-  // 🚀 修正：時間生成邏輯，分離小時與分鐘
+  function setHiddenTime(hId, mId, outId){
+    const h = document.getElementById(hId)?.value ?? "00";
+    const m = document.getElementById(mId)?.value ?? "00";
+    const out = document.getElementById(outId);
+    if(out) out.value = `${h}:${m}`;
+  }
+
+  // 🚀 修正：時間生成邏輯，分離小時與分鐘（並同步 hidden 值）
   function initTimePickers(){
     const hours = Array.from({length:24}, (_,i)=>String(i).padStart(2,"0"));
     const mins = ["00","10","20","30","40","50"];
@@ -275,9 +348,29 @@
       const el = document.getElementById(id);
       if(el) el.innerHTML = arr.map(v=>`<option value="${v}">${v}</option>`).join("");
     };
+
     fill("tStartH", hours); fill("tStartM", mins);
     fill("tEndH", hours); fill("tEndM", mins);
-    $("#tStartH").value="09"; $("#tEndH").value="12";
+    fill("t2StartH", hours); fill("t2StartM", mins);
+    fill("t2EndH", hours); fill("t2EndM", mins);
+
+    const safeSet = (id,val)=>{ const el=document.getElementById(id); if(el) el.value=val; }
+    safeSet("tStartH","09"); safeSet("tStartM","00");
+    safeSet("tEndH","12"); safeSet("tEndM","00");
+    safeSet("t2StartH","14"); safeSet("t2StartM","00");
+    safeSet("t2EndH","17"); safeSet("t2EndM","00");
+
+    const bind = (hId,mId,outId)=>{
+      const h=document.getElementById(hId), m=document.getElementById(mId);
+      const fn=()=>setHiddenTime(hId,mId,outId);
+      h?.addEventListener("change", fn);
+      m?.addEventListener("change", fn);
+      fn();
+    };
+    bind("tStartH","tStartM","fTimeStart");
+    bind("tEndH","tEndM","fTimeEnd");
+    bind("t2StartH","t2StartM","fTime2Start");
+    bind("t2EndH","t2EndM","fTime2End");
   }
 
   function renderTierButtons(){
@@ -287,13 +380,13 @@
         const n = idx+1;
         const active = state.tiers[tierKey] === n ? "active" : "";
         return `
-          <div class="levelBtn ${active}" onclick="selectTier('${tierKey}', ${n})">
+          <div class="levelBtn ${active}" onclick="selectTier('${tierKey}', ${n})" role="button" tabindex="0">
             <div class="levelTopRow">
               <span style="font-size:13px">${name}</span>
               <span style="font-size:12px;font-weight:1000">${fmt(LEVEL_PRICES[tierKey][idx])}</span>
             </div>
-            <div class="levelMedia"><img src="https://picsum.photos/seed/${tierKey}${n}/200/120"></div>
-            <button class="miniBtn primaryMini" style="width:100%">加入報價</button>
+            <div class="levelMedia"><img src="https://picsum.photos/seed/${tierKey}${n}/200/120" alt=""></div>
+            <button class="miniBtn primaryMini" type="button" onclick="event.stopPropagation(); selectTier('${tierKey}', ${n});" style="width:100%">加入報價</button>
           </div>`;
       }).join("");
     };
@@ -313,15 +406,15 @@
       const q = state.cart[it.id] || 0;
       return `
         <div class="item">
-          <img class="thumb" src="${it.img}">
+          <img class="thumb" src="${it.img}" alt="">
           <div class="meta">
             <div class="name">${it.name}</div>
             <div class="sub">${fmt(it.price)} / ${it.unit}</div>
             <div class="row2">
               <div class="qty">
-                <button class="qbtn" onclick="updateQty('${it.id}',-1)">-</button>
+                <button class="qbtn" type="button" onclick="updateQty('${it.id}',-1)">-</button>
                 <div class="qval">${q}</div>
-                <button class="qbtn" onclick="updateQty('${it.id}',1)">+</button>
+                <button class="qbtn" type="button" onclick="updateQty('${it.id}',1)">+</button>
               </div>
             </div>
           </div>
@@ -339,27 +432,54 @@
   function renderCart(){
     let sum = 0;
     const items = [];
+
     Object.entries(state.cart.packs).forEach(([k, p]) => {
       sum += p.price;
-      items.push(`<div class="citem"><div class="cmeta"><div class="top"><div class="nm">${p.name}</div><div>${fmt(p.price)}</div></div></div><button class="xbtn" onclick="deletePack('${k}')">✕</button></div>`);
+      items.push(`<div class="citem"><div class="cmeta"><div class="top" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div class="nm" style="font-weight:1000">${p.name}</div><div style="font-weight:1000">${fmt(p.price)}</div></div></div><button class="xbtn" type="button" onclick="deletePack('${k}')">✕</button></div>`);
     });
+
     CATEGORIES.forEach(c => c.items.forEach(it => {
       const q = state.cart[it.id];
       if(q > 0) {
         sum += it.price * q;
-        items.push(`<div class="citem"><div class="cmeta"><div class="top"><div class="nm">${it.name} x ${q}</div><div>${fmt(it.price*q)}</div></div></div><button class="xbtn" onclick="updateQty('${it.id}',-${q})">✕</button></div>`);
+        items.push(`<div class="citem"><div class="cmeta"><div class="top" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div class="nm" style="font-weight:1000">${it.name} x ${q}</div><div style="font-weight:1000">${fmt(it.price*q)}</div></div></div><button class="xbtn" type="button" onclick="updateQty('${it.id}',-${q})">✕</button></div>`);
       }
     }));
+
     $("#cart").innerHTML = items.join("");
     $("#finalTotal").textContent = fmt(sum);
-    $("#pickedCount").textContent = (Object.keys(state.cart).length + Object.keys(state.cart.packs).length) + " 項已選";
+
+    const itemCount = Object.keys(state.cart).filter(k => k !== "packs").length; // 只算單品
+    const packCount = Object.keys(state.cart.packs || {}).length;
+    $("#pickedCount").textContent = (itemCount + packCount) + " 項已選";
   }
 
   window.deletePack = (key) => { delete state.cart.packs[key]; state.tiers[key]=0; renderAll(); };
-  function renderTabs(){ $("#tabs").innerHTML = CATEGORIES.map(c => `<button class="tab ${c.id===state.catId?'active':''}" onclick="state.catId='${c.id}';renderAll()">${c.name}</button>`).join(""); }
+
+  function renderTabs(){
+    $("#tabs").innerHTML = CATEGORIES.map(c => `<button type="button" class="tab ${c.id===state.catId?'active':''}" onclick="state.catId='${c.id}';renderAll()">${c.name}</button>`).join("");
+  }
+
   function renderAll(){ renderTierButtons(); renderTabs(); renderItems(); renderCart(); }
 
-  window.onload = () => { initTimePickers(); renderAll(); };
+  // ✅ 修正：勾選才顯示額外日期/第二場時間
+  function bindToggles(){
+    const ex = document.getElementById("fHasExtraDate");
+    const exWrap = document.getElementById("extraDateWrap");
+    const s2 = document.getElementById("fHasSession2");
+    const s2Wrap = document.getElementById("session2Wrap");
+
+    const apply = ()=>{
+      if(exWrap) exWrap.style.display = ex?.checked ? "block" : "none";
+      if(s2Wrap) s2Wrap.style.display = s2?.checked ? "block" : "none";
+    };
+    ex?.addEventListener("change", apply);
+    s2?.addEventListener("change", apply);
+    apply();
+  }
+
+  window.onload = () => { initTimePickers(); bindToggles(); renderAll(); };
+
   $("#mClose").onclick = () => $("#modalMask").style.display="none";
 </script>
 </body>
