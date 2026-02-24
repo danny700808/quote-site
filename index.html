@@ -1160,24 +1160,71 @@ function renderSession2Days(){
     });
   });
 
-  // 綁事件：時間變更
-  box.querySelectorAll('select[data-s2t="1"]').forEach(sel=>{
-    sel.addEventListener("change", ()=>{
-      const d = sel.dataset.date;
-      state.session2[d] = state.session2[d] || { on:false, start:defaultStart, end:defaultEnd };
+// 綁事件：時間變更（✅ 第二場不得與第一場重疊）
+box.querySelectorAll('select[data-s2t="1"]').forEach(sel=>{
+  sel.addEventListener("change", ()=>{
+    const d = sel.dataset.date;
+    state.session2[d] = state.session2[d] || { on:false, start:defaultStart, end:defaultEnd };
 
-      const sh = box.querySelector(`#s2_${d}_startH`)?.value || "18";
-      const sm = box.querySelector(`#s2_${d}_startM`)?.value || "00";
-      const eh = box.querySelector(`#s2_${d}_endH`)?.value || "21";
-      const em = box.querySelector(`#s2_${d}_endM`)?.value || "00";
+    // 讀取第二場目前選到的時間
+    const shEl = box.querySelector(`#s2_${d}_startH`);
+    const smEl = box.querySelector(`#s2_${d}_startM`);
+    const ehEl = box.querySelector(`#s2_${d}_endH`);
+    const emEl = box.querySelector(`#s2_${d}_endM`);
 
-      state.session2[d].start = `${sh}:${sm}`;
-      state.session2[d].end   = `${eh}:${em}`;
+    let sh = shEl?.value || "18";
+    let sm = smEl?.value || "00";
+    let eh = ehEl?.value || "21";
+    let em = emEl?.value || "00";
 
-      syncSession2Hidden();
-      renderCart();
-    });
+    // ✅ 取第一場結束時間（同一天共用）
+    const fEndH = $("#tEndH")?.value || "";   // 你的第一場 end hour select id
+    const fEndM = $("#tEndM")?.value || "00"; // 你的第一場 end minute select id（你是 00/10/20/30/40/50）
+    // 如果你第一場不是用 tEndH/tEndM，而是用其他 id，告訴我我幫你改成正確的
+
+    const toMin = (hh, mm) => (parseInt(hh,10)||0)*60 + (parseInt(mm,10)||0);
+    const fromMin = (m) => {
+      m = Math.max(0, Math.min(24*60-10, m));
+      const hh = String(Math.floor(m/60)).padStart(2,"0");
+      const mm = String(m%60).padStart(2,"0");
+      return [hh, mm];
+    };
+
+    let s2Start = toMin(sh, sm);
+    let s2End   = toMin(eh, em);
+
+    // ✅ 第一場結束 (限制第二場開始必須在之後)
+    const firstEnd = (fEndH ? toMin(fEndH, fEndM) : null);
+
+    // 你的分鐘只能選 00/10/20/30/40/50，所以用 10 分鐘當最小單位
+    const STEP = 10;
+
+    // 1) 第二場開始不得早於第一場結束
+    if(firstEnd !== null && s2Start < firstEnd){
+      s2Start = firstEnd;
+      const [hh, mm] = fromMin(s2Start);
+      sh = hh; sm = mm;
+      if(shEl) shEl.value = hh;
+      if(smEl) smEl.value = mm;
+    }
+
+    // 2) 第二場結束必須 > 第二場開始（至少 +10 分）
+    if(s2End <= s2Start){
+      s2End = s2Start + STEP;
+      const [hh, mm] = fromMin(s2End);
+      eh = hh; em = mm;
+      if(ehEl) ehEl.value = hh;
+      if(emEl) emEl.value = mm;
+    }
+
+    // 寫回 state
+    state.session2[d].start = `${sh}:${sm}`;
+    state.session2[d].end   = `${eh}:${em}`;
+
+    syncSession2Hidden();
+    renderCart();
   });
+});
 
   syncSession2Hidden();
 }
