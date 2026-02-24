@@ -1056,8 +1056,9 @@ function getDateRangeList(){
   const start = new Date(Math.min(s.getTime(), e.getTime()));
   const end   = new Date(Math.max(s.getTime(), e.getTime()));
   const out=[];
-  let cur = new Date(start);
-  while(cur.getTime() <= end.getTime()){
+  let cur = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const end2 = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  while(cur.getTime() <= end2.getTime()){
     out.push(
   `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,"0")}-${String(cur.getDate()).padStart(2,"0")}`
 );
