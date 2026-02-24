@@ -320,6 +320,28 @@ body.printing #printRoot{display:block}
   .field input, .field select, .field textarea { font-size: 16px !important; padding: 10px 12px !important; }
   .field label { font-size: 13px !important; }
 }
+  /* ✅ 多日活動：開始/結束日期在手機不要被切掉 */
+.dateRow.date-range-row{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+/* 你中間那個 <div class="sep"></div> 直接隱藏（grid 用 gap 就夠了） */
+.dateRow.date-range-row .sep{ display:none !important; }
+
+/* ✅ 手機太窄自動變一欄 */
+@media (max-width: 480px){
+  .dateRow.date-range-row{ grid-template-columns: 1fr; }
+}
+
+/* ✅ date input 在手機不要溢出 */
+.dateRow.date-range-row input[type="date"]{
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 </style>
 </head>
 
@@ -329,20 +351,12 @@ body.printing #printRoot{display:block}
     <div class="title">
       <h1>活動企劃｜設備選配與即時報價</h1>
 
-      <div class="stepsWrap" aria-label="報價流程四步驟">
-        <div class="steps">
-          <div class="stepBox"><span class="stepNum">1</span><span class="stepText">填寫基本資料</span></div>
-          <span class="stepArrow" aria-hidden="true"></span>
-          <div class="stepBox"><span class="stepNum">2</span><span class="stepText">選取燈光音響配置</span></div>
-          <span class="stepArrow" aria-hidden="true"></span>
-          <div class="stepBox"><span class="stepNum">3</span><span class="stepText">選取設備服務加購</span></div>
-          <span class="stepArrow" aria-hidden="true"></span>
-          <div class="stepBox"><span class="stepNum">4</span><span class="stepText">送出報價單</span></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
+<div class="step-labels">
+  <span>填寫基本資料</span>
+  <span>選取燈光音響配置</span>
+  <span>選取設備服務加購</span>
+  <span>送出報價單</span>
+</div>
 </header>
 
 <div class="wrap">
@@ -464,7 +478,7 @@ body.printing #printRoot{display:block}
           </label>
 
           <div id="multiDayWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc; margin-top:6px;">
-            <div class="dateRow">
+            <div class="dateRow date-range-row">
               <div class="dateCol">
                 <div class="dateCap">開始</div>
                 <input id="fDateStartMirror" type="date" disabled>
