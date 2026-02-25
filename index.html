@@ -1332,121 +1332,229 @@ function submitQuoteToAppsScript(){
   renderExtraDates();
   renderDayTimePlan();
 })();
-  /* ✅ Step3：自動把「安全/氣氛/升級」等級卡片補回到逐日選設備畫面
-   - 不改你原本邏輯
-   - 不需要改 Step3 HTML 模板
-   - 看到 Step3 的 #tabs + #items + #cart 時，自動插入到 tabs 上方
-*/
+/* =========================================================
+   ✅ Step3（逐日選設備）接回：安全/氣氛/升級 三組等級卡片
+   特點：
+   1) 不搬移你原本的 #levelsSafety 等節點（避免被洗掉）
+   2) 在 Step3 tabs 上方「插入一個區塊」放三個新的容器
+   3) 用 renderTierButtonsDay() 專門渲染到 Step3
+========================================================= */
+
 (function(){
-  function ensureEl(id, tag){
-    let el = document.getElementById(id);
-    if(!el){
-      el = document.createElement(tag || "div");
-      el.id = id;
-    }
-    return el;
+  // 1) 找 Step3 的插入點：只要 tabs 存在就算 Step3 已出現
+  function findStep3Host(){
+    const tabs = document.getElementById("tabs");
+    if(!tabs) return null;
+    return { host: tabs.parentElement, tabs };
   }
 
-  function buildRoot(){
-    let root = document.getElementById("tierSectionRoot");
-    if(!root){
-      root = document.createElement("section");
-      root.id = "tierSectionRoot";
-      root.innerHTML = `
-        <div class="tierTop">
-          <div>
-            <div class="tierTitle">套裝等級（可選）</div>
-            <div class="tierHint">
-              可先選「安全 / 氣氛 / 升級」其中一種等級加入本日報價；也可不選，直接往下加設備。
-            </div>
-          </div>
-          <div class="tierPillsText" data-slot="tierPills"></div>
-        </div>
+  // 2) 建立 Step3 的容器（只建一次）
+  function ensureTierRoot(){
+    let root = document.getElementById("tierSectionRootDay");
+    if(root) return root;
 
-        <div class="tierCols">
-          <div class="tierCol">
-            <div class="tierColHead"><span>safety｜安全等級</span><span class="pillMini" data-slot="pillSafety">未選</span></div>
-            <div data-slot="levelsSafety"></div>
-          </div>
-          <div class="tierCol">
-            <div class="tierColHead"><span>ambience｜氣氛等級</span><span class="pillMini" data-slot="pillAmbience">未選</span></div>
-            <div data-slot="levelsAmbience"></div>
-          </div>
-          <div class="tierCol">
-            <div class="tierColHead"><span>upgrade｜升級等級</span><span class="pillMini" data-slot="pillUpgrade">未選</span></div>
-            <div data-slot="levelsUpgrade"></div>
+    root = document.createElement("section");
+    root.id = "tierSectionRootDay";
+    root.style.cssText = `
+      margin:12px 0; padding:12px;
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+    `;
+
+    root.innerHTML = `
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start">
+        <div>
+          <div style="font-weight:1000">套裝等級（安全 / 氣氛 / 升級）</div>
+          <div style="color:var(--muted);font-weight:800;font-size:13px;margin-top:4px;line-height:1.4">
+            這三組就是你原本的 safety / ambience / upgrade 等級卡片；可點「詳情」查看內容，或「加入報價」套用到本日。
           </div>
         </div>
-      `;
-    }
+        <div id="tierPillsDay" style="font-weight:900;color:var(--muted);white-space:nowrap">安全—｜氣氛—｜升級—</div>
+      </div>
 
-    // slots
-    const slotPills = root.querySelector('[data-slot="tierPills"]');
-    const slotPS = root.querySelector('[data-slot="pillSafety"]');
-    const slotPA = root.querySelector('[data-slot="pillAmbience"]');
-    const slotPU = root.querySelector('[data-slot="pillUpgrade"]');
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:10px" id="tierColsDay">
+        <div style="border:1px dashed var(--line);border-radius:14px;padding:10px;background:#fff">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:1000;margin-bottom:8px">
+            <span>安全等級（safety）</span><span id="pillSafetyDay" style="font-size:12px;color:var(--muted)">未選</span>
+          </div>
+          <div id="levelsSafetyDay"></div>
+        </div>
 
-    const slotLS = root.querySelector('[data-slot="levelsSafety"]');
-    const slotLA = root.querySelector('[data-slot="levelsAmbience"]');
-    const slotLU = root.querySelector('[data-slot="levelsUpgrade"]');
+        <div style="border:1px dashed var(--line);border-radius:14px;padding:10px;background:#fff">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:1000;margin-bottom:8px">
+            <span>氣氛等級（ambience）</span><span id="pillAmbienceDay" style="font-size:12px;color:var(--muted)">未選</span>
+          </div>
+          <div id="levelsAmbienceDay"></div>
+        </div>
 
-    // 如果你原本頁面已經有這些元素，這段會「搬移」到 Step3；避免產生重複 id
-    const tierPills = ensureEl("tierPills", "div");
-    const pillSafety = ensureEl("pillSafety", "span");
-    const pillAmbience = ensureEl("pillAmbience", "span");
-    const pillUpgrade = ensureEl("pillUpgrade", "span");
+        <div style="border:1px dashed var(--line);border-radius:14px;padding:10px;background:#fff">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:1000;margin-bottom:8px">
+            <span>升級等級（upgrade）</span><span id="pillUpgradeDay" style="font-size:12px;color:var(--muted)">未選</span>
+          </div>
+          <div id="levelsUpgradeDay"></div>
+        </div>
+      </div>
+    `;
 
-    const levelsSafety = ensureEl("levelsSafety", "div");
-    const levelsAmbience = ensureEl("levelsAmbience", "div");
-    const levelsUpgrade = ensureEl("levelsUpgrade", "div");
-
-    // 清空 slot 再塞（避免重複）
-    slotPills.innerHTML = "";
-    slotPS.innerHTML = "";
-    slotPA.innerHTML = "";
-    slotPU.innerHTML = "";
-    slotLS.innerHTML = "";
-    slotLA.innerHTML = "";
-    slotLU.innerHTML = "";
-
-    slotPills.appendChild(tierPills);
-    slotPS.appendChild(pillSafety);
-    slotPA.appendChild(pillAmbience);
-    slotPU.appendChild(pillUpgrade);
-
-    slotLS.appendChild(levelsSafety);
-    slotLA.appendChild(levelsAmbience);
-    slotLU.appendChild(levelsUpgrade);
+    // 桌機三欄
+    const mq = window.matchMedia("(min-width: 980px)");
+    const cols = root.querySelector("#tierColsDay");
+    function applyCols(){ if(cols) cols.style.gridTemplateColumns = mq.matches ? "repeat(3,1fr)" : "1fr"; }
+    mq.addEventListener?.("change", applyCols);
+    applyCols();
 
     return root;
   }
 
-  function mountIntoStep3(){
-    // Step3（逐日選設備）通常同時存在這三個區塊
-    const tabs = document.getElementById("tabs");
-    const items = document.getElementById("items");
-    const cart  = document.getElementById("cart");
-    if(!tabs || !items || !cart) return;
+  // 3) 取得你目前「本日」的 state 容器
+  function getDayCtx(){
+    // 你的逐日資料若是 state.dayData[date]，就會有
+    // 沒有也沒關係，回退用 state 本體
+    try{
+      const d = state.currentDate || state.activeDayKey || state.activeDay || "";
+      if(d && state.dayData && state.dayData[d]) return state.dayData[d];
+    }catch(e){}
+    return state;
+  }
 
-    const host = tabs.parentElement;
+  // 4) Step3 專用渲染：畫 safety/ambience/upgrade 到 Day 容器
+  function renderTierButtonsDay(){
+    if(typeof LEVELS === "undefined" || typeof LEVEL_PRICES === "undefined") return;
+
+    const ctx = getDayCtx();
+    ctx.tiers = ctx.tiers || { safety:0, ambience:0, upgrade:0 };
+    ctx.cart = ctx.cart || {};
+    ctx.cart.packs = ctx.cart.packs || {};
+
+    // pills
+    const ps = document.getElementById("pillSafetyDay");
+    const pa = document.getElementById("pillAmbienceDay");
+    const pu = document.getElementById("pillUpgradeDay");
+    if(ps) ps.textContent = ctx.tiers.safety ? `第${ctx.tiers.safety}級` : "未選";
+    if(pa) pa.textContent = ctx.tiers.ambience ? `第${ctx.tiers.ambience}級` : "未選";
+    if(pu) pu.textContent = ctx.tiers.upgrade ? `第${ctx.tiers.upgrade}級` : "未選";
+
+    const pillLine = document.getElementById("tierPillsDay");
+    if(pillLine){
+      const s = ctx.tiers.safety ? `安全第${ctx.tiers.safety}級` : "安全—";
+      const a = ctx.tiers.ambience ? `氣氛第${ctx.tiers.ambience}級` : "氣氛—";
+      const u = ctx.tiers.upgrade ? `升級第${ctx.tiers.upgrade}級` : "升級—";
+      pillLine.textContent = `${s}｜${a}｜${u}`;
+    }
+
+    // 這裡完全沿用你原本的 PACKS_* / openTierDetail / fmt / TIER_PHOTOS
+    function applyPackLevelScoped(tierKey, level){
+      const packs = tierKey==="safety" ? PACKS_SAFETY : (tierKey==="ambience" ? PACKS_AMBIENCE : PACKS_UPGRADE);
+      const list = packs?.[level] || [];
+      if(!level || !list.length){ alert("此等級尚未設定套裝內容。"); return; }
+
+      ctx.tiers[tierKey] = level;
+      const label = tierKey==="safety" ? "安全等級" : (tierKey==="ambience" ? "氣氛等級" : "升級等級");
+      const name  = LEVELS[tierKey]?.[level-1] || `第${level}級`;
+      const price = LEVEL_PRICES[tierKey]?.[level-1] || 0;
+
+      ctx.cart.packs[tierKey] = { tierKey, label, level, name, price, items:list };
+
+      // 你原本的 renderCart/renderAll 任一個有就刷新
+      try{ if(typeof renderCart==="function") renderCart(); }catch(e){}
+      try{ if(typeof renderAll==="function") renderAll(); }catch(e){}
+      try{ if(typeof renderDayCartSummary==="function") renderDayCartSummary(); }catch(e){}
+      renderTierButtonsDay();
+    }
+
+    function removePackScoped(tierKey){
+      if(ctx.cart?.packs) delete ctx.cart.packs[tierKey];
+      ctx.tiers[tierKey]=0;
+      try{ if(typeof renderCart==="function") renderCart(); }catch(e){}
+      try{ if(typeof renderAll==="function") renderAll(); }catch(e){}
+      try{ if(typeof renderDayCartSummary==="function") renderDayCartSummary(); }catch(e){}
+      renderTierButtonsDay();
+    }
+
+    function mk(tierKey, mountId){
+      const el = document.getElementById(mountId);
+      if(!el) return;
+
+      el.innerHTML = (LEVELS[tierKey]||[]).map((name, idx)=>{
+        const n = idx+1;
+        const price = LEVEL_PRICES[tierKey]?.[idx];
+        const img = (typeof TIER_PHOTOS!=="undefined" && TIER_PHOTOS[tierKey]?.[idx]?.[0]) ? TIER_PHOTOS[tierKey][idx][0] : "https://picsum.photos/seed/stage-fallback/800/600";
+        const on = ctx.tiers[tierKey]===n ? "active" : "";
+        const has = !!ctx.cart?.packs?.[tierKey];
+
+        return `
+          <div class="levelBtn ${on}" data-tier="${tierKey}" data-level="${n}">
+            <div class="levelText">
+              <div class="levelTopRow">
+                <span class="levelName">${name}</span>
+                <span class="levelPrice">${price?fmt(price):"—"}</span>
+              </div>
+              <div class="levelActions">
+                <button type="button" class="miniBtn primaryMini" data-act="apply" data-tier="${tierKey}" data-level="${n}">加入報價</button>
+                <button type="button" class="miniBtn" data-act="detail" data-tier="${tierKey}" data-level="${n}">詳情</button>
+                ${has ? `<button type="button" class="miniBtn" data-act="remove" data-tier="${tierKey}">移除</button>` : ``}
+              </div>
+            </div>
+            <div class="levelMedia">
+              <img src="${img}" alt="示意照片" loading="lazy">
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // 卡片點擊：選級（只高亮）
+      el.querySelectorAll(".levelBtn").forEach(box=>{
+        box.addEventListener("click", (e)=>{
+          if(e.target && e.target.closest(".miniBtn")) return;
+          ctx.tiers[box.dataset.tier] = Number(box.dataset.level);
+          renderTierButtonsDay();
+        });
+      });
+
+      // 按鈕
+      el.querySelectorAll(".miniBtn").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          const act = btn.dataset.act;
+          const tier = btn.dataset.tier;
+          const lv = Number(btn.dataset.level||0);
+
+          if(act==="apply") return applyPackLevelScoped(tier, lv);
+          if(act==="remove") return removePackScoped(tier);
+          if(act==="detail"){
+            if(typeof openTierDetail==="function") return openTierDetail(tier, lv);
+            alert("找不到 openTierDetail()（詳情函式）。");
+          }
+        });
+      });
+    }
+
+    mk("safety","levelsSafetyDay");
+    mk("ambience","levelsAmbienceDay");
+    mk("upgrade","levelsUpgradeDay");
+  }
+
+  // 5) 掛載：把 root 插到 tabs 上方 + render
+  function mount(){
+    const found = findStep3Host();
+    if(!found) return;
+
+    const {host, tabs} = found;
     if(!host) return;
 
-    const root = buildRoot();
-
-    // 插到 tabs 上方
+    const root = ensureTierRoot();
     if(!host.contains(root)){
       host.insertBefore(root, tabs);
     }
-
-    // 重新渲染等級 UI（使用你原本已存在的函式）
-    try{ if(typeof renderTierPills === "function") renderTierPills(); }catch(e){}
-    try{ if(typeof renderTierButtons === "function") renderTierButtons(); }catch(e){}
+    renderTierButtonsDay();
   }
 
-  // 立刻跑一次 + 監看 DOM（打開 Step3 / 切換日期時都會觸發）
-  mountIntoStep3();
-  const obs = new MutationObserver(()=>mountIntoStep3());
-  obs.observe(document.body, { childList:true, subtree:true });
+  // 立刻跑一次 + 監看 DOM（打開 Step3 / 切換日期都會觸發）
+  mount();
+  const obs = new MutationObserver(()=>mount());
+  obs.observe(document.body, {childList:true, subtree:true});
 })();
 </script>
 </body>
