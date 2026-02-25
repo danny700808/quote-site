@@ -737,8 +737,7 @@ const state = {
   // 日期來源：
   cont: { start:"", end:"" }, // 連續
   nonDates: [],               // 不連續日期
-  // 日期→規劃（第1場/第2場）
-  plan: {}, // { "YYYY-MM-DD": { s1:{start,end}, s2:{on,start,end} } }/* =========================
+  // 日期→規劃（第1場/第2場）/* =========================
    Part2：資料區
    ========================= */
 
@@ -2083,6 +2082,7 @@ $("#cEnd").addEventListener("change", ()=>{ renderPlanner(); });
 </script>
 </body>
 </html>
+  plan: {}, // { "YYYY-MM-DD": { s1:{start,end}, s2:{on,start,end} } }
   sessions: [],
   curIdx: 0
 };
