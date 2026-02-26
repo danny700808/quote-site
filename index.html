@@ -301,7 +301,7 @@ body.printing #printRoot{display:block}
           </div>
           <div class="stepBox" data-step="4">
             <div class="stepNum">4</div>
-            <div class="stepText">總覽<br>＋送出/列印</div>
+            <div class="stepText">報價<br>＋送出/列印</div>
           </div>
         </div>
       </div>
@@ -736,7 +736,7 @@ body.printing #printRoot{display:block}
     <!-- ======================= VIEW: Step4 ======================= -->
     <section class="card view" id="viewQuote">
       <div class="hd stepHd step4">
-        <h2>4) 總覽（主案＋加開案）</h2>
+        <h2>4) 報價（主案＋加開案）</h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn warn" id="btnPrint" type="button">列印成 PDF</button>
           <button class="btn primary" id="btnSendQuote" type="button">送出報價單</button>
@@ -763,7 +763,7 @@ body.printing #printRoot{display:block}
         </table>
 
         <div class="note">
-          PDF 版面：第 1 頁會列出「主案＋加開案金額總覽」，後面會列出每一項的詳細清單。
+          PDF 版面：第 1 頁會列出「主案＋加開案金額報價」，後面會列出每一項的詳細清單。
         </div>
 
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
@@ -2497,7 +2497,7 @@ function buildPrint(){
       <div class="printMeta">活動：${escapeHtml(g.eventType||"")}｜人數：${escapeHtml(g.crowd||"")}｜室內外：${escapeHtml(g.indoor||"")}</div>
     </div>
 
-    <div class="printH3">總覽</div>
+    <div class="printH3">報價</div>
     <table class="printTbl">
       <thead><tr><th style="width:110px">項目</th><th>日期</th><th class="right" style="width:100px">金額</th></tr></thead>
       <tbody>${summaryRows || `<tr><td colspan="3">—</td></tr>`}</tbody>
