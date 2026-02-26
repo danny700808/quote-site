@@ -263,6 +263,20 @@ body.printing #printRoot{display:block}
   .stepNum{width:28px;height:28px;font-size:12px;border-width:1.5px}
   .stepText{font-size:11px}
 }
+  /* Step3 底部快速導覽（放在本項即時報價最下方） */
+.quickNav{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.quickNav .btn[disabled]{
+  opacity:.55;
+  cursor:not-allowed;
+}
 </style>
 </head>
 
@@ -710,6 +724,12 @@ body.printing #printRoot{display:block}
           <div class="trow"><span class="subttl">本項合計</span><b id="dayTotal">NT$0</b></div>
         </div>
         <div class="cart" id="cart"></div>
+        <!-- ✅ Step3 本項即時報價：底部快速導覽（常駐三選項） -->
+<div class="quickNav" id="quickNavBar">
+  <button class="btn primary" id="btnQuickNext" type="button">前往下一項</button>
+  <button class="btn" id="btnQuickDays" type="button">回到日期圖框</button>
+  <button class="btn warn" id="btnQuickQuote" type="button">前往總覽</button>
+</div>
       </div>
     </section>
 
@@ -2247,6 +2267,19 @@ function copyEquip(fromIdx, toIdx){
 }
 
 /* Step3：open unit */
+  function updateQuickNavBar(){
+  const bar = $("#quickNavBar");
+  if(!bar) return;
+
+  const hasUnits = !!(state.units && state.units.length);
+  bar.style.display = hasUnits ? "" : "none";
+
+  const btnNext = $("#btnQuickNext");
+  if(btnNext){
+    const isLast = !hasUnits || (state.currentIndex >= state.units.length - 1);
+    btnNext.disabled = isLast;
+  }
+}
 function openUnit(idx){
   idx = Math.max(0, Math.min((state.units||[]).length-1, Number(idx||0)));
   state.currentIndex = idx;
@@ -2261,6 +2294,7 @@ function openUnit(idx){
 
   $("#btnPrevUnit").disabled = (idx<=0);
   $("#btnNextUnit").disabled = (idx>=(state.units.length-1));
+    updateQuickNavBar(); // ✅ Step3 底部快速導覽狀態更新
 }
 
 function renderIfEditingMain(){
@@ -2675,6 +2709,9 @@ function bindNavButtons(){
   $("#btnSendQuote").addEventListener("click", submitQuote);
 
   $$("#stepsBar .stepBox").forEach(b=>{
+    b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
+  });
+    $$("#stepsBar .stepBox").forEach(b=>{
     b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
   });
 }
