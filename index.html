@@ -803,7 +803,7 @@ const BRAND_NAME = "柚子樂器";
 const PRINT_TITLE = "活動企劃｜設備與器材報價單（主案＋加開案）";
 
 // Apps Script（沿用你原本的，可自行換）
-const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
+const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbwXwMYFPFx8KnyJ43RIpL9gq6VAmU7tPq_JUpbkNX5PUf9MB92GiltUaWONfLw9NxkAYA/exec";
 
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
@@ -2584,38 +2584,124 @@ function printPDF(){
 }
 
 /* Send */
-function buildQuotePayload(){
-  const totals = calcGrandTotal();
+// ✅ 把印表用 options 轉成文字（你的檔案裡如果已有 formatOptionsInline，就不用重複）
+function formatOptionsInline(opts){
+  if(!opts) return "";
+  const ks = Object.keys(opts);
+  if(!ks.length) return "";
+  return ks.map(k=>`${k}=${opts[k]}`).join("；");
+}
+
+function buildItemsForPayload_(u){
+  const items = buildDayItemsForPrint(u) || [];
+  return items.map(it=>({
+    category: it.category || "",
+    name: it.name || "",
+    unit: it.unit || "",
+    price: Number(it.price || 0),
+    qty: Number(it.qty || 0),
+    total: Number(it.total || 0),
+    optionsText: formatOptionsInline(it.options || {})
+  }));
+}
+
+// 主案多日：Day1=B、Day2=50%、Day3+=30%
+function calcMainDayBase_(B, dayIndex){
+  if(dayIndex === 0) return Number(B||0);
+  if(dayIndex === 1) return Math.round(Number(B||0) * 0.50);
+  return Math.round(Number(B||0) * 0.30);
+}
+
+function buildQuotePayload_v2(){
   const units = state.units || [];
   const main = units[0];
+  if(!main){
+    throw new Error("尚未建立任何項目，請先完成 Step1 並生成日期圖框。");
+  }
+
+  const sessions = [];
+  const g = state.globalForm || {};
+
+  // 主案（展開成每日第一場/第二場）
+  const B = calcEquipSubtotal(main);
+  const mainItems = buildItemsForPayload_(main);
+
+  (main.dates || []).forEach((d, i)=>{
+    const meta = ensurePlanMeta(`main-${d}`);
+    const dayBase = calcMainDayBase_(B, i);
+
+    // 第一場
+    sessions.push({
+      label: `主案 Day${i+1} 第一場`,
+      date: d,
+      timeStart: meta.start || "",
+      timeEnd: meta.end || "",
+      total: dayBase,
+      form: Object.assign({}, main.form || g, { sessionNote: (main.form && main.form.dayNote) ? main.form.dayNote : "" }),
+      items: mainItems
+    });
+
+    // 第二場（選填）：每場加價 B*30%
+    if(meta.s2On){
+      sessions.push({
+        label: `主案 Day${i+1} 第二場`,
+        date: d,
+        timeStart: meta.s2Start || "",
+        timeEnd: meta.s2End || "",
+        total: Math.round(B * 0.30),
+        form: Object.assign({}, main.form || g, { sessionNote: (main.form && main.form.dayNote) ? main.form.dayNote : "" }),
+        items: mainItems
+      });
+    }
+  });
+
+  // 加開案（每筆獨立）
+  units.slice(1).forEach((u)=>{
+    const Bx = calcEquipSubtotal(u);
+    const meta = ensurePlanMeta(u.uid);
+    const items = buildItemsForPayload_(u);
+
+    sessions.push({
+      label: `加開案 ${u.extraIndex} 第一場`,
+      date: u.date,
+      timeStart: meta.start || "",
+      timeEnd: meta.end || "",
+      total: Number(Bx || 0),
+      form: Object.assign({}, u.form || g, { sessionNote: (u.form && u.form.dayNote) ? u.form.dayNote : "" }),
+      items: items
+    });
+
+    if(meta.s2On){
+      sessions.push({
+        label: `加開案 ${u.extraIndex} 第二場`,
+        date: u.date,
+        timeStart: meta.s2Start || "",
+        timeEnd: meta.s2End || "",
+        total: Math.round(Bx * 0.30),
+        form: Object.assign({}, u.form || g, { sessionNote: (u.form && u.form.dayNote) ? u.form.dayNote : "" }),
+        items: items
+      });
+    }
+  });
+
+  const baseTotal = sessions.reduce((a, s)=>a + Number(s.total||0), 0);
 
   return {
-    action: "submitQuote",
-    ownerEmail: "",
-    form: state.globalForm || {},
-    units: units.map((u, idx)=>({
-      index: idx+1,
-      uid: u.uid,
-      kind: u.kind,
-      date: u.kind==="main" ? (u.dates.length>=2 ? `${u.startDate}~${u.endDate}` : u.startDate) : u.date,
-      dates: u.kind==="main" ? u.dates : [u.date],
-      form: u.form || {},
-      schedule: u.kind==="main"
-        ? (u.dates||[]).map(d=>({date:d, ...ensurePlanMeta(`main-${d}`)}))
-        : [ {date:u.date, ...ensurePlanMeta(u.uid)} ],
-      tiers: u.tiers || {},
-      items: buildDayItemsForPrint(u),
-      totals: u.kind==="main" ? calcMainTotal(u) : calcExtraTotal(u)
-    })),
+    action: "submitQuote_v2",
+    globalForm: g,
+    sessions: sessions,
     summary: {
-      grandTotal: totals.total
+      baseTotal: baseTotal,
+      surcharge: 0,
+      grandTotal: baseTotal,
+      continuousEligible: true
     }
   };
 }
 
 function submitQuote(){
   try{
-    const payload = buildQuotePayload();
+    const payload = buildQuotePayload_v2();
     const ok = navigator.sendBeacon(ORDER_API_URL, JSON.stringify(payload));
     if(ok){
       alert("已送出！系統會產生 PDF 報價單並寄給您，請至信箱查收。");
