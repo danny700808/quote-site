@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="zh-Hant">
 <head>
@@ -264,30 +263,24 @@ body.printing #printRoot{display:block}
   .stepNum{width:28px;height:28px;font-size:12px;border-width:1.5px}
   .stepText{font-size:11px}
 }
-  /* Step3 底部快速導覽（放在本項即時報價最下方） */
-/* ✅ Step3 底部快速導覽：固定右下角（永遠看得到下一步） */
+
+/* ✅ Step3 底部快速導覽：改成「跟著內容」顯示在即時報價最下面（不再固定右側） */
 #quickNavBar{
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 999;
-  background: rgba(255,255,255,.92);
-  backdrop-filter: saturate(180%) blur(10px);
+  position: static;
+  z-index: auto;
+  background: #fff;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 10px 10px;
-  box-shadow: var(--shadow);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: none;
   display: flex;
   gap: 10px;
-  flex-wrap: nowrap;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }
-#quickNavBar .btn{
-  white-space: nowrap;
-}
-#quickNavBar .btn[disabled]{
-  opacity:.55;
-  cursor:not-allowed;
-}
+#quickNavBar .btn{ white-space: nowrap; }
+#quickNavBar .btn[disabled]{ opacity:.55; cursor:not-allowed; }
 </style>
 </head>
 
@@ -319,6 +312,7 @@ body.printing #printRoot{display:block}
     </div>
 
     <div class="actions">
+      <button class="btn ghost" id="btnGoHome">回柚子樂器官網</button>
       <button class="btn" id="btnGoStep1">回到基本資料/日期</button>
       <button class="btn warn" id="btnPrintTop" style="display:none">列印 PDF</button>
     </div>
@@ -734,13 +728,15 @@ body.printing #printRoot{display:block}
 
           <div class="trow"><span class="subttl">本項合計</span><b id="dayTotal">NT$0</b></div>
         </div>
+
         <div class="cart" id="cart"></div>
-        <!-- ✅ Step3 本項即時報價：底部快速導覽（常駐三選項） -->
-<div class="quickNav" id="quickNavBar">
-<button class="btn primary" id="btnQuickNext" type="button">下一項</button>
-<button class="btn" id="btnQuickDays" type="button">回到日期</button>
-<button class="btn warn" id="btnQuickQuote" type="button">下一步：報價單</button>
-</div>
+
+        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：報價單」 -->
+        <div class="quickNav" id="quickNavBar">
+          <button class="btn" id="btnQuickDays" type="button">回到日期</button>
+          <button class="btn warn" id="btnQuickQuote" type="button">下一步：報價單</button>
+        </div>
+
       </div>
     </section>
 
@@ -804,21 +800,34 @@ body.printing #printRoot{display:block}
 <script>
 /* =========================
    逐日導引版
-   - 主案連續：Step2 只出一張主案卡；設備選一次套用整段
-   - 選1：主案每一天可不同時間（Step1/Step3 都可調）
-   - 加開案：每筆獨立（同日可多筆）
    ========================= */
 
 const BRAND_NAME = "柚子樂器";
 const PRINT_TITLE = "活動企劃｜設備與器材報價單（主案＋加開案）";
 
-// Apps Script（沿用你原本的，可自行換）
+// ✅ 官網
+const OFFICIAL_HOME_URL = "https://www.mingtinghuang.com/";
+// ✅ 修改 token（送出後後端回傳、或從 URL 載入）
+let EDIT_TOKEN = "";
+
+// Apps Script
 const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbxrphr7gIrOVrrhp1lplR7IYrZdc_8E8cajBEitSoUiujGRE7v8FDy0BYL8VLHaexvq/exec";
 
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
 const escapeHtml = (v)=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const fmt = (n)=>"NT$"+Number(n||0).toLocaleString("zh-Hant-TW");
+
+function getSiteBaseUrl_(){
+  try{
+    const u = new URL(window.location.href);
+    u.search = "";
+    u.hash = "";
+    return u.toString();
+  }catch(_){
+    return "";
+  }
+}
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function deepClone(obj){ return JSON.parse(JSON.stringify(obj||{})); }
@@ -884,23 +893,17 @@ function fromMin(m){
    ========================= */
 const state = {
   step: 1,
-
-  // Step1
   isMulti: false,
   isExtra: false,
-  extraUnits: [],     // [{id, date}]
-  planMeta: {},       // key -> {start,end,s2On,s2Start,s2End} where key is main-YYYY-MM-DD or extra-<id>
-
-  // Global form
+  extraUnits: [],
+  planMeta: {},
   globalForm: {},
-
-  // Units after Step1 build
-  units: [],           // [ {uid:'main', kind:'main', startDate,endDate,dates, ...}, {uid:'extra-..', kind:'extra', date, ...}, ...]
+  units: [],
   currentIndex: 0,
 };
 
 /* =========================
-   Part2：資料區（你的原本資料）
+   Part2：資料區
    ========================= */
 const TW = {
   "台北市":["中正區","大同區","中山區","松山區","大安區","萬華區","信義區","士林區","北投區","內湖區","南港區","文山區"],
@@ -910,7 +913,6 @@ const TW = {
   "台南市":["中西區","東區","南區","北區","永康區","安平區"],
   "高雄市":["三民區","左營區","鼓山區","苓雅區","前鎮區","鳳山區"]
 };
-
 const CATEGORIES = [
 { id:"stage", name:"舞台結構與桁架系統", items:[
 { id:"stage-deck", name:"舞台板（2x1m）", unit:"片", price:1200,
@@ -1020,7 +1022,6 @@ const TIER_PHOTOS = {
     `https://picsum.photos/seed/upgrade-${i+1}-b/800/600`
   ])
 };
-
 /* =========================
    Modal（保留）
    ========================= */
@@ -1190,15 +1191,10 @@ function makeHMSelectHTML(name, value, isMin){
 function fixSession2NotOverlap(container, meta, writeBack=true){
   const get = (n)=>container.querySelector(`select[data-hm="${n}"]`)?.value || "";
   const fEnd = toMin(get("endH"), get("endM"));
-
-  const sh = get("s2StartH") || "18";
-  const sm = get("s2StartM") || "00";
-  const eh = get("s2EndH") || "21";
-  const em = get("s2EndM") || "00";
   const STEP = 10;
 
-  let s2Start = toMin(sh, sm);
-  let s2End   = toMin(eh, em);
+  let s2Start = toMin(get("s2StartH") || "18", get("s2StartM") || "00");
+  let s2End   = toMin(get("s2EndH") || "21", get("s2EndM") || "00");
 
   if(s2Start < fEnd){
     s2Start = fEnd;
@@ -1232,10 +1228,10 @@ function fixSession2NotOverlap(container, meta, writeBack=true){
 function renderPlannerRows(containerEl, rows, onChange){
   containerEl.innerHTML = rows.map(r=>{
     const meta = ensurePlanMeta(r.key);
-    const [sh, sm] = (meta.start||"09:00").split(":");
-    const [eh, em] = (meta.end||"12:00").split(":");
-    const [s2h, s2m] = (meta.s2Start||"18:00").split(":");
-    const [e2h, e2m] = (meta.s2End||"21:00").split(":");
+    const [sh, sm]   = (meta.start||"09:00").split(":");
+    const [eh, em]   = (meta.end||"12:00").split(":");
+    const [s2h,s2m]  = (meta.s2Start||"18:00").split(":");
+    const [e2h,e2m]  = (meta.s2End||"21:00").split(":");
     const s2On = !!meta.s2On;
 
     return `
@@ -1291,7 +1287,6 @@ function renderPlannerRows(containerEl, rows, onChange){
     const key = row.dataset.key;
     const meta = ensurePlanMeta(key);
 
-    // 第一場
     row.querySelectorAll("select[data-hm]").forEach(sel=>{
       sel.addEventListener("change", ()=>{
         const get = (n)=>row.querySelector(`select[data-hm="${n}"]`)?.value || "";
@@ -1302,7 +1297,6 @@ function renderPlannerRows(containerEl, rows, onChange){
       });
     });
 
-    // 第二場開關
     const cb = row.querySelector('input[type="checkbox"][data-s2="1"]');
     if(cb){
       cb.addEventListener("change", ()=>{
@@ -1314,7 +1308,6 @@ function renderPlannerRows(containerEl, rows, onChange){
       });
     }
 
-    // 第二場時間
     row.querySelectorAll('.s2Times select[data-hm]').forEach(sel=>{
       sel.addEventListener("change", ()=>{
         fixSession2NotOverlap(row, meta, true);
@@ -1348,7 +1341,7 @@ function renderMainInline(){
     pill: ($("#fIsMultiDay").checked ? "主案連續" : "主案單日")
   }));
 
-  renderPlannerRows(list, rows, ()=>{ /* 主案時間變更：若已建立 units，更新卡片/金額 */ if(state.units.length){ renderDayCards(); renderIfEditingMain(); } });
+  renderPlannerRows(list, rows, ()=>{ if(state.units.length){ renderDayCards(); renderIfEditingMain(); } });
 }
 
 /* Step1：加開案 inline list */
@@ -1364,7 +1357,6 @@ function renderExtraInline(){
     return;
   }
 
-  // 先畫基本卡，再在每一筆下面放時間列（用 renderPlannerRows 但要分容器）
   box.innerHTML = list.map((u, idx)=>`
     <div class="planRow" data-extra="${u.id}">
       <div class="planRowTop">
@@ -1381,21 +1373,16 @@ function renderExtraInline(){
     </div>
   `).join("");
 
-  // 刪除
   box.querySelectorAll("button[data-del]").forEach(b=>{
     b.addEventListener("click", ()=>{
       const id = b.dataset.del;
       state.extraUnits = (state.extraUnits||[]).filter(x=>x.id!==id);
       delete state.planMeta[`extra-${id}`];
       renderExtraInline();
-      if(state.units.length){
-        // 已建立後：重新 build 會清設備，這裡先只更新 Step1/卡片顯示（提醒使用者重新下一步）
-        renderDayCards();
-      }
+      if(state.units.length){ renderDayCards(); }
     });
   });
 
-  // 每一筆渲染時間列（單筆一列）
   list.forEach((u, idx)=>{
     const slot = box.querySelector(`[data-slot="${u.id}"]`);
     if(!slot) return;
@@ -1484,7 +1471,6 @@ function buildUnitsFromStep1(){
   applyGlobalFormToUnit(main);
 
   const extras = (state.extraUnits||[]).map((x)=>({id:x.id, date:normalizeDateStr(x.date)})).filter(x=>x.date);
-  // 排序：日期排序，同日依加入順序
   extras.sort((a,b)=>compareDate(a.date,b.date));
   const extraUnits = extras.map((e,i)=>{
     const u = createExtraUnit(e,i);
@@ -1628,7 +1614,6 @@ function renderDayCards(){
 
   const cardsHTML = [];
 
-  // 主案卡
   if(main){
     const label = isContinuous ? `主案（連續）｜${main.startDate} ～ ${main.endDate}` : `主案｜${main.startDate}`;
     const meta = isContinuous
@@ -1656,7 +1641,6 @@ function renderDayCards(){
     `);
   }
 
-  // 加開案卡
   units.slice(1).forEach((u, i)=>{
     const idx = i+1;
     const st = u.done ? `<span class="badgeDone">✓ 已完成</span>` : `<span class="badgeTodo">⏳ 未完成</span>`;
@@ -1694,11 +1678,11 @@ function renderDayCards(){
     card.querySelector('[data-act="copyprev"]')?.addEventListener("click", ()=>{ copyEquip(Math.max(0,idx-1), idx); renderDayCards(); });
   });
 }
-
-/* =========================
+  /* =========================
    Step3：編輯（主案/加開案）
    ========================= */
 function getCurUnit(){ return state.units[state.currentIndex]; }
+
 function fillSelectOptions(){
   if($("#dEventType")) $("#dEventType").innerHTML = $("#fEventType")?.innerHTML || "";
   if($("#dCrowd")) $("#dCrowd").innerHTML = $("#fCrowd")?.innerHTML || "";
@@ -1712,12 +1696,10 @@ function fillUnitFormUI(u){
     : `3) 選設備｜加開案 ${u.extraIndex}：${u.date}`;
   $("#dayEditTitle").textContent = title;
 
-  // 日期欄：主案顯示範圍
   $("#dDate").value = isMain
     ? ((u.dates.length>=2) ? `${u.startDate} ～ ${u.endDate}` : u.startDate)
     : u.date;
 
-  // 基本資料
   $("#dName").value = u.form?.name || "";
   $("#dPhone").value= u.form?.phone || "";
   $("#dEmail").value= u.form?.email || "";
@@ -1730,15 +1712,12 @@ function fillUnitFormUI(u){
 
   fillCityArea($("#dCity"), $("#dArea"), u.form?.city || "", u.form?.area || "");
 
-  // 時間區塊顯示：
   $("#mainEditTimeBlock").style.display = isMain ? "" : "none";
   $("#singleTimeBlock").style.display = isMain ? "none" : "";
   $("#singleS2Block").style.display   = isMain ? "none" : "";
 
-  // 按鈕文字
   $("#btnMarkDone").textContent = isMain ? "完成主案" : "完成加開案";
 
-  // 單筆加開案時間（維持原本控制）
   if(!isMain){
     const meta = ensurePlanMeta(u.uid);
     const [sh, sm] = (meta.start||"09:00").split(":");
@@ -1757,7 +1736,6 @@ function fillUnitFormUI(u){
     $("#d2EndH").value   = e2h || "21";
     $("#d2EndM").value   = e2m || "00";
   }else{
-    // 主案逐日時間（選1）
     const rows = u.dates.map((d,i)=>({
       key: `main-${d}`,
       title: `主案第${i+1}天`,
@@ -1796,7 +1774,6 @@ function bindUnitFormEvents(){
     el.addEventListener("change", handler);
   });
 
-  // 加開案時間（主案不使用這組 UI）
   ["dStartH","dStartM","dEndH","dEndM"].forEach(id=>{
     $("#"+id).addEventListener("change", ()=>{
       const u = getCurUnit(); if(!u || u.kind==="main") return;
@@ -1949,7 +1926,7 @@ function buildOptionsHTML(u, item){
 }
 
 /* =========================
-   設備選擇（每一項各自保存；主案只有一份）
+   設備選擇（沿用）
    ========================= */
 function setQty(u, itemId, qty){
   u.cart = u.cart || {packs:{}, items:{}};
@@ -2234,7 +2211,6 @@ function renderUnitTotalsAndCart(){
   const u = getCurUnit(); if(!u) return;
 
   const B = calcEquipSubtotal(u);
-
   $("#dayEquipSubtotal").textContent = fmt(B);
 
   if(u.kind==="main"){
@@ -2278,19 +2254,14 @@ function copyEquip(fromIdx, toIdx){
 }
 
 /* Step3：open unit */
-  function updateQuickNavBar(){
+function updateQuickNavBar(){
   const bar = $("#quickNavBar");
   if(!bar) return;
 
   const hasUnits = !!(state.units && state.units.length);
   bar.style.display = hasUnits ? "" : "none";
-
-  const btnNext = $("#btnQuickNext");
-  if(btnNext){
-    const isLast = !hasUnits || (state.currentIndex >= state.units.length - 1);
-    btnNext.disabled = isLast;
-  }
 }
+
 function openUnit(idx){
   idx = Math.max(0, Math.min((state.units||[]).length-1, Number(idx||0)));
   state.currentIndex = idx;
@@ -2305,7 +2276,7 @@ function openUnit(idx){
 
   $("#btnPrevUnit").disabled = (idx<=0);
   $("#btnNextUnit").disabled = (idx>=(state.units.length-1));
-    updateQuickNavBar(); // ✅ Step3 底部快速導覽狀態更新
+  updateQuickNavBar();
 }
 
 function renderIfEditingMain(){
@@ -2321,7 +2292,7 @@ function renderIfEditingExtra(uid){
   }
 }
 
-/* 完成後彈窗（你指定的做法2） */
+/* 完成後彈窗（保留） */
 function openAfterDoneChoice(){
   const idx = state.currentIndex;
   const u = getCurUnit();
@@ -2377,8 +2348,7 @@ function markDone(){
   renderDayCards();
   openAfterDoneChoice();
 }
-
-/* =========================
+  /* =========================
    Step4：render quote
    ========================= */
 function renderQuote(){
@@ -2409,7 +2379,6 @@ function renderQuote(){
     `);
   }
 
-  // extras
   units.slice(1).forEach((u, i)=>{
     const r = totals.extras[i] || {B:0,s2Fee:0,total:0};
     const meta = ensurePlanMeta(u.uid);
@@ -2434,7 +2403,7 @@ function goQuote(){
 }
 
 /* =========================
-   Print（保留簡化版本：摘要 + 各項明細）
+   Print（保留簡化版本）
    ========================= */
 function buildDayItemsForPrint(u){
   const items = [];
@@ -2593,15 +2562,7 @@ function printPDF(){
   setTimeout(()=>{ document.body.classList.remove("printing"); }, 500);
 }
 
-/* Send */
-// ✅ 把印表用 options 轉成文字（你的檔案裡如果已有 formatOptionsInline，就不用重複）
-function formatOptionsInline(opts){
-  if(!opts) return "";
-  const ks = Object.keys(opts);
-  if(!ks.length) return "";
-  return ks.map(k=>`${k}=${opts[k]}`).join("；");
-}
-
+/* Send helpers */
 function buildItemsForPayload_(u){
   const items = buildDayItemsForPrint(u) || [];
   return items.map(it=>({
@@ -2614,8 +2575,6 @@ function buildItemsForPayload_(u){
     optionsText: formatOptionsInline(it.options || {})
   }));
 }
-
-// 主案多日：Day1=B、Day2=50%、Day3+=30%
 function calcMainDayBase_(B, dayIndex){
   if(dayIndex === 0) return Number(B||0);
   if(dayIndex === 1) return Math.round(Number(B||0) * 0.50);
@@ -2632,7 +2591,6 @@ function buildQuotePayload_v2(){
   const sessions = [];
   const g = state.globalForm || {};
 
-  // 主案（展開成每日第一場/第二場）
   const B = calcEquipSubtotal(main);
   const mainItems = buildItemsForPayload_(main);
 
@@ -2640,7 +2598,6 @@ function buildQuotePayload_v2(){
     const meta = ensurePlanMeta(`main-${d}`);
     const dayBase = calcMainDayBase_(B, i);
 
-    // 第一場
     sessions.push({
       label: `主案 Day${i+1} 第一場`,
       date: d,
@@ -2651,7 +2608,6 @@ function buildQuotePayload_v2(){
       items: mainItems
     });
 
-    // 第二場（選填）：每場加價 B*30%
     if(meta.s2On){
       sessions.push({
         label: `主案 Day${i+1} 第二場`,
@@ -2665,7 +2621,6 @@ function buildQuotePayload_v2(){
     }
   });
 
-  // 加開案（每筆獨立）
   units.slice(1).forEach((u)=>{
     const Bx = calcEquipSubtotal(u);
     const meta = ensurePlanMeta(u.uid);
@@ -2698,6 +2653,18 @@ function buildQuotePayload_v2(){
 
   return {
     action: "submitQuote_v2",
+    editToken: EDIT_TOKEN || "",
+    siteBaseUrl: getSiteBaseUrl_(),
+    uiState: {
+      state: deepClone(state),
+      ui: {
+        fIsMultiDay: !!$("#fIsMultiDay")?.checked,
+        fIsNonContinuous: !!$("#fIsNonContinuous")?.checked,
+        fDateStart: normalizeDateStr($("#fDateStart")?.value||""),
+        fDateEnd: normalizeDateStr($("#fDateEnd")?.value||""),
+        globalFormNow: getGlobalFormFromUI()
+      }
+    },
     globalForm: g,
     sessions: sessions,
     summary: {
@@ -2711,7 +2678,7 @@ function buildQuotePayload_v2(){
 
 async function submitQuote(){
   try{
-    const payload = buildQuotePayload_v2(); // 或 buildQuotePayload()，看你現在函式叫什麼
+    const payload = buildQuotePayload_v2();
 
     const res = await fetch(ORDER_API_URL, {
       method: "POST",
@@ -2724,7 +2691,28 @@ async function submitQuote(){
     try{ j = JSON.parse(txt); }catch(_){}
 
     if(res.ok && j && j.ok){
-      alert("已送出！系統已寄出 PDF 報價單，請至信箱查收（含垃圾郵件/促銷）。");
+      if(j.editToken) EDIT_TOKEN = j.editToken;
+
+      openModal("已送出報價單", `
+        <div class="note" style="margin-bottom:10px">
+          系統已寄出 PDF 報價單，請至信箱查收（含垃圾郵件/促銷）。<br>
+          之後若要修改，可用信件內的「修改訂單」連結回來更新。
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn" id="afterGoHome" type="button">回柚子樂器官網</button>
+          <button class="btn primary" id="afterNew" type="button">新增一筆新的表單</button>
+          <button class="btn" id="afterClose" type="button">關閉</button>
+        </div>
+      `);
+
+      setTimeout(()=>{
+        $("#afterGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
+        $("#afterNew")?.addEventListener("click", ()=>{
+          window.location.href = getSiteBaseUrl_();
+        });
+        $("#afterClose")?.addEventListener("click", closeModal);
+      },0);
+
     }else{
       const msg = (j && (j.message || j.error)) ? (j.message || j.error) : txt;
       alert("送出失敗（後端回傳）：" + msg);
@@ -2787,23 +2775,15 @@ function fillTimeSelectsForEdit(){
    Buttons & Step1 wiring
    ========================= */
 function bindNavButtons(){
-  // ✅ Step3 底部快速導覽（quickNav）
-const qNext  = $("#btnQuickNext");
-const qDays  = $("#btnQuickDays");
-const qQuote = $("#btnQuickQuote");
+  // ✅ Step3 底部快速導覽（只有兩顆）
+  const qDays  = $("#btnQuickDays");
+  const qQuote = $("#btnQuickQuote");
+  if(qDays)  qDays.addEventListener("click", ()=>{ goDayList(); });
+  if(qQuote) qQuote.addEventListener("click", ()=>{ goQuote(); });
 
-if(qNext){
-  qNext.addEventListener("click", ()=>{
-    if(qNext.disabled) return;
-    openUnit(state.currentIndex + 1);
-  });
-}
-if(qDays){
-  qDays.addEventListener("click", ()=>{ goDayList(); });
-}
-if(qQuote){
-  qQuote.addEventListener("click", ()=>{ goQuote(); });
-}
+  // ✅ 官網
+  $("#btnGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
+
   $("#btnGoStep1").addEventListener("click", goStep1);
   $("#btnBackToBasic").addEventListener("click", goStep1);
   $("#btnBackToDays").addEventListener("click", goDayList);
@@ -2837,13 +2817,9 @@ if(qQuote){
   $$("#stepsBar .stepBox").forEach(b=>{
     b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
   });
-    $$("#stepsBar .stepBox").forEach(b=>{
-    b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
-  });
 }
 
 function bindStep1Events(){
-  // date min = today
   const t = todayStr();
   ["fDateStart","fDateEnd","fDateAdd"].forEach(id=>{
     const el = $("#"+id);
@@ -2898,7 +2874,6 @@ function bindStep1Events(){
   });
 
   $("#btnNextToDays").addEventListener("click", ()=>{
-    // 確保至少已填主案時間區有生成（但可保持預設）
     const ok = buildUnitsFromStep1();
     if(!ok) return;
     $("#basicStatus").textContent = "已建立";
@@ -2907,21 +2882,92 @@ function bindStep1Events(){
 }
 
 /* =========================
-   Step4 nav
+   修改模式：載入 token
    ========================= */
-function goQuote(){
-  setStep(4);
-  showView("viewQuote");
-  renderQuote();
+async function tryLoadEditMode_(){
+  const sp = new URLSearchParams(window.location.search || "");
+  const mode = sp.get("mode");
+  const token = sp.get("token");
+  if(mode !== "edit" || !token) return;
+
+  try{
+    EDIT_TOKEN = token;
+
+    const url = ORDER_API_URL + "?action=getQuote_v2&token=" + encodeURIComponent(token);
+    const res = await fetch(url, { method:"GET" });
+    const txt = await res.text();
+    let j=null; try{ j=JSON.parse(txt); }catch(_){}
+
+    if(!j || !j.ok || !j.uiState || !j.uiState.state){
+      alert("載入修改單失敗：" + (j && (j.message||j.error) ? (j.message||j.error) : txt));
+      return;
+    }
+
+    const saved = j.uiState.state;
+    state.step = saved.step || 1;
+    state.isMulti = !!saved.isMulti;
+    state.isExtra = !!saved.isExtra;
+    state.extraUnits = deepClone(saved.extraUnits || []);
+    state.planMeta = deepClone(saved.planMeta || {});
+    state.globalForm = deepClone(saved.globalForm || (j.uiState.ui && j.uiState.ui.globalFormNow) || {});
+    state.units = deepClone(saved.units || []);
+    state.currentIndex = Number(saved.currentIndex || 0);
+
+    const gf = (j.uiState.ui && j.uiState.ui.globalFormNow) ? j.uiState.ui.globalFormNow : (state.globalForm||{});
+    $("#fName").value = gf.name || "";
+    $("#fPhone").value = gf.phone || "";
+    $("#fEmail").value = gf.email || "";
+    $("#fAddr").value = gf.addr || "";
+    $("#fBldg").value = gf.bldg || "";
+    $("#fEventType").value = gf.eventType || "";
+    $("#fCrowd").value = gf.crowd || "";
+    $("#fIndoor").value = gf.indoor || "";
+    $("#fNote").value = gf.note || "";
+
+    if(gf.city) $("#fCity").value = gf.city;
+    $("#fCity").dispatchEvent(new Event("change"));
+    if(gf.area) $("#fArea").value = gf.area;
+
+    if(j.uiState.ui){
+      $("#fDateStart").value = j.uiState.ui.fDateStart || (gf.dateStart||"");
+      $("#fDateEnd").value = j.uiState.ui.fDateEnd || (gf.dateEnd||"");
+      $("#fIsMultiDay").checked = !!j.uiState.ui.fIsMultiDay;
+      $("#fIsNonContinuous").checked = !!j.uiState.ui.fIsNonContinuous;
+    }
+
+    $("#multiDayWrap").style.display = $("#fIsMultiDay").checked ? "block" : "none";
+    $("#nonContinuousWrap").style.display = $("#fIsNonContinuous").checked ? "block" : "none";
+
+    renderMainInline();
+    renderExtraInline();
+    renderDayCards();
+
+    $("#basicStatus").textContent = "修改模式";
+    goQuote();
+
+    openModal("已進入修改模式", `
+      <div class="note">你正在修改先前的報價單（Token：<b>${escapeHtml(token)}</b>）。修改完成後再次按「送出報價單」即可更新。</div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+        <button class="btn" id="editGoStep1" type="button">回到基本資料</button>
+        <button class="btn primary" id="editGoQuote" type="button">查看報價單</button>
+      </div>
+    `);
+    setTimeout(()=>{
+      $("#editGoStep1")?.addEventListener("click", ()=>{ closeModal(); goStep1(); });
+      $("#editGoQuote")?.addEventListener("click", ()=>{ closeModal(); goQuote(); });
+    },0);
+
+  }catch(e){
+    alert("載入修改單失敗：" + (e?.message || e));
+  }
 }
 
 /* =========================
    Init
    ========================= */
-(function init(){
+(async function init(){
   fillCityArea($("#fCity"), $("#fArea"), "台中市", "豐原區");
 
-  // 初始展開狀態
   $("#multiDayWrap").style.display = "none";
   $("#nonContinuousWrap").style.display = "none";
 
@@ -2935,6 +2981,8 @@ function goQuote(){
   showView("viewBasic");
   renderMainInline();
   renderExtraInline();
+
+  await tryLoadEditMode_();
 })();
 </script>
 </body>
