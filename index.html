@@ -2709,18 +2709,30 @@ function buildQuotePayload_v2(){
   };
 }
 
-function submitQuote(){
+async function submitQuote(){
   try{
-    const payload = buildQuotePayload_v2();
-    const ok = navigator.sendBeacon(ORDER_API_URL, JSON.stringify(payload));
-    if(ok){
-      alert("已送出！系統會產生 PDF 報價單並寄給您，請至信箱查收。");
+    const payload = buildQuotePayload_v2(); // 或 buildQuotePayload()，看你現在函式叫什麼
+
+    const res = await fetch(ORDER_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const txt = await res.text();
+    let j = null;
+    try{ j = JSON.parse(txt); }catch(_){}
+
+    if(res.ok && j && j.ok){
+      alert("已送出！系統已寄出 PDF 報價單，請至信箱查收（含垃圾郵件/促銷）。");
     }else{
-      alert("送出失敗（瀏覽器未送出）。請重新整理後再試一次。");
+      const msg = (j && (j.message || j.error)) ? (j.message || j.error) : txt;
+      alert("送出失敗（後端回傳）：" + msg);
+      console.log("Server response:", txt);
     }
   }catch(e){
     console.error(e);
-    alert("送出失敗：" + (e?.message||e));
+    alert("送出失敗：" + (e?.message || e));
   }
 }
 
@@ -2775,6 +2787,23 @@ function fillTimeSelectsForEdit(){
    Buttons & Step1 wiring
    ========================= */
 function bindNavButtons(){
+  // ✅ Step3 底部快速導覽（quickNav）
+const qNext  = $("#btnQuickNext");
+const qDays  = $("#btnQuickDays");
+const qQuote = $("#btnQuickQuote");
+
+if(qNext){
+  qNext.addEventListener("click", ()=>{
+    if(qNext.disabled) return;
+    openUnit(state.currentIndex + 1);
+  });
+}
+if(qDays){
+  qDays.addEventListener("click", ()=>{ goDayList(); });
+}
+if(qQuote){
+  qQuote.addEventListener("click", ()=>{ goQuote(); });
+}
   $("#btnGoStep1").addEventListener("click", goStep1);
   $("#btnBackToBasic").addEventListener("click", goStep1);
   $("#btnBackToDays").addEventListener("click", goDayList);
