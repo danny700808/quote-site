@@ -281,6 +281,36 @@ body.printing #printRoot{display:block}
 }
 #quickNavBar .btn{ white-space: nowrap; }
 #quickNavBar .btn[disabled]{ opacity:.55; cursor:not-allowed; }
+
+/* === 7B：三模組改成三欄列式（更緊湊，像清單） === */
+.tierGrid{grid-template-columns:repeat(3, 1fr)}
+@media (max-width: 980px){
+  .tierGrid{grid-template-columns:1fr}
+}
+.levelRow{display:flex;flex-direction:column;gap:10px}
+.levelBtn{
+  display:grid;
+  grid-template-columns:56px 1fr;
+  gap:10px;
+  padding:8px;
+  border-radius:12px;
+}
+.levelMedia{order:0}
+.levelMedia img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.levelText{order:1}
+.levelActions{display:flex;gap:8px;flex-wrap:wrap}
+.miniBtn{padding:6px 8px;font-size:12px}
+.levelName{font-size:13px}
+.levelPrice{font-size:12px}
+
+/* 手機：避免按鈕/文字擠成直線 */
+@media (max-width: 480px){
+  .tierHead b{font-size:13px}
+  .levelBtn{grid-template-columns:52px 1fr}
+  .levelMedia img{width:52px;height:52px}
+  .miniBtn{padding:6px 8px}
+}
+
 </style>
 </head>
 
@@ -301,7 +331,7 @@ body.printing #printRoot{display:block}
           </div>
           <div class="stepBox" data-step="3">
             <div class="stepNum">3</div>
-            <div class="stepText">選設備<br>（主案/加開案）</div>
+            <div class="stepText">選設備<br>（主案/活動）</div>
           </div>
           <div class="stepBox" data-step="4">
             <div class="stepNum">4</div>
@@ -421,13 +451,13 @@ body.printing #printRoot{display:block}
           </select>
         </div>
 
-        <!-- 日期模式：主案 + 加開案（可同時存在） -->
+        <!-- 日期模式：主案 + 活動（可同時存在） -->
         <div class="field span2">
-          <label>活動日期規劃（主案＋加開案）</label>
+          <label>活動日期規劃（活動1/活動2/活動3…）</label>
 
           <div class="dateRow" style="grid-template-columns: 1fr;">
             <div class="dateCol">
-              <div class="dateCap">主案 Day1（必填）</div>
+              <div class="dateCap">活動1（必填）</div>
               <input id="fDateStart" type="date">
             </div>
           </div>
@@ -436,30 +466,30 @@ body.printing #printRoot{display:block}
 
             <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
               <input type="checkbox" id="fIsMultiDay" style="width:18px;height:18px">
-              主案連續多日（勾選後可選結束日期）
+              活動1 連續多日（需要的話打勾）
             </label>
 
             <div id="multiDayWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
               <div class="dateRow" style="grid-template-columns:1fr 1fr;gap:12px">
                 <div class="dateCol">
-                  <div class="dateCap">開始（主案 Day1）</div>
+                  <div class="dateCap">開始（活動1）</div>
                   <input id="fDateStartMirror" type="date" disabled>
                 </div>
                 <div class="dateCol">
-                  <div class="dateCap">結束（至少 Day2）</div>
+                  <div class="dateCap">結束（至少第2天）</div>
                   <input id="fDateEnd" type="date">
                 </div>
               </div>
               <div class="hint" style="margin-top:8px">
-                主案連續加價：第2天 <b>B×50%</b>；第3天起每一天 <b>B×30%</b>。<br>
-                <b>注意：</b>主案連續視為同一案子，設備只選一次套用整段。
+                連續多日加價：第2天 <b>B×50%</b>；第3天起每一天 <b>B×30%</b>。<br>
+                <b>提醒：</b>活動1若為連續多日，設備只需選一次，會套用整段。
               </div>
             </div>
 
             <!-- ✅ 主案：就地時間規劃 -->
             <div id="mainInlineWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
               <div class="note" style="font-weight:900;color:#374151">
-                主案時間規劃（日期確定後直接填：每一天可不同，含第二場）
+                活動1 時間規劃（日期確定後直接填：每天可不同；需要第二場就打勾）
               </div>
               <div id="mainInlinePlanner" class="planList" style="margin-top:8px"></div>
               <div class="hint" style="margin-top:8px">
@@ -469,23 +499,23 @@ body.printing #printRoot{display:block}
 
             <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
               <input type="checkbox" id="fIsNonContinuous" style="width:18px;height:18px">
-              加開案（新增不連續日期：可插在主案中間，同日可多案）
+              新增其他活動（活動2/活動3…：可不同日期或同日不同時段）
             </label>
 
             <div id="nonContinuousWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
               <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
                 <div style="flex:1;min-width:220px">
-                  <div class="dateCap">加開案日期</div>
+                  <div class="dateCap">活動日期</div>
                   <input id="fDateAdd" type="date" style="width:100%">
                 </div>
-                <button class="btn" id="btnAddDate" type="button">＋加入加開案</button>
+                <button class="btn" id="btnAddDate" type="button">＋加入活動</button>
               </div>
 
-              <div class="note" style="margin-top:10px">已加入的加開案（每筆加入後，會在下方直接出現時間設定）：</div>
+              <div class="note" style="margin-top:10px">已加入的活動（每筆加入後，會在下方直接出現時間設定）：</div>
               <div id="extraList" class="planList" style="margin-top:8px"></div>
 
               <div class="hint" style="margin-top:8px">
-                ✅ 加開案可與主案日期重疊（例如主案 26–28，加開 27）→ Step2 會出現「主案（連續）」＋該筆「加開案」兩張卡。
+                ✅ 活動可與主案日期重疊（例如主案 26–28，加開 27）→ Step2 會出現「活動1（連續）」＋該筆「活動」兩張卡。
               </div>
             </div>
           </div>
@@ -498,14 +528,14 @@ body.printing #printRoot{display:block}
       </div>
 
       <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
-        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成日期圖框</button>
+        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成報價單</button>
       </div>
     </section>
 
     <!-- ======================= VIEW: Step2 日期圖框列表 ======================= -->
     <section class="card view" id="viewDayList">
       <div class="hd stepHd step2">
-        <h2>2) 日期圖框（主案/加開案）</h2>
+        <h2>2) 活動清單（活動1/活動2/活動3…）</h2>
         <span class="pill" id="daysCountPill">0 項</span>
       </div>
 
@@ -518,12 +548,12 @@ body.printing #printRoot{display:block}
       <div style="padding:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
         <button class="btn" id="btnBackToBasic" type="button">回到 Step1（基本資料/日期）</button>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn" id="btnGoQuote" type="button">前往報價（Step4）</button>
+          <button class="btn" id="btnGoQuote" type="button">前往總覽報價單（Step4）</button>
         </div>
       </div>
     </section>
 
-    <!-- ======================= VIEW: Step3 編輯（主案/加開案） ======================= -->
+    <!-- ======================= VIEW: Step3 編輯（主案/活動） ======================= -->
     <section class="card view" id="viewDayEdit">
       <div class="hd stepHd step3">
         <h2 id="dayEditTitle">3) 選設備</h2>
@@ -538,8 +568,8 @@ body.printing #printRoot{display:block}
       <div class="hd stepHd step1" style="border-top:1px solid var(--line);border-bottom:none">
         <h2>本項資料（此頁可單獨修改）</h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="btnCopyFirst" type="button">複製第1項設備</button>
-          <button class="btn" id="btnCopyPrev" type="button">複製上一項設備</button>
+          <button class="btn" id="btnCopyFirst" type="button">複製：活動1設備</button>
+          <button class="btn" id="btnCopyPrev" type="button">複製：上一個活動設備</button>
         </div>
       </div>
 
@@ -597,7 +627,7 @@ body.printing #printRoot{display:block}
           <select id="dIndoor"></select>
         </div>
 
-        <!-- 加開案：單筆時間（維持原本 UI） -->
+        <!-- 活動：單筆時間（維持原本 UI） -->
         <div class="field span2" id="singleTimeBlock">
           <label>第一場時間（00/10/20/30/40/50 分）</label>
           <div class="timeRow">
@@ -695,7 +725,7 @@ body.printing #printRoot{display:block}
 
         <div class="hint">
           主案連續：設備只選一次套用整段。<br>
-          加開案：獨立活動，可與主案不同設備。
+          活動：獨立活動，可與主案不同設備。
         </div>
       </div>
 
@@ -731,10 +761,10 @@ body.printing #printRoot{display:block}
 
         <div class="cart" id="cart"></div>
 
-        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：報價單」 -->
+        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：總覽報價單」 -->
         <div class="quickNav" id="quickNavBar">
           <button class="btn" id="btnQuickDays" type="button">回到日期</button>
-          <button class="btn warn" id="btnQuickQuote" type="button">下一步：報價單</button>
+          <button class="btn warn" id="btnQuickQuote" type="button">下一步：總覽報價單</button>
         </div>
 
       </div>
@@ -743,7 +773,7 @@ body.printing #printRoot{display:block}
     <!-- ======================= VIEW: Step4 ======================= -->
     <section class="card view" id="viewQuote">
       <div class="hd stepHd step4">
-        <h2>4) 總覽（主案＋加開案）</h2>
+        <h2>4) 列印送出報價單</h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn warn" id="btnPrint" type="button">列印成 PDF</button>
           <button class="btn primary" id="btnSendQuote" type="button">送出報價單</button>
@@ -770,7 +800,7 @@ body.printing #printRoot{display:block}
         </table>
 
         <div class="note">
-          PDF 版面：第 1 頁會列出「主案＋加開案金額總覽」，後面會列出每一項的詳細清單。
+          PDF 版面：第 1 頁會列出「主案＋活動金額總覽」，後面會列出每一項的詳細清單。
         </div>
 
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
@@ -803,7 +833,7 @@ body.printing #printRoot{display:block}
    ========================= */
 
 const BRAND_NAME = "柚子樂器";
-const PRINT_TITLE = "活動企劃｜設備與器材報價單（主案＋加開案）";
+const PRINT_TITLE = "活動企劃｜設備與器材報價單（主案＋活動）";
 
 // ✅ 官網
 const OFFICIAL_HOME_URL = "https://www.mingtinghuang.com/";
@@ -1344,7 +1374,7 @@ function renderMainInline(){
   renderPlannerRows(list, rows, ()=>{ if(state.units.length){ renderDayCards(); renderIfEditingMain(); } });
 }
 
-/* Step1：加開案 inline list */
+/* Step1：活動 inline list */
 function renderExtraInline(){
   const box = $("#extraList");
   if(!box) return;
@@ -1353,7 +1383,7 @@ function renderExtraInline(){
   state.extraUnits = list;
 
   if(!list.length){
-    box.innerHTML = `<div class="note">目前沒有加入加開案。</div>`;
+    box.innerHTML = `<div class="note">目前沒有加入活動。</div>`;
     return;
   }
 
@@ -1361,11 +1391,11 @@ function renderExtraInline(){
     <div class="planRow" data-extra="${u.id}">
       <div class="planRowTop">
         <div>
-          <b>加開案 ${idx+1}：${u.date}</b>
+          <b>活動 ${idx+1}：${u.date}</b>
           <div class="note">此筆為獨立活動/地點（可與主案同日）。</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <span class="pill">加開案</span>
+          <span class="pill">活動</span>
           <button class="btn danger" type="button" data-del="${u.id}" style="padding:8px 10px">刪除</button>
         </div>
       </div>
@@ -1388,10 +1418,10 @@ function renderExtraInline(){
     if(!slot) return;
     renderPlannerRows(slot, [{
       key: `extra-${u.id}`,
-      title: `加開案 ${idx+1}`,
+      title: `活動 ${idx+1}`,
       dateText: u.date,
       sub: "",
-      pill: "加開案"
+      pill: "活動"
     }], ()=>{
       if(state.units.length){ renderDayCards(); renderIfEditingExtra(`extra-${u.id}`); }
     });
@@ -1604,8 +1634,8 @@ function renderDayCards(){
     const main = units[0];
     const isContinuous = !!$("#fIsMultiDay")?.checked && (main?.dates?.length||1)>=2;
     note.innerHTML = isContinuous
-      ? `你目前有 <b>主案（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆加開案</b>。主案只會出現一張圖框（設備選一次套用整段）。`
-      : `你目前有 <b>主案</b>＋<b>${Math.max(0,units.length-1)} 筆加開案</b>。`;
+      ? `你目前有 <b>活動1（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。活動1只會出現一張圖框（設備選一次套用整段）。`
+      : `你目前有 <b>活動1</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。`;
   }
 
   const totals = calcGrandTotal();
@@ -1615,7 +1645,7 @@ function renderDayCards(){
   const cardsHTML = [];
 
   if(main){
-    const label = isContinuous ? `主案（連續）｜${main.startDate} ～ ${main.endDate}` : `主案｜${main.startDate}`;
+    const label = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
     const meta = isContinuous
       ? `天數：${main.dates.length} 天｜第二場：${totals.main.s2Count} 天`
       : `第二場：${totals.main.s2Count} 天`;
@@ -1634,8 +1664,7 @@ function renderDayCards(){
           </div>
         </div>
         <div class="dayBtns">
-          <button class="btn primary" type="button" data-act="edit">進入主案編輯</button>
-          <button class="btn" type="button" data-act="copy1">複製第1項設備</button>
+          <button class="btn primary" type="button" data-act="edit">進入活動1編輯</button>
         </div>
       </div>
     `);
@@ -1652,7 +1681,7 @@ function renderDayCards(){
       <div class="dayCard" data-idx="${idx}">
         <div class="dayTop">
           <div>
-            <div class="dayDate">加開案 ${u.extraIndex}：${u.date}</div>
+            <div class="dayDate">活動${idx+1}：${u.date}</div>
             <div class="dayMeta">${escapeHtml(timeText)}</div>
           </div>
           <div style="display:grid;gap:8px;justify-items:end">
@@ -1661,9 +1690,9 @@ function renderDayCards(){
           </div>
         </div>
         <div class="dayBtns">
-          <button class="btn primary" type="button" data-act="edit">進入加開案編輯</button>
-          <button class="btn" type="button" data-act="copy1">複製第1項設備</button>
-          <button class="btn" type="button" data-act="copyprev">複製上一項設備</button>
+          <button class="btn primary" type="button" data-act="edit">進入此活動編輯</button>
+          <button class="btn" type="button" data-act="copy1">複製：活動1設備</button>
+          <button class="btn" type="button" data-act="copyprev">複製：上一個活動設備</button>
         </div>
       </div>
     `);
@@ -1677,9 +1706,16 @@ function renderDayCards(){
     card.querySelector('[data-act="copy1"]')?.addEventListener("click", ()=>{ copyEquip(0, idx); renderDayCards(); });
     card.querySelector('[data-act="copyprev"]')?.addEventListener("click", ()=>{ copyEquip(Math.max(0,idx-1), idx); renderDayCards(); });
   });
+  // Step2：只有全部完成才允許前往 Step4
+  const btnGo = $("#btnGoQuote");
+  if(btnGo){
+    const allDone = (units.length>0) && units.every(u=>!!u.done);
+    btnGo.style.display = allDone ? "" : "none";
+  }
+
 }
   /* =========================
-   Step3：編輯（主案/加開案）
+   Step3：編輯（主案/活動）
    ========================= */
 function getCurUnit(){ return state.units[state.currentIndex]; }
 
@@ -1692,8 +1728,8 @@ function fillSelectOptions(){
 function fillUnitFormUI(u){
   const isMain = u.kind==="main";
   const title = isMain
-    ? ((u.dates.length>=2) ? `3) 選設備｜主案（連續） ${u.startDate}～${u.endDate}` : `3) 選設備｜主案 ${u.startDate}`)
-    : `3) 選設備｜加開案 ${u.extraIndex}：${u.date}`;
+    ? ((u.dates.length>=2) ? `3) 選設備｜活動1（連續） ${u.startDate}～${u.endDate}` : `3) 選設備｜主案 ${u.startDate}`)
+    : `3) 選設備｜活動 ${u.extraIndex}：${u.date}`;
   $("#dayEditTitle").textContent = title;
 
   $("#dDate").value = isMain
@@ -1716,7 +1752,7 @@ function fillUnitFormUI(u){
   $("#singleTimeBlock").style.display = isMain ? "none" : "";
   $("#singleS2Block").style.display   = isMain ? "none" : "";
 
-  $("#btnMarkDone").textContent = isMain ? "完成主案" : "完成加開案";
+  $("#btnMarkDone").textContent = isMain ? "完成主案" : "完成活動";
 
   if(!isMain){
     const meta = ensurePlanMeta(u.uid);
@@ -1941,6 +1977,7 @@ function setQty(u, itemId, qty){
   renderEquipmentUI();
   renderUnitTotalsAndCart();
   renderDayCards();
+  updateCopyButtons();
 }
 
 function applyPackLevel(u, tierKey, level){
@@ -2238,6 +2275,8 @@ function renderUnitTotalsAndCart(){
   }
 
   renderCart(u);
+  updateCopyButtons();
+  updateQuickNavBar();
 }
 
 /* Copy equipment */
@@ -2254,12 +2293,73 @@ function copyEquip(fromIdx, toIdx){
 }
 
 /* Step3：open unit */
+function getNextTodoIndex(fromIdx){
+  const units = state.units || [];
+  if(!units.length) return -1;
+  const cur = Number(fromIdx||0);
+  // 先找後面第一個未完成
+  for(let i=cur+1;i<units.length;i++){
+    if(!units[i].done) return i;
+  }
+  // 再找前面第一個未完成
+  for(let i=0;i<units.length;i++){
+    if(!units[i].done) return i;
+  }
+  return -1;
+}
+
+function isAnyEquipChosen(u){
+  if(!u || !u.cart) return false;
+  const packs = u.cart.packs || {};
+  const items = u.cart.items || {};
+  return Object.keys(packs).length>0 || Object.values(items).some(q=>Number(q||0)>0);
+}
+
+function updateCopyButtons(){
+  const u = getCurUnit();
+  const idx = Number(state.currentIndex||0);
+  const btnFirst = $("#btnCopyFirst");
+  const btnPrev  = $("#btnCopyPrev");
+
+  if(btnFirst){
+    // 第一筆不顯示；且必須已選設備才顯示
+    const show = (idx>0) && isAnyEquipChosen(state.units?.[0]);
+    btnFirst.style.display = show ? "" : "none";
+    // 動態文案：複製「活動1」設備
+    btnFirst.textContent = "複製：活動1設備";
+  }
+  if(btnPrev){
+    // 第一筆不顯示；且上一筆必須已選設備才顯示
+    const prev = state.units?.[idx-1];
+    const show = (idx>0) && isAnyEquipChosen(prev);
+    btnPrev.style.display = show ? "" : "none";
+    // 動態文案：複製「上一個活動」設備（若可取得序號就顯示）
+    const prevLabel = prev?.label || (idx>1 ? `活動${idx}` : "活動1");
+    btnPrev.textContent = `複製：${prevLabel}設備`;
+  }
+}
+
 function updateQuickNavBar(){
   const bar = $("#quickNavBar");
   if(!bar) return;
 
-  const hasUnits = !!(state.units && state.units.length);
+  const units = state.units || [];
+  const hasUnits = !!units.length;
   bar.style.display = hasUnits ? "" : "none";
+
+  const qQuote = $("#btnQuickQuote");
+  if(!qQuote) return;
+
+  const nextTodo = getNextTodoIndex(state.currentIndex||0);
+  if(nextTodo !== -1){
+    qQuote.textContent = "下一步：下一個活動";
+    qQuote.classList.remove("warn");
+    qQuote.classList.add("primary");
+  }else{
+    qQuote.textContent = "下一步：總覽報價單";
+    qQuote.classList.remove("primary");
+    qQuote.classList.add("warn");
+  }
 }
 
 function openUnit(idx){
@@ -2271,6 +2371,7 @@ function openUnit(idx){
 
   fillSelectOptions();
   fillUnitFormUI(getCurUnit());
+  updateCopyButtons();
   renderEquipmentUI();
   renderUnitTotalsAndCart();
 
@@ -2299,8 +2400,8 @@ function openAfterDoneChoice(){
   const isLast = idx >= (state.units.length-1);
 
   const label = (u.kind==="main")
-    ? (u.dates.length>=2 ? `主案（連續）${u.startDate}～${u.endDate}` : `主案 ${u.startDate}`)
-    : `加開案 ${u.extraIndex}（${u.date}）`;
+    ? (u.dates.length>=2 ? `活動1（連續）${u.startDate}～${u.endDate}` : `主案 ${u.startDate}`)
+    : `活動 ${u.extraIndex}（${u.date}）`;
 
   const title = isLast ? "已完成最後一項" : "已完成本項";
   const msg = `你已標記完成：${escapeHtml(label)}。接下來要做什麼？`;
@@ -2354,47 +2455,115 @@ function markDone(){
 function renderQuote(){
   const tbody = $("#quoteOverview");
   const warn = $("#quoteWarning");
+  if(!tbody) return;
   warn.innerHTML = "";
 
   const units = state.units || [];
-  const main = units[0];
-  const totals = calcGrandTotal();
+  if(!units.length){
+    tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
+    $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(0));
+    return;
+  }
 
   const rows = [];
+  let grand = 0;
 
-  if(main){
-    const isContinuous = (main.dates.length>=2);
-    const label = isContinuous ? `主案（連續）` : `主案`;
-    const dateText = isContinuous ? `${main.startDate}～${main.endDate}` : main.startDate;
-    const desc = isContinuous
-      ? `天數 ${totals.main.N} 天｜設備小計 B=${fmt(totals.main.B)}｜連續加價 ${fmt(totals.main.contFee)}｜第二場 ${totals.main.s2Count} 天（${fmt(totals.main.s2Fee)}）`
-      : `設備小計 B=${fmt(totals.main.B)}｜第二場 ${totals.main.s2Count} 天（${fmt(totals.main.s2Fee)}）`;
-
+  function pushSection(title, subtitle){
     rows.push(`
       <tr>
-        <td><b>${escapeHtml(label)}</b><div class="muted">${escapeHtml(dateText)}</div></td>
-        <td>${escapeHtml(desc)}</td>
-        <td class="ovRight"><b>${fmt(totals.main.total)}</b></td>
+        <td colspan="3" style="background:#f9fafb;border-color:#e5e7eb">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <b>${escapeHtml(title)}</b>
+            <span class="muted">${escapeHtml(subtitle||"")}</span>
+          </div>
+        </td>
       </tr>
     `);
   }
 
-  units.slice(1).forEach((u, i)=>{
-    const r = totals.extras[i] || {B:0,s2Fee:0,total:0};
-    const meta = ensurePlanMeta(u.uid);
-    const desc = `設備小計 B=${fmt(r.B)}${meta.s2On ? `｜第二場 ${fmt(r.s2Fee)}` : ""}`;
+  function pushLine(name, qtyText, amount){
     rows.push(`
       <tr>
-        <td><b>加開案 ${u.extraIndex}</b><div class="muted">${escapeHtml(u.date)}</div></td>
-        <td>${escapeHtml(desc)}</td>
-        <td class="ovRight"><b>${fmt(r.total)}</b></td>
+        <td>${escapeHtml(name)}</td>
+        <td class="muted">${escapeHtml(qtyText||"")}</td>
+        <td class="ovRight"><b>${fmt(amount||0)}</b></td>
       </tr>
     `);
+  }
+
+  function getUnitLabel(idx, u){
+    if(idx===0) return (u.dates && u.dates.length>=2) ? "活動1（連續）" : "活動1";
+    return `活動${idx+1}`;
+  }
+
+  function getUnitDateText(u){
+    if(u.kind==="main"){
+      return (u.dates && u.dates.length>=2) ? `${u.startDate}～${u.endDate}` : (u.startDate||"");
+    }
+    return u.date || "";
+  }
+
+  function listCartLines(u){
+    const out = [];
+    const packs = u.cart?.packs || {};
+    for(const p of Object.values(packs)){
+      if(!p) continue;
+      const title = `${p.label}：${p.name}`;
+      out.push({name:title, qty:"", amount:Number(p.price||0)});
+    }
+    const items = u.cart?.items || {};
+    for(const [id, qty] of Object.entries(items)){
+      const q = Number(qty||0);
+      if(q<=0) continue;
+      const f = findItem(id);
+      if(!f) continue;
+      out.push({name:f.name, qty:`${q} ${f.unit||"件"}`, amount:Number(f.price||0)*q});
+    }
+    return out;
+  }
+
+  units.forEach((u, idx)=>{
+    const label = getUnitLabel(idx, u);
+    const dateText = getUnitDateText(u);
+    pushSection(label, dateText);
+
+    // 明細（8B：全部展開列到底）
+    const lines = listCartLines(u);
+    if(!lines.length){
+      rows.push(`<tr><td colspan="3" class="muted">（尚未選擇設備）</td></tr>`);
+    }else{
+      lines.forEach(li=>pushLine(li.name, li.qty, li.amount));
+    }
+
+    // 活動加價
+    if(u.kind==="main"){
+      const r = calcMainTotal(u);
+      if((r.N||0) >= 2){
+        pushLine("連續多日加價", `第2天 50%｜第3天起 30%`, r.contFee||0);
+      }
+      if((r.s2Count||0) > 0){
+        pushLine("同日第二場加價", `${r.s2Count} 天（B×30%）`, r.s2Fee||0);
+      }
+      pushLine("本活動合計", "", r.total||0);
+      grand += Number(r.total||0);
+    }else{
+      const r = calcExtraTotal(u);
+      const meta = ensurePlanMeta(u.uid);
+      if(meta.s2On){
+        pushLine("同日第二場加價", `B×30%`, r.s2Fee||0);
+      }
+      pushLine("本活動合計", "", r.total||0);
+      grand += Number(r.total||0);
+    }
+
+    // 間隔
+    rows.push(`<tr><td colspan="3" style="background:#fff;height:6px;border:none"></td></tr>`);
   });
 
-  tbody.innerHTML = rows.join("") || `<tr><td colspan="3">—</td></tr>`;
-  $("#quoteGrandTotal").textContent = fmt(totals.total);
+  tbody.innerHTML = rows.join("");
+  $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(grand));
 }
+
 
 function goQuote(){
   setStep(4);
@@ -2456,13 +2625,13 @@ function buildPrint(){
     const rows = [];
     const main = units[0];
     if(main){
-      const label = (main.dates.length>=2) ? "主案（連續）" : "主案";
+      const label = (main.dates.length>=2) ? "活動1（連續）" : "主案";
       const dateText = (main.dates.length>=2) ? `${main.startDate}～${main.endDate}` : main.startDate;
       rows.push(`<tr><td>${label}</td><td>${dateText}</td><td class="right">${fmt(totals.main.total)}</td></tr>`);
     }
     units.slice(1).forEach((u,i)=>{
       const r = totals.extras[i] || {total:0};
-      rows.push(`<tr><td>加開案 ${u.extraIndex}</td><td>${u.date}</td><td class="right">${fmt(r.total)}</td></tr>`);
+      rows.push(`<tr><td>活動 ${u.extraIndex}</td><td>${u.date}</td><td class="right">${fmt(r.total)}</td></tr>`);
     });
     return rows.join("");
   })();
@@ -2510,10 +2679,10 @@ function buildPrint(){
     let money = 0;
 
     if(u.kind==="main"){
-      title = (u.dates.length>=2) ? `主案（連續）｜${u.startDate}～${u.endDate}` : `主案｜${u.startDate}`;
+      title = (u.dates.length>=2) ? `活動1（連續）｜${u.startDate}～${u.endDate}` : `活動1｜${u.startDate}`;
       money = calcMainTotal(u).total;
     }else{
-      title = `加開案 ${u.extraIndex}｜${u.date}`;
+      title = `活動 ${u.extraIndex}｜${u.date}`;
       money = calcExtraTotal(u).total;
     }
 
@@ -2627,7 +2796,7 @@ function buildQuotePayload_v2(){
     const items = buildItemsForPayload_(u);
 
     sessions.push({
-      label: `加開案 ${u.extraIndex} 第一場`,
+      label: `活動 ${u.extraIndex} 第一場`,
       date: u.date,
       timeStart: meta.start || "",
       timeEnd: meta.end || "",
@@ -2638,7 +2807,7 @@ function buildQuotePayload_v2(){
 
     if(meta.s2On){
       sessions.push({
-        label: `加開案 ${u.extraIndex} 第二場`,
+        label: `活動 ${u.extraIndex} 第二場`,
         date: u.date,
         timeStart: meta.s2Start || "",
         timeEnd: meta.s2End || "",
@@ -2742,7 +2911,7 @@ function canNavigateToStep(n){
 }
 function navToStep(n){
   if(!canNavigateToStep(n)){
-    alert("請先完成 Step1 並按「下一步：生成日期圖框」。");
+    alert("請先完成 Step1 並按「下一步：生成報價單」。");
     return;
   }
   if(n===1) return goStep1();
@@ -2758,7 +2927,7 @@ function updateStepBarClickable(){
 }
 
 /* =========================
-   Init：時間 select（加開案編輯用）
+   Init：時間 select（活動編輯用）
    ========================= */
 function fillTimeSelectsForEdit(){
   const hours = Array.from({length:24}, (_,i)=>pad2(i));
@@ -2779,7 +2948,11 @@ function bindNavButtons(){
   const qDays  = $("#btnQuickDays");
   const qQuote = $("#btnQuickQuote");
   if(qDays)  qDays.addEventListener("click", ()=>{ goDayList(); });
-  if(qQuote) qQuote.addEventListener("click", ()=>{ goQuote(); });
+  if(qQuote) qQuote.addEventListener("click", ()=>{
+    const nextTodo = getNextTodoIndex(state.currentIndex||0);
+    if(nextTodo !== -1){ openUnit(nextTodo); }
+    else { goQuote(); }
+  });
 
   // ✅ 官網
   $("#btnGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
@@ -2865,7 +3038,7 @@ function bindStep1Events(){
 
   $("#btnAddDate").addEventListener("click", ()=>{
     const d = normalizeDateStr($("#fDateAdd").value||"");
-    if(!d){ alert("請先選擇加開案日期。"); return; }
+    if(!d){ alert("請先選擇活動日期。"); return; }
     if(d < t){ alert("不可以選過去的日期。"); return; }
     state.extraUnits = state.extraUnits || [];
     state.extraUnits.push({ id: genId(), date: d });
