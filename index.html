@@ -173,6 +173,12 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 /* Wizard Steps（頭部進度） */
 .stepsWrap{width:100%;margin-top:4px}
 .steps{display:flex;justify-content:space-between;position:relative;padding:0;margin:0}
+
+/* Step 可點選提示 */
+#stepsBar .stepBox{cursor:pointer;user-select:none}
+.stepHint{margin-top:10px;font-size:13px;color:var(--muted);display:flex;justify-content:center;align-items:center;gap:8px}
+@keyframes tapHint {0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+.stepHint{animation:tapHint 1.4s ease-in-out infinite}
 .steps::before{content:"";position:absolute;top:15px;left:10%;right:10%;height:2px;background:var(--line);z-index:0}
 .stepBox{
   position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -413,6 +419,33 @@ body.printing #printRoot{display:block}
 
 }
 
+
+@media (max-width:520px){
+
+  /* Step1：新增活動區避免橫向溢出 */
+  .addRow{width:100%!important;max-width:100%!important;flex-direction:column!important;align-items:stretch!important}
+  .addRow > div{min-width:0!important;width:100%!important}
+  #fDateAdd{width:100%!important}
+  #btnAddDate{width:100%!important}
+  /* Step3：加購設備改 3 欄（更好點選） */
+  .items{grid-template-columns:repeat(3,1fr)!important}
+  .item{grid-template-columns:1fr!important;gap:8px!important}
+  .thumb{width:100%!important;height:72px!important;border-radius:12px!important}
+  .item .sub{display:none!important}
+  .item .row2{flex-direction:column;align-items:stretch;gap:8px}
+  .item .qty{justify-content:space-between}
+  .item .price{justify-self:start}
+
+}
+
+/* Step3：選設備時隱藏基本資料區（只做引導） */
+#viewDayEdit .hd.stepHd.step1{display:none!important}
+#dayForm{display:none!important}
+#formNavPanel{display:none!important}
+/* Step3：上方操作只留「下一項」與「完成」 */
+#step4TopActions #btnBackToDays,
+#step4TopActions #btnPrevUnit{display:none!important}
+
 </style>
 </head>
 
@@ -440,13 +473,12 @@ body.printing #printRoot{display:block}
             <div class="stepText">列印送出<br>報價單</div>
           </div>
         </div>
+        <div class="stepHint" id="stepHint">👇 點上方 1～4 可直接切換步驟</div>
       </div>
     </div>
 
     <div class="actions">
-      <button class="btn ghost" id="btnGoHome">回柚子樂器官網</button>
-      <button class="btn" id="btnGoStep1">回到基本資料/日期</button>
-      <button class="btn warn" id="btnPrintTop" style="display:none">列印 PDF</button>
+<button class="btn warn" id="btnPrintTop" style="display:none">列印 PDF</button>
     </div>
   </div>
 </header>
@@ -647,11 +679,8 @@ body.printing #printRoot{display:block}
 
       <div class="dayGrid" id="dayCards"></div>
 
-      <div style="padding:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
-        <button class="btn" id="btnBackToBasic" type="button">回到 Step1（基本資料/日期）</button>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn" id="btnGoQuote" type="button">前往列印送出報價單（Step4）</button>
-        </div>
+      <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
+        <button class="btn primary" id="btnStep2Next" type="button">下一步：開始選設備</button>
       </div>
     </section>
 
@@ -1733,49 +1762,40 @@ function calcGrandTotal(){
 /* =========================
    Step2：render day cards（主案只出一張）
    ========================= */
+
 function renderDayCards(){
   const box = $("#dayCards");
   if(!box) return;
 
   const units = state.units || [];
-  $("#daysCountPill").textContent = `${units.length} 項`;
+  const pill = $("#daysCountPill");
+  if(pill) pill.textContent = `${units.length} 項`;
 
   const note = $("#dayListNote");
   if(note){
     const main = units[0];
     const isContinuous = !!$("#fIsMultiDay")?.checked && (main?.dates?.length||1)>=2;
     note.innerHTML = isContinuous
-      ? `你目前有 <b>活動1（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。活動1只會出現一張圖框（設備選一次套用整段）。`
-      : `你目前有 <b>活動1</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。`;
+      ? `你目前有 <b>活動1（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。<br><span class="hint">點任一張活動卡片即可開始選設備。</span>`
+      : `你目前有 <b>活動1</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。<br><span class="hint">點任一張活動卡片即可開始選設備。</span>`;
   }
 
-  const totals = calcGrandTotal();
   const main = units[0];
-  const isContinuous = (main?.dates?.length||1)>=2;
+  const totals = calcGrandTotal();
 
   const cardsHTML = [];
-
   if(main){
-    const label = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
-    const meta = isContinuous
-      ? `天數：${main.dates.length} 天｜第二場：${totals.main.s2Count} 天`
-      : `第二場：${totals.main.s2Count} 天`;
-
-    const st = main.done ? `<span class="badgeDone">✓ 已完成</span>` : `<span class="badgeTodo">⏳ 未完成</span>`;
+    const isContinuous = (main?.dates?.length||1)>=2;
+    const title = isContinuous ? `活動1｜${main.startDate}～${main.endDate}` : `活動1｜${main.date||main.startDate||""}`;
+    const meta = isContinuous ? "主案（連續多日）" : "單日活動";
     cardsHTML.push(`
       <div class="dayCard" data-idx="0">
-        <div class="dayTop">
+        <div class="dayTop" style="align-items:center">
           <div>
-            <div class="dayDate">${escapeHtml(label)}</div>
+            <div class="dayDate">${escapeHtml(title)}</div>
             <div class="dayMeta">${escapeHtml(meta)}</div>
           </div>
-          <div class="dayRight" style="display:grid;gap:8px;justify-items:end">
-            ${st}
-            <div class="pill">${fmt(totals.main.total)}</div>
-          </div>
-        </div>
-        <div class="dayBtns">
-          <button class="btn primary" type="button" data-act="edit">進入活動1編輯</button>
+          <div class="dayRight" style="font-size:22px;color:#9aa3af">›</div>
         </div>
       </div>
     `);
@@ -1783,54 +1803,43 @@ function renderDayCards(){
 
   units.slice(1).forEach((u, i)=>{
     const idx = i+1;
-    const st = u.done ? `<span class="badgeDone">✓ 已完成</span>` : `<span class="badgeTodo">⏳ 未完成</span>`;
-    const money = totals.extras[i] ? fmt(totals.extras[i].total) : "NT$0";
     const meta = ensurePlanMeta(u.uid);
     const s2 = meta.s2On ? "有第二場" : "無第二場";
     const timeText = `第一場：${meta.start}～${meta.end}｜第二場：${s2}`;
     cardsHTML.push(`
       <div class="dayCard" data-idx="${idx}">
-        <div class="dayTop">
+        <div class="dayTop" style="align-items:center">
           <div>
-            <div class="dayDate">活動${idx+1}：${u.date}</div>
+            <div class="dayDate">活動${idx+1}｜${u.date}</div>
             <div class="dayMeta">${escapeHtml(timeText)}</div>
           </div>
-          <div class="dayRight" style="display:grid;gap:8px;justify-items:end">
-            ${st}
-            <div class="pill">${money}</div>
-          </div>
-        </div>
-        <div class="dayBtns">
-          <button class="btn primary" type="button" data-act="edit">進入此活動編輯</button>
-          <button class="btn" type="button" data-act="copy1">複製：活動1設備</button>
-          <button class="btn" type="button" data-act="copyprev">複製：上一個活動設備</button>
+          <div class="dayRight" style="font-size:22px;color:#9aa3af">›</div>
         </div>
       </div>
     `);
   });
 
   box.innerHTML = cardsHTML.join("");
-  renderUnitJumpList();
 
-
+  // 點卡片開始選設備
   box.querySelectorAll(".dayCard").forEach(card=>{
     const idx = Number(card.dataset.idx||0);
-    card.querySelector('[data-act="edit"]')?.addEventListener("click", ()=>openUnit(idx));
-    card.querySelector('[data-act="copy1"]')?.addEventListener("click", ()=>{ copyEquip(0, idx); renderDayCards(); });
-    card.querySelector('[data-act="copyprev"]')?.addEventListener("click", ()=>{ copyEquip(Math.max(0,idx-1), idx); renderDayCards(); });
+    card.addEventListener("click", ()=>{
+      openUnit(idx);
+      goDayEdit();
+    });
   });
-  // Step2：只有全部完成才允許前往 Step4
-  const btnGo = $("#btnGoQuote");
-  if(btnGo){
-    const allDone = (units.length>0) && units.every(u=>!!u.done);
-    btnGo.style.display = allDone ? "" : "none";
-  }
 
+  // Step2：下一步（預設先進入第一張）
+  const btnNext = $("#btnStep2Next");
+  if(btnNext){
+    btnNext.onclick = ()=>{
+      openUnit(0);
+      goDayEdit();
+    };
+  }
 }
-  /* =========================
-   Step3：編輯（主案/活動）
-   ========================= */
-function getCurUnit(){ return state.units[state.currentIndex]; }
+}
 
 function fillSelectOptions(){
   if($("#dEventType")) $("#dEventType").innerHTML = $("#fEventType")?.innerHTML || "";
@@ -2462,63 +2471,9 @@ function updateQuickNavBar(){
 
   // 1) 活動表單總覽（Step3 最底部）
   const panel = $("#formNavPanel");
-  if(panel){
-    if(!hasUnits){
-      panel.innerHTML = "";
-    }else{
-      const totals = calcGrandTotal();
-      const main = units[0];
-      const isContinuous = (main?.dates?.length||1)>=2;
+  if(panel) panel.innerHTML = "";
 
-      const cards = [];
-      units.forEach((u, idx)=>{
-        const isMain = (idx===0);
-        let title = "";
-        let meta = "";
-        let money = "NT$0";
-
-        if(isMain){
-          title = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
-          meta  = isContinuous ? `天數：${main.dates.length} 天` : `單日活動`;
-          money = fmt(totals.main.total);
-        }else{
-          const metaObj = ensurePlanMeta(u.uid);
-          const s2 = metaObj.s2On ? "有第二場" : "無第二場";
-          title = `活動${idx+1}｜${u.date}`;
-          meta  = `第一場：${metaObj.start}～${metaObj.end}｜第二場：${s2}`;
-          money = totals.extras[idx-1] ? fmt(totals.extras[idx-1].total) : "NT$0";
-        }
-
-        const st = u.done ? "✓ 已完成" : "⏳ 未完成";
-
-        cards.push(`
-          <button class="formNavBtn ${u.done?'isDone':'isTodo'} ${idx===state.currentIndex?'isActive':''}" type="button" data-idx="${idx}">
-            <div class="fnTop">
-              <div class="fnTitle">${escapeHtml(title)}</div>
-              <div class="fnMoney">${money}</div>
-            </div>
-            <div class="fnBottom">
-              <span class="fnMeta">${escapeHtml(meta)}</span>
-              <span class="fnStatus">${st}</span>
-            </div>
-          </button>
-        `);
-      });
-
-      // Step4 入口（未完成會提示並導引）
-      const firstTodo = units.findIndex(u=>!u.done);
-      const step4StateText = (firstTodo===-1) ? "可前往列印/送出報價單（Step4）" : `尚有未完成：活動${firstTodo+1}（請先完成）`;
-
-      panel.innerHTML = `
-        <div class="formNavHead">
-          <b>活動表單一覽</b>
-          <button class="btn warn mini" id="btnPanelStep4" type="button">前往列印/送出（Step4）</button>
-        </div>
-        <div class="formNavHint">${escapeHtml(step4StateText)}</div>
-        <div class="formNavGrid">${cards.join("")}</div>
-      `;
-
-      // 綁定：點卡片直接切換
+  // 綁定：點卡片直接切換
       panel.querySelectorAll(".formNavBtn").forEach(btn=>{
         btn.addEventListener("click", ()=>{
           const idx = Number(btn.getAttribute("data-idx"));
