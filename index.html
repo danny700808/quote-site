@@ -191,6 +191,11 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .view{display:none}
 .view.show{display:block}
 
+
+.unitJumpList{display:flex;flex-wrap:wrap;gap:10px;padding:12px 14px;border-top:1px dashed var(--line);margin-top:12px}
+.unitJumpList .ujBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:800}
+.unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
+.unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
 /* Day cards */
 .dayGrid{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2, minmax(0,1fr))}
 .dayCard{border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.05);padding:12px;display:grid;gap:10px}
@@ -309,6 +314,41 @@ body.printing #printRoot{display:block}
   .levelBtn{grid-template-columns:52px 1fr}
   .levelMedia img{width:52px;height:52px}
   .miniBtn{padding:6px 8px}
+
+  /* 手機直向：Header 按鈕不要被擠成直排 */
+  .head{grid-template-columns:1fr;gap:10px}
+  .title{grid-column:1}
+  .actions{grid-column:1;justify-content:center}
+  .actions .btn{padding:8px 10px;font-size:13px;white-space:nowrap}
+
+  /* 右側操作按鈕（原本會被壓窄）在手機改成更緊湊的橫向排列 */
+  /* 如果你之後把 actions 改成固定在右側，這裡仍可避免字被擠成一字一行 */
+  .btn{word-break:keep-all}
+
+  /* Step1：加入活動列避免日期＋按鈕重疊 */
+  .addRow{flex-direction:column;align-items:stretch}
+  #btnAddDate{width:100%}
+
+  /* Step1：已加入活動的標題/按鈕允許換行 */
+  .planRowTop{flex-direction:column;align-items:stretch;gap:8px}
+  .planRowTop > div:last-child{justify-content:space-between}
+
+  /* Step2：活動卡片標頭避免長日期擠壓「未完成」 */
+  .dayGrid{grid-template-columns:1fr}
+  .dayTop{flex-direction:column;align-items:stretch}
+  .dayRight{justify-items:start}
+
+  /* Step2：活動卡片按鈕在手機直向改為滿寬堆疊 */
+  .dayBtns{flex-direction:column;align-items:stretch}
+  .dayBtns .btn{width:100%}
+
+  /* Step3：底部快速切換列 */
+  .unitJumpList{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;border-top:1px dashed var(--line);margin-top:10px}
+  .unitJumpList .ujBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;font-size:13px}
+  .unitJumpList .ujBtn.todo{opacity:.9}
+  .unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
+  .unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
+
 }
 
 </style>
@@ -327,7 +367,7 @@ body.printing #printRoot{display:block}
           </div>
           <div class="stepBox" data-step="2">
             <div class="stepNum">2</div>
-            <div class="stepText">生成日期<br>圖框</div>
+            <div class="stepText">生成活動<br>表單</div>
           </div>
           <div class="stepBox" data-step="3">
             <div class="stepNum">3</div>
@@ -335,7 +375,7 @@ body.printing #printRoot{display:block}
           </div>
           <div class="stepBox" data-step="4">
             <div class="stepNum">4</div>
-            <div class="stepText">總覽<br>＋送出/列印</div>
+            <div class="stepText">列印送出<br>報價單</div>
           </div>
         </div>
       </div>
@@ -503,7 +543,7 @@ body.printing #printRoot{display:block}
             </label>
 
             <div id="nonContinuousWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
-              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+              <div class="addRow" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
                 <div style="flex:1;min-width:220px">
                   <div class="dateCap">活動日期</div>
                   <input id="fDateAdd" type="date" style="width:100%">
@@ -548,7 +588,7 @@ body.printing #printRoot{display:block}
       <div style="padding:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
         <button class="btn" id="btnBackToBasic" type="button">回到 Step1（基本資料/日期）</button>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn" id="btnGoQuote" type="button">前往總覽報價單（Step4）</button>
+          <button class="btn" id="btnGoQuote" type="button">前往列印送出報價單（Step4）</button>
         </div>
       </div>
     </section>
@@ -761,10 +801,10 @@ body.printing #printRoot{display:block}
 
         <div class="cart" id="cart"></div>
 
-        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：總覽報價單」 -->
+        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：列印送出報價單」 -->
         <div class="quickNav" id="quickNavBar">
           <button class="btn" id="btnQuickDays" type="button">回到日期</button>
-          <button class="btn warn" id="btnQuickQuote" type="button">下一步：總覽報價單</button>
+          <button class="btn warn" id="btnQuickQuote" type="button">下一步：列印送出報價單</button>
         </div>
 
       </div>
@@ -1658,7 +1698,7 @@ function renderDayCards(){
             <div class="dayDate">${escapeHtml(label)}</div>
             <div class="dayMeta">${escapeHtml(meta)}</div>
           </div>
-          <div style="display:grid;gap:8px;justify-items:end">
+          <div class="dayRight" style="display:grid;gap:8px;justify-items:end">
             ${st}
             <div class="pill">${fmt(totals.main.total)}</div>
           </div>
@@ -1684,7 +1724,7 @@ function renderDayCards(){
             <div class="dayDate">活動${idx+1}：${u.date}</div>
             <div class="dayMeta">${escapeHtml(timeText)}</div>
           </div>
-          <div style="display:grid;gap:8px;justify-items:end">
+          <div class="dayRight" style="display:grid;gap:8px;justify-items:end">
             ${st}
             <div class="pill">${money}</div>
           </div>
@@ -1699,6 +1739,8 @@ function renderDayCards(){
   });
 
   box.innerHTML = cardsHTML.join("");
+  renderUnitJumpList();
+
 
   box.querySelectorAll(".dayCard").forEach(card=>{
     const idx = Number(card.dataset.idx||0);
@@ -2352,15 +2394,41 @@ function updateQuickNavBar(){
 
   const nextTodo = getNextTodoIndex(state.currentIndex||0);
   if(nextTodo !== -1){
-    qQuote.textContent = "下一步：下一個活動";
+    qQuote.textContent = "下一步：編輯下一個活動表單";
     qQuote.classList.remove("warn");
     qQuote.classList.add("primary");
   }else{
-    qQuote.textContent = "下一步：總覽報價單";
+    qQuote.textContent = "下一步：列印送出報價單";
     qQuote.classList.remove("primary");
     qQuote.classList.add("warn");
   }
 }
+
+
+function renderUnitJumpList(){
+  const box = $("#unitJumpList");
+  if(!box) return;
+
+  const units = state.units || [];
+  if(!units.length){ box.innerHTML = ""; return; }
+
+  box.innerHTML = units.map((u, idx)=>{
+    const name = (idx===0)
+      ? ((u.dates && u.dates.length>=2) ? `活動1（連續）` : `活動1`)
+      : `活動${idx+1}`;
+    const cls = `ujBtn ${u.done ? "done" : "todo"} ${idx===state.currentIndex ? "current" : ""}`;
+    const tag = u.done ? "✅" : "⏳";
+    return `<button type="button" class="${cls}" data-uj="${idx}">${tag} ${name}</button>`;
+  }).join("");
+
+  box.querySelectorAll("button[data-uj]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const idx = Number(b.dataset.uj||0);
+      openUnit(idx);
+    });
+  });
+}
+
 
 function openUnit(idx){
   idx = Math.max(0, Math.min((state.units||[]).length-1, Number(idx||0)));
@@ -2377,7 +2445,8 @@ function openUnit(idx){
 
   $("#btnPrevUnit").disabled = (idx<=0);
   $("#btnNextUnit").disabled = (idx>=(state.units.length-1));
-  updateQuickNavBar();
+  updateQuickNavBar();  renderUnitJumpList();
+
 }
 
 function renderIfEditingMain(){
@@ -2754,7 +2823,7 @@ function buildQuotePayload_v2(){
   const units = state.units || [];
   const main = units[0];
   if(!main){
-    throw new Error("尚未建立任何項目，請先完成 Step1 並生成日期圖框。");
+    throw new Error("尚未建立任何項目，請先完成 Step1 並生成活動表單。");
   }
 
   const sessions = [];
@@ -2962,7 +3031,15 @@ function bindNavButtons(){
   $("#btnBackToDays").addEventListener("click", goDayList);
   $("#btnBackToDays2").addEventListener("click", goDayList);
   $("#btnBackToEdit").addEventListener("click", ()=>openUnit(state.currentIndex));
-  $("#btnGoQuote").addEventListener("click", goQuote);
+  $("#btnGoQuote").addEventListener("click", ()=>{
+    const todo = getNextTodoIndex(-1);
+    if(todo !== -1){
+      alert(`尚有未完成：活動${todo+1}（請先完成）`);
+      openUnit(todo);
+      return;
+    }
+    goQuote();
+  });
 
   $("#btnPrevUnit").addEventListener("click", ()=>openUnit(state.currentIndex-1));
   $("#btnNextUnit").addEventListener("click", ()=>openUnit(state.currentIndex+1));
