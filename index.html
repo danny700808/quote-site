@@ -251,6 +251,36 @@ body.printing #printRoot{display:block}
   .pageBreak{break-after:page}
   @page{size:auto;margin:10mm}
 }
+/* Step3：活動表單總覽（底部） */
+.formNavPanel{margin-top:12px}
+.formNavHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0}
+.formNavHint{color:var(--muted);font-size:13px;margin:0 0 8px}
+.formNavGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.formNavBtn{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:14px;
+  padding:10px;
+  text-align:left;
+  box-shadow:0 8px 18px rgba(0,0,0,.05);
+}
+.formNavBtn.isActive{border-color:var(--brand2);box-shadow:0 10px 22px rgba(47,143,123,.16)}
+.formNavBtn.isDone{opacity:1}
+.formNavBtn.isTodo{opacity:1}
+.fnTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fnTitle{font-weight:900}
+.fnMoney{font-weight:900;white-space:nowrap}
+.fnBottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+.fnMeta{color:var(--muted);font-size:12px}
+.fnStatus{font-size:12px;font-weight:900}
+.formNavBtn.isTodo .fnStatus{color:#b45309}
+.formNavBtn.isDone .fnStatus{color:#047857}
+
+/* Step3：底部導引列 */
+.quickNav{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:12px}
+.quickNav .btn{flex:1;min-width:160px}
+.btn.mini{padding:6px 10px;font-size:12px}
+
 
 @media (max-width:920px){
   .levelRow{grid-template-columns:repeat(2, 1fr)}
@@ -348,6 +378,38 @@ body.printing #printRoot{display:block}
   .unitJumpList .ujBtn.todo{opacity:.9}
   .unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
   .unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
+
+
+  /* Step1：加入活動區塊避免整塊超出卡片 */
+  .addBox, .addRow, .addRow *{max-width:100%}
+  .addBox{overflow:hidden}
+  .addRow input, .addRow select, .addRow button{width:100%}
+
+  /* Step3：分類 Tabs 在手機直向改成 2 欄平均 */
+  .tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .tabs .tab{width:100%;justify-content:center;text-align:center;white-space:normal}
+
+  /* Step3：設備卡片太窄會變「一字一行」，手機直向改為單欄 */
+  .items{grid-template-columns:1fr !important}
+  .formNavGrid{grid-template-columns:1fr}
+
+  /* Step3：避免連結/visited 變紫色 */
+  .summary a, .summary a:visited, .quoteBox a, .quoteBox a:visited{color:var(--text)}
+
+  /* Step4：總覽表格手機版改成「每列一張卡」避免直排 */
+  .ovTbl thead{display:none}
+  .ovTbl, .ovTbl tbody, .ovTbl tr, .ovTbl td{display:block;width:100%}
+  .ovTbl tr{border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0;background:#fff}
+  .ovTbl td{border:none;padding:6px 0}
+  .ovTbl td:nth-child(1){font-weight:800}
+  .ovTbl td:nth-child(3){text-align:right;font-weight:800}
+
+  /* Step4：上方按鈕保留但縮小（B） */
+  #step4TopActions .btn{padding:8px 10px;font-size:13px}
+
+  /* Step4：底部操作區 */
+  .step4BottomActions{display:flex;gap:10px;flex-wrap:wrap}
+  .step4BottomActions .btn{flex:1;min-width:160px}
 
 }
 
@@ -597,7 +659,7 @@ body.printing #printRoot{display:block}
     <section class="card view" id="viewDayEdit">
       <div class="hd stepHd step3">
         <h2 id="dayEditTitle">3) 選設備</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <div id="step4TopActions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn" id="btnBackToDays" type="button">回到日期圖框</button>
           <button class="btn" id="btnPrevUnit" type="button">上一項</button>
           <button class="btn" id="btnNextUnit" type="button">下一項</button>
@@ -801,10 +863,13 @@ body.printing #printRoot{display:block}
 
         <div class="cart" id="cart"></div>
 
-        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：列印送出報價單」 -->
+        <!-- ✅ Step3：底部導引（手機優先）：活動表單總覽 + 下一步/前往報價 -->
+        <div class="formNavPanel" id="formNavPanel"></div>
+
         <div class="quickNav" id="quickNavBar">
           <button class="btn" id="btnQuickDays" type="button">回到日期</button>
-          <button class="btn warn" id="btnQuickQuote" type="button">下一步：列印送出報價單</button>
+          <button class="btn primary" id="btnQuickNext" type="button">編輯下一個活動表單</button>
+          <button class="btn warn" id="btnQuickStep4" type="button">前往列印/送出報價單</button>
         </div>
 
       </div>
@@ -841,6 +906,12 @@ body.printing #printRoot{display:block}
 
         <div class="note">
           PDF 版面：第 1 頁會列出「主案＋活動金額總覽」，後面會列出每一項的詳細清單。
+        </div>
+
+        <!-- ✅ 手機：主要操作放在最底部（保留上方按鈕但縮小） -->
+        <div class="step4BottomActions" id="step4BottomActions">
+          <button class="btn warn" id="btnBottomPrint" type="button">列印成 PDF</button>
+          <button class="btn primary" id="btnBottomSend" type="button">送出報價單</button>
         </div>
 
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
@@ -2389,18 +2460,103 @@ function updateQuickNavBar(){
   const hasUnits = !!units.length;
   bar.style.display = hasUnits ? "" : "none";
 
-  const qQuote = $("#btnQuickQuote");
-  if(!qQuote) return;
+  // 1) 活動表單總覽（Step3 最底部）
+  const panel = $("#formNavPanel");
+  if(panel){
+    if(!hasUnits){
+      panel.innerHTML = "";
+    }else{
+      const totals = calcGrandTotal();
+      const main = units[0];
+      const isContinuous = (main?.dates?.length||1)>=2;
+
+      const cards = [];
+      units.forEach((u, idx)=>{
+        const isMain = (idx===0);
+        let title = "";
+        let meta = "";
+        let money = "NT$0";
+
+        if(isMain){
+          title = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
+          meta  = isContinuous ? `天數：${main.dates.length} 天` : `單日活動`;
+          money = fmt(totals.main.total);
+        }else{
+          const metaObj = ensurePlanMeta(u.uid);
+          const s2 = metaObj.s2On ? "有第二場" : "無第二場";
+          title = `活動${idx+1}｜${u.date}`;
+          meta  = `第一場：${metaObj.start}～${metaObj.end}｜第二場：${s2}`;
+          money = totals.extras[idx-1] ? fmt(totals.extras[idx-1].total) : "NT$0";
+        }
+
+        const st = u.done ? "✓ 已完成" : "⏳ 未完成";
+
+        cards.push(`
+          <button class="formNavBtn ${u.done?'isDone':'isTodo'} ${idx===state.currentIndex?'isActive':''}" type="button" data-idx="${idx}">
+            <div class="fnTop">
+              <div class="fnTitle">${escapeHtml(title)}</div>
+              <div class="fnMoney">${money}</div>
+            </div>
+            <div class="fnBottom">
+              <span class="fnMeta">${escapeHtml(meta)}</span>
+              <span class="fnStatus">${st}</span>
+            </div>
+          </button>
+        `);
+      });
+
+      // Step4 入口（未完成會提示並導引）
+      const firstTodo = units.findIndex(u=>!u.done);
+      const step4StateText = (firstTodo===-1) ? "可前往列印/送出報價單（Step4）" : `尚有未完成：活動${firstTodo+1}（請先完成）`;
+
+      panel.innerHTML = `
+        <div class="formNavHead">
+          <b>活動表單一覽</b>
+          <button class="btn warn mini" id="btnPanelStep4" type="button">前往列印/送出（Step4）</button>
+        </div>
+        <div class="formNavHint">${escapeHtml(step4StateText)}</div>
+        <div class="formNavGrid">${cards.join("")}</div>
+      `;
+
+      // 綁定：點卡片直接切換
+      panel.querySelectorAll(".formNavBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const idx = Number(btn.getAttribute("data-idx"));
+          if(Number.isFinite(idx)) openUnit(idx);
+        });
+      });
+
+      const btnPanelStep4 = $("#btnPanelStep4");
+      if(btnPanelStep4){
+        btnPanelStep4.addEventListener("click", ()=>{
+          const firstTodo2 = units.findIndex(u=>!u.done);
+          if(firstTodo2 !== -1){
+            alert(`尚有未完成：活動${firstTodo2+1}，請先完成後再前往列印/送出。`);
+            openUnit(firstTodo2);
+            return;
+          }
+          showView(4);
+        });
+      }
+    }
+  }
+
+  // 2) 底部三顆導引按鈕
+  const btnNext = $("#btnQuickNext");
+  const btnStep4 = $("#btnQuickStep4");
 
   const nextTodo = getNextTodoIndex(state.currentIndex||0);
-  if(nextTodo !== -1){
-    qQuote.textContent = "下一步：編輯下一個活動表單";
-    qQuote.classList.remove("warn");
-    qQuote.classList.add("primary");
-  }else{
-    qQuote.textContent = "下一步：列印送出報價單";
-    qQuote.classList.remove("primary");
-    qQuote.classList.add("warn");
+  const firstTodo = units.findIndex(u=>!u.done);
+
+  if(btnNext){
+    btnNext.disabled = (nextTodo === -1);
+  }
+
+  if(btnStep4){
+    // 未完成：仍可點，但會提示導引到未完成
+    btnStep4.classList.remove("primary");
+    btnStep4.classList.add("warn");
+    btnStep4.textContent = (firstTodo === -1) ? "前往列印/送出報價單" : "前往列印/送出（未完成）";
   }
 }
 
@@ -3013,14 +3169,29 @@ function fillTimeSelectsForEdit(){
    Buttons & Step1 wiring
    ========================= */
 function bindNavButtons(){
-  // ✅ Step3 底部快速導覽（只有兩顆）
+  // ✅ Step3 底部導引（回日期 / 下一個未完成 / 前往 Step4）
   const qDays  = $("#btnQuickDays");
-  const qQuote = $("#btnQuickQuote");
+  const qNext  = $("#btnQuickNext");
+  const qStep4 = $("#btnQuickStep4");
+
   if(qDays)  qDays.addEventListener("click", ()=>{ goDayList(); });
-  if(qQuote) qQuote.addEventListener("click", ()=>{
+
+  if(qNext) qNext.addEventListener("click", ()=>{
     const nextTodo = getNextTodoIndex(state.currentIndex||0);
-    if(nextTodo !== -1){ openUnit(nextTodo); }
-    else { goQuote(); }
+    if(nextTodo !== -1){
+      openUnit(nextTodo);
+    }
+  });
+
+  if(qStep4) qStep4.addEventListener("click", ()=>{
+    const units = state.units || [];
+    const firstTodo = units.findIndex(u=>!u.done);
+    if(firstTodo !== -1){
+      alert(`尚有未完成：活動${firstTodo+1}，請先完成後再前往列印/送出。`);
+      openUnit(firstTodo);
+      return;
+    }
+    showView(4);
   });
 
   // ✅ 官網
@@ -3062,7 +3233,9 @@ function bindNavButtons(){
 
   $("#btnPrint").addEventListener("click", printPDF);
   $("#btnPrintTop").addEventListener("click", printPDF);
+  const bp=$("#btnBottomPrint"); if(bp) bp.addEventListener("click", ()=>$("#btnPrint")?.click());
   $("#btnSendQuote").addEventListener("click", submitQuote);
+  const bs=$("#btnBottomSend"); if(bs) bs.addEventListener("click", ()=>$("#btnSendQuote")?.click());
 
   $$("#stepsBar .stepBox").forEach(b=>{
     b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
