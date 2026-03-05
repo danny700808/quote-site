@@ -88,24 +88,6 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .tab.active{background:rgba(30,142,111,.12);border-color:rgba(30,142,111,.35);color:var(--brand2)}
 
 .items{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
-
-/* Mobile compact grid for add-on items (free add/remove section) */
-@media (max-width: 520px){
-  .items{grid-template-columns:repeat(3,1fr);padding:10px;gap:10px}
-  .item{grid-template-columns:1fr;grid-template-rows:auto auto auto;align-items:stretch;gap:6px;padding:8px}
-  .thumb{width:100%;height:62px;border-radius:12px}
-  .price{text-align:left}
-  .meta .name{font-size:12px;line-height:1.2}
-  .meta .sub{font-size:11px}
-  .meta .row2{gap:6px;margin-top:6px}
-  .btn{padding:8px 10px;font-size:12px}
-  .qty{justify-content:space-between}
-  .qty button{width:30px;height:30px}
-}
-@media (max-width: 360px){
-  .items{grid-template-columns:repeat(2,1fr)}
-}
-
 .item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center}
 .thumb{width:74px;height:74px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:#f3f4f6}
 .meta{min-width:0}
@@ -209,6 +191,11 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .view{display:none}
 .view.show{display:block}
 
+
+.unitJumpList{display:flex;flex-wrap:wrap;gap:10px;padding:12px 14px;border-top:1px dashed var(--line);margin-top:12px}
+.unitJumpList .ujBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:800}
+.unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
+.unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
 /* Day cards */
 .dayGrid{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2, minmax(0,1fr))}
 .dayCard{border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.05);padding:12px;display:grid;gap:10px}
@@ -264,6 +251,36 @@ body.printing #printRoot{display:block}
   .pageBreak{break-after:page}
   @page{size:auto;margin:10mm}
 }
+/* Step3：活動表單總覽（底部） */
+.formNavPanel{margin-top:12px}
+.formNavHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0}
+.formNavHint{color:var(--muted);font-size:13px;margin:0 0 8px}
+.formNavGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.formNavBtn{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:14px;
+  padding:10px;
+  text-align:left;
+  box-shadow:0 8px 18px rgba(0,0,0,.05);
+}
+.formNavBtn.isActive{border-color:var(--brand2);box-shadow:0 10px 22px rgba(47,143,123,.16)}
+.formNavBtn.isDone{opacity:1}
+.formNavBtn.isTodo{opacity:1}
+.fnTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fnTitle{font-weight:900}
+.fnMoney{font-weight:900;white-space:nowrap}
+.fnBottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+.fnMeta{color:var(--muted);font-size:12px}
+.fnStatus{font-size:12px;font-weight:900}
+.formNavBtn.isTodo .fnStatus{color:#b45309}
+.formNavBtn.isDone .fnStatus{color:#047857}
+
+/* Step3：底部導引列 */
+.quickNav{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:12px}
+.quickNav .btn{flex:1;min-width:160px}
+.btn.mini{padding:6px 10px;font-size:12px}
+
 
 @media (max-width:920px){
   .levelRow{grid-template-columns:repeat(2, 1fr)}
@@ -299,6 +316,103 @@ body.printing #printRoot{display:block}
 }
 #quickNavBar .btn{ white-space: nowrap; }
 #quickNavBar .btn[disabled]{ opacity:.55; cursor:not-allowed; }
+
+/* === 7B：三模組改成三欄列式（更緊湊，像清單） === */
+.tierGrid{grid-template-columns:repeat(3, 1fr)}
+@media (max-width: 980px){
+  .tierGrid{grid-template-columns:1fr}
+}
+.levelRow{display:flex;flex-direction:column;gap:10px}
+.levelBtn{
+  display:grid;
+  grid-template-columns:56px 1fr;
+  gap:10px;
+  padding:8px;
+  border-radius:12px;
+}
+.levelMedia{order:0}
+.levelMedia img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.levelText{order:1}
+.levelActions{display:flex;gap:8px;flex-wrap:wrap}
+.miniBtn{padding:6px 8px;font-size:12px}
+.levelName{font-size:13px}
+.levelPrice{font-size:12px}
+
+/* 手機：避免按鈕/文字擠成直線 */
+@media (max-width: 480px){
+  .tierHead b{font-size:13px}
+  .levelBtn{grid-template-columns:52px 1fr}
+  .levelMedia img{width:52px;height:52px}
+  .miniBtn{padding:6px 8px}
+
+  /* 手機直向：Header 按鈕不要被擠成直排 */
+  .head{grid-template-columns:1fr;gap:10px}
+  .title{grid-column:1}
+  .actions{grid-column:1;justify-content:center}
+  .actions .btn{padding:8px 10px;font-size:13px;white-space:nowrap}
+
+  /* 右側操作按鈕（原本會被壓窄）在手機改成更緊湊的橫向排列 */
+  /* 如果你之後把 actions 改成固定在右側，這裡仍可避免字被擠成一字一行 */
+  .btn{word-break:keep-all}
+
+  /* Step1：加入活動列避免日期＋按鈕重疊 */
+  .addRow{flex-direction:column;align-items:stretch}
+  #btnAddDate{width:100%}
+
+  /* Step1：已加入活動的標題/按鈕允許換行 */
+  .planRowTop{flex-direction:column;align-items:stretch;gap:8px}
+  .planRowTop > div:last-child{justify-content:space-between}
+
+  /* Step2：活動卡片標頭避免長日期擠壓「未完成」 */
+  .dayGrid{grid-template-columns:1fr}
+  .dayTop{flex-direction:column;align-items:stretch}
+  .dayRight{justify-items:start}
+
+  /* Step2：活動卡片按鈕在手機直向改為滿寬堆疊 */
+  .dayBtns{flex-direction:column;align-items:stretch}
+  .dayBtns .btn{width:100%}
+
+  /* Step3：底部快速切換列 */
+  .unitJumpList{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;border-top:1px dashed var(--line);margin-top:10px}
+  .unitJumpList .ujBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;font-size:13px}
+  .unitJumpList .ujBtn.todo{opacity:.9}
+  .unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
+  .unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
+
+
+  /* Step1：加入活動區塊避免整塊超出卡片 */
+  .addBox, .addRow, .addRow *{max-width:100%}
+  .addBox{overflow:hidden}
+  .addRow input, .addRow select, .addRow button{width:100%}
+
+  /* Step3：分類 Tabs 在手機直向改成 2 欄平均 */
+  .tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .tabs .tab{width:100%;justify-content:center;text-align:center;white-space:normal}
+
+  /* Step3：設備卡片太窄會變「一字一行」，手機直向改為單欄 */
+  .items{grid-template-columns:1fr !important}
+  .formNavGrid{grid-template-columns:1fr}
+
+  /* Step3：避免連結/visited 變紫色 */
+  .summary a, .summary a:visited, .quoteBox a, .quoteBox a:visited{color:var(--text)}
+
+  /* Step4：總覽表格手機版改成「每列一張卡」避免直排 */
+  .ovTbl thead{display:none}
+  .ovTbl, .ovTbl tbody, .ovTbl tr, .ovTbl td{display:block;width:100%}
+  .ovTbl tr{border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0;background:#fff}
+  .ovTbl td{border:none;padding:6px 0}
+  .ovTbl td:nth-child(1){font-weight:800}
+  .ovTbl td:nth-child(3){text-align:right;font-weight:800}
+
+  /* Step4：上方按鈕保留但縮小（B） */
+  #step4TopActions .btn{padding:8px 10px;font-size:13px}
+
+  /* Step4：底部操作區 */
+  .step4BottomActions{display:flex;gap:10px;flex-wrap:wrap}
+  .step4BottomActions .btn{flex:1;min-width:160px}
+
+}
+
 </style>
 </head>
 
@@ -315,15 +429,15 @@ body.printing #printRoot{display:block}
           </div>
           <div class="stepBox" data-step="2">
             <div class="stepNum">2</div>
-            <div class="stepText">生成日期<br>圖框</div>
+            <div class="stepText">生成活動<br>表單</div>
           </div>
           <div class="stepBox" data-step="3">
             <div class="stepNum">3</div>
-            <div class="stepText">選設備<br>（主案/加開案）</div>
+            <div class="stepText">選設備<br>（主案/活動）</div>
           </div>
           <div class="stepBox" data-step="4">
             <div class="stepNum">4</div>
-            <div class="stepText">總覽<br>＋送出/列印</div>
+            <div class="stepText">列印送出<br>報價單</div>
           </div>
         </div>
       </div>
@@ -439,13 +553,13 @@ body.printing #printRoot{display:block}
           </select>
         </div>
 
-        <!-- 日期模式：主案 + 加開案（可同時存在） -->
+        <!-- 日期模式：主案 + 活動（可同時存在） -->
         <div class="field span2">
-          <label>活動日期規劃（主案＋加開案）</label>
+          <label>活動日期規劃（活動1/活動2/活動3…）</label>
 
           <div class="dateRow" style="grid-template-columns: 1fr;">
             <div class="dateCol">
-              <div class="dateCap">主案 Day1（必填）</div>
+              <div class="dateCap">活動1（必填）</div>
               <input id="fDateStart" type="date">
             </div>
           </div>
@@ -454,30 +568,30 @@ body.printing #printRoot{display:block}
 
             <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
               <input type="checkbox" id="fIsMultiDay" style="width:18px;height:18px">
-              主案連續多日（勾選後可選結束日期）
+              活動1 連續多日（需要的話打勾）
             </label>
 
             <div id="multiDayWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
               <div class="dateRow" style="grid-template-columns:1fr 1fr;gap:12px">
                 <div class="dateCol">
-                  <div class="dateCap">開始（主案 Day1）</div>
+                  <div class="dateCap">開始（活動1）</div>
                   <input id="fDateStartMirror" type="date" disabled>
                 </div>
                 <div class="dateCol">
-                  <div class="dateCap">結束（至少 Day2）</div>
+                  <div class="dateCap">結束（至少第2天）</div>
                   <input id="fDateEnd" type="date">
                 </div>
               </div>
               <div class="hint" style="margin-top:8px">
-                主案連續加價：第2天 <b>B×50%</b>；第3天起每一天 <b>B×30%</b>。<br>
-                <b>注意：</b>主案連續視為同一案子，設備只選一次套用整段。
+                連續多日加價：第2天 <b>B×50%</b>；第3天起每一天 <b>B×30%</b>。<br>
+                <b>提醒：</b>活動1若為連續多日，設備只需選一次，會套用整段。
               </div>
             </div>
 
             <!-- ✅ 主案：就地時間規劃 -->
             <div id="mainInlineWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
               <div class="note" style="font-weight:900;color:#374151">
-                主案時間規劃（日期確定後直接填：每一天可不同，含第二場）
+                活動1 時間規劃（日期確定後直接填：每天可不同；需要第二場就打勾）
               </div>
               <div id="mainInlinePlanner" class="planList" style="margin-top:8px"></div>
               <div class="hint" style="margin-top:8px">
@@ -487,23 +601,23 @@ body.printing #printRoot{display:block}
 
             <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
               <input type="checkbox" id="fIsNonContinuous" style="width:18px;height:18px">
-              加開案（新增不連續日期：可插在主案中間，同日可多案）
+              新增其他活動（活動2/活動3…：可不同日期或同日不同時段）
             </label>
 
             <div id="nonContinuousWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
-              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+              <div class="addRow" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
                 <div style="flex:1;min-width:220px">
-                  <div class="dateCap">加開案日期</div>
+                  <div class="dateCap">活動日期</div>
                   <input id="fDateAdd" type="date" style="width:100%">
                 </div>
-                <button class="btn" id="btnAddDate" type="button">＋加入加開案</button>
+                <button class="btn" id="btnAddDate" type="button">＋加入活動</button>
               </div>
 
-              <div class="note" style="margin-top:10px">已加入的加開案（每筆加入後，會在下方直接出現時間設定）：</div>
+              <div class="note" style="margin-top:10px">已加入的活動（每筆加入後，會在下方直接出現時間設定）：</div>
               <div id="extraList" class="planList" style="margin-top:8px"></div>
 
               <div class="hint" style="margin-top:8px">
-                ✅ 加開案可與主案日期重疊（例如主案 26–28，加開 27）→ Step2 會出現「主案（連續）」＋該筆「加開案」兩張卡。
+                ✅ 活動可與主案日期重疊（例如主案 26–28，加開 27）→ Step2 會出現「活動1（連續）」＋該筆「活動」兩張卡。
               </div>
             </div>
           </div>
@@ -516,14 +630,14 @@ body.printing #printRoot{display:block}
       </div>
 
       <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
-        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成日期圖框</button>
+        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成報價單</button>
       </div>
     </section>
 
     <!-- ======================= VIEW: Step2 日期圖框列表 ======================= -->
     <section class="card view" id="viewDayList">
       <div class="hd stepHd step2">
-        <h2>2) 日期圖框（主案/加開案）</h2>
+        <h2>2) 活動清單（活動1/活動2/活動3…）</h2>
         <span class="pill" id="daysCountPill">0 項</span>
       </div>
 
@@ -536,16 +650,16 @@ body.printing #printRoot{display:block}
       <div style="padding:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
         <button class="btn" id="btnBackToBasic" type="button">回到 Step1（基本資料/日期）</button>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn" id="btnGoQuote" type="button">前往報價（Step4）</button>
+          <button class="btn" id="btnGoQuote" type="button">前往列印送出報價單（Step4）</button>
         </div>
       </div>
     </section>
 
-    <!-- ======================= VIEW: Step3 編輯（主案/加開案） ======================= -->
+    <!-- ======================= VIEW: Step3 編輯（主案/活動） ======================= -->
     <section class="card view" id="viewDayEdit">
       <div class="hd stepHd step3">
         <h2 id="dayEditTitle">3) 選設備</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <div id="step4TopActions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn" id="btnBackToDays" type="button">回到日期圖框</button>
           <button class="btn" id="btnPrevUnit" type="button">上一項</button>
           <button class="btn" id="btnNextUnit" type="button">下一項</button>
@@ -556,8 +670,8 @@ body.printing #printRoot{display:block}
       <div class="hd stepHd step1" style="border-top:1px solid var(--line);border-bottom:none">
         <h2>本項資料（此頁可單獨修改）</h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="btnCopyFirst" type="button">複製第1項設備</button>
-          <button class="btn" id="btnCopyPrev" type="button">複製上一項設備</button>
+          <button class="btn" id="btnCopyFirst" type="button">複製：活動1設備</button>
+          <button class="btn" id="btnCopyPrev" type="button">複製：上一個活動設備</button>
         </div>
       </div>
 
@@ -615,7 +729,7 @@ body.printing #printRoot{display:block}
           <select id="dIndoor"></select>
         </div>
 
-        <!-- 加開案：單筆時間（維持原本 UI） -->
+        <!-- 活動：單筆時間（維持原本 UI） -->
         <div class="field span2" id="singleTimeBlock">
           <label>第一場時間（00/10/20/30/40/50 分）</label>
           <div class="timeRow">
@@ -713,7 +827,7 @@ body.printing #printRoot{display:block}
 
         <div class="hint">
           主案連續：設備只選一次套用整段。<br>
-          加開案：獨立活動，可與主案不同設備。
+          活動：獨立活動，可與主案不同設備。
         </div>
       </div>
 
@@ -749,10 +863,13 @@ body.printing #printRoot{display:block}
 
         <div class="cart" id="cart"></div>
 
-        <!-- ✅ Step3：即時報價最下面：只留「回到日期」「下一步：報價單」 -->
+        <!-- ✅ Step3：底部導引（手機優先）：活動表單總覽 + 下一步/前往報價 -->
+        <div class="formNavPanel" id="formNavPanel"></div>
+
         <div class="quickNav" id="quickNavBar">
           <button class="btn" id="btnQuickDays" type="button">回到日期</button>
-          <button class="btn warn" id="btnQuickQuote" type="button">下一步：報價單</button>
+          <button class="btn primary" id="btnQuickNext" type="button">編輯下一個活動表單</button>
+          <button class="btn warn" id="btnQuickStep4" type="button">前往列印/送出報價單</button>
         </div>
 
       </div>
@@ -761,7 +878,7 @@ body.printing #printRoot{display:block}
     <!-- ======================= VIEW: Step4 ======================= -->
     <section class="card view" id="viewQuote">
       <div class="hd stepHd step4">
-        <h2>4) 總覽（主案＋加開案）</h2>
+        <h2>4) 列印送出報價單</h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn warn" id="btnPrint" type="button">列印成 PDF</button>
           <button class="btn primary" id="btnSendQuote" type="button">送出報價單</button>
@@ -788,7 +905,13 @@ body.printing #printRoot{display:block}
         </table>
 
         <div class="note">
-          PDF 版面：第 1 頁會列出「主案＋加開案金額總覽」，後面會列出每一項的詳細清單。
+          PDF 版面：第 1 頁會列出「主案＋活動金額總覽」，後面會列出每一項的詳細清單。
+        </div>
+
+        <!-- ✅ 手機：主要操作放在最底部（保留上方按鈕但縮小） -->
+        <div class="step4BottomActions" id="step4BottomActions">
+          <button class="btn warn" id="btnBottomPrint" type="button">列印成 PDF</button>
+          <button class="btn primary" id="btnBottomSend" type="button">送出報價單</button>
         </div>
 
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
@@ -821,7 +944,7 @@ body.printing #printRoot{display:block}
    ========================= */
 
 const BRAND_NAME = "柚子樂器";
-const PRINT_TITLE = "活動企劃｜設備與器材報價單（主案＋加開案）";
+const PRINT_TITLE = "活動企劃｜設備與器材報價單（主案＋活動）";
 
 // ✅ 官網
 const OFFICIAL_HOME_URL = "https://www.mingtinghuang.com/";
@@ -1362,7 +1485,7 @@ function renderMainInline(){
   renderPlannerRows(list, rows, ()=>{ if(state.units.length){ renderDayCards(); renderIfEditingMain(); } });
 }
 
-/* Step1：加開案 inline list */
+/* Step1：活動 inline list */
 function renderExtraInline(){
   const box = $("#extraList");
   if(!box) return;
@@ -1371,7 +1494,7 @@ function renderExtraInline(){
   state.extraUnits = list;
 
   if(!list.length){
-    box.innerHTML = `<div class="note">目前沒有加入加開案。</div>`;
+    box.innerHTML = `<div class="note">目前沒有加入活動。</div>`;
     return;
   }
 
@@ -1379,11 +1502,11 @@ function renderExtraInline(){
     <div class="planRow" data-extra="${u.id}">
       <div class="planRowTop">
         <div>
-          <b>加開案 ${idx+1}：${u.date}</b>
+          <b>活動 ${idx+1}：${u.date}</b>
           <div class="note">此筆為獨立活動/地點（可與主案同日）。</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <span class="pill">加開案</span>
+          <span class="pill">活動</span>
           <button class="btn danger" type="button" data-del="${u.id}" style="padding:8px 10px">刪除</button>
         </div>
       </div>
@@ -1406,10 +1529,10 @@ function renderExtraInline(){
     if(!slot) return;
     renderPlannerRows(slot, [{
       key: `extra-${u.id}`,
-      title: `加開案 ${idx+1}`,
+      title: `活動 ${idx+1}`,
       dateText: u.date,
       sub: "",
-      pill: "加開案"
+      pill: "活動"
     }], ()=>{
       if(state.units.length){ renderDayCards(); renderIfEditingExtra(`extra-${u.id}`); }
     });
@@ -1622,8 +1745,8 @@ function renderDayCards(){
     const main = units[0];
     const isContinuous = !!$("#fIsMultiDay")?.checked && (main?.dates?.length||1)>=2;
     note.innerHTML = isContinuous
-      ? `你目前有 <b>主案（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆加開案</b>。主案只會出現一張圖框（設備選一次套用整段）。`
-      : `你目前有 <b>主案</b>＋<b>${Math.max(0,units.length-1)} 筆加開案</b>。`;
+      ? `你目前有 <b>活動1（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。活動1只會出現一張圖框（設備選一次套用整段）。`
+      : `你目前有 <b>活動1</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。`;
   }
 
   const totals = calcGrandTotal();
@@ -1633,7 +1756,7 @@ function renderDayCards(){
   const cardsHTML = [];
 
   if(main){
-    const label = isContinuous ? `主案（連續）｜${main.startDate} ～ ${main.endDate}` : `主案｜${main.startDate}`;
+    const label = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
     const meta = isContinuous
       ? `天數：${main.dates.length} 天｜第二場：${totals.main.s2Count} 天`
       : `第二場：${totals.main.s2Count} 天`;
@@ -1646,14 +1769,13 @@ function renderDayCards(){
             <div class="dayDate">${escapeHtml(label)}</div>
             <div class="dayMeta">${escapeHtml(meta)}</div>
           </div>
-          <div style="display:grid;gap:8px;justify-items:end">
+          <div class="dayRight" style="display:grid;gap:8px;justify-items:end">
             ${st}
             <div class="pill">${fmt(totals.main.total)}</div>
           </div>
         </div>
         <div class="dayBtns">
-          <button class="btn primary" type="button" data-act="edit">進入主案編輯</button>
-          <button class="btn" type="button" data-act="copy1">複製第1項設備</button>
+          <button class="btn primary" type="button" data-act="edit">進入活動1編輯</button>
         </div>
       </div>
     `);
@@ -1670,24 +1792,26 @@ function renderDayCards(){
       <div class="dayCard" data-idx="${idx}">
         <div class="dayTop">
           <div>
-            <div class="dayDate">加開案 ${u.extraIndex}：${u.date}</div>
+            <div class="dayDate">活動${idx+1}：${u.date}</div>
             <div class="dayMeta">${escapeHtml(timeText)}</div>
           </div>
-          <div style="display:grid;gap:8px;justify-items:end">
+          <div class="dayRight" style="display:grid;gap:8px;justify-items:end">
             ${st}
             <div class="pill">${money}</div>
           </div>
         </div>
         <div class="dayBtns">
-          <button class="btn primary" type="button" data-act="edit">進入加開案編輯</button>
-          <button class="btn" type="button" data-act="copy1">複製第1項設備</button>
-          <button class="btn" type="button" data-act="copyprev">複製上一項設備</button>
+          <button class="btn primary" type="button" data-act="edit">進入此活動編輯</button>
+          <button class="btn" type="button" data-act="copy1">複製：活動1設備</button>
+          <button class="btn" type="button" data-act="copyprev">複製：上一個活動設備</button>
         </div>
       </div>
     `);
   });
 
   box.innerHTML = cardsHTML.join("");
+  renderUnitJumpList();
+
 
   box.querySelectorAll(".dayCard").forEach(card=>{
     const idx = Number(card.dataset.idx||0);
@@ -1695,9 +1819,16 @@ function renderDayCards(){
     card.querySelector('[data-act="copy1"]')?.addEventListener("click", ()=>{ copyEquip(0, idx); renderDayCards(); });
     card.querySelector('[data-act="copyprev"]')?.addEventListener("click", ()=>{ copyEquip(Math.max(0,idx-1), idx); renderDayCards(); });
   });
+  // Step2：只有全部完成才允許前往 Step4
+  const btnGo = $("#btnGoQuote");
+  if(btnGo){
+    const allDone = (units.length>0) && units.every(u=>!!u.done);
+    btnGo.style.display = allDone ? "" : "none";
+  }
+
 }
   /* =========================
-   Step3：編輯（主案/加開案）
+   Step3：編輯（主案/活動）
    ========================= */
 function getCurUnit(){ return state.units[state.currentIndex]; }
 
@@ -1710,8 +1841,8 @@ function fillSelectOptions(){
 function fillUnitFormUI(u){
   const isMain = u.kind==="main";
   const title = isMain
-    ? ((u.dates.length>=2) ? `3) 選設備｜主案（連續） ${u.startDate}～${u.endDate}` : `3) 選設備｜主案 ${u.startDate}`)
-    : `3) 選設備｜加開案 ${u.extraIndex}：${u.date}`;
+    ? ((u.dates.length>=2) ? `3) 選設備｜活動1（連續） ${u.startDate}～${u.endDate}` : `3) 選設備｜主案 ${u.startDate}`)
+    : `3) 選設備｜活動 ${u.extraIndex}：${u.date}`;
   $("#dayEditTitle").textContent = title;
 
   $("#dDate").value = isMain
@@ -1734,7 +1865,7 @@ function fillUnitFormUI(u){
   $("#singleTimeBlock").style.display = isMain ? "none" : "";
   $("#singleS2Block").style.display   = isMain ? "none" : "";
 
-  $("#btnMarkDone").textContent = isMain ? "完成主案" : "完成加開案";
+  $("#btnMarkDone").textContent = isMain ? "完成主案" : "完成活動";
 
   if(!isMain){
     const meta = ensurePlanMeta(u.uid);
@@ -1959,6 +2090,7 @@ function setQty(u, itemId, qty){
   renderEquipmentUI();
   renderUnitTotalsAndCart();
   renderDayCards();
+  updateCopyButtons();
 }
 
 function applyPackLevel(u, tierKey, level){
@@ -2256,6 +2388,8 @@ function renderUnitTotalsAndCart(){
   }
 
   renderCart(u);
+  updateCopyButtons();
+  updateQuickNavBar();
 }
 
 /* Copy equipment */
@@ -2272,13 +2406,185 @@ function copyEquip(fromIdx, toIdx){
 }
 
 /* Step3：open unit */
+function getNextTodoIndex(fromIdx){
+  const units = state.units || [];
+  if(!units.length) return -1;
+  const cur = Number(fromIdx||0);
+  // 先找後面第一個未完成
+  for(let i=cur+1;i<units.length;i++){
+    if(!units[i].done) return i;
+  }
+  // 再找前面第一個未完成
+  for(let i=0;i<units.length;i++){
+    if(!units[i].done) return i;
+  }
+  return -1;
+}
+
+function isAnyEquipChosen(u){
+  if(!u || !u.cart) return false;
+  const packs = u.cart.packs || {};
+  const items = u.cart.items || {};
+  return Object.keys(packs).length>0 || Object.values(items).some(q=>Number(q||0)>0);
+}
+
+function updateCopyButtons(){
+  const u = getCurUnit();
+  const idx = Number(state.currentIndex||0);
+  const btnFirst = $("#btnCopyFirst");
+  const btnPrev  = $("#btnCopyPrev");
+
+  if(btnFirst){
+    // 第一筆不顯示；且必須已選設備才顯示
+    const show = (idx>0) && isAnyEquipChosen(state.units?.[0]);
+    btnFirst.style.display = show ? "" : "none";
+    // 動態文案：複製「活動1」設備
+    btnFirst.textContent = "複製：活動1設備";
+  }
+  if(btnPrev){
+    // 第一筆不顯示；且上一筆必須已選設備才顯示
+    const prev = state.units?.[idx-1];
+    const show = (idx>0) && isAnyEquipChosen(prev);
+    btnPrev.style.display = show ? "" : "none";
+    // 動態文案：複製「上一個活動」設備（若可取得序號就顯示）
+    const prevLabel = prev?.label || (idx>1 ? `活動${idx}` : "活動1");
+    btnPrev.textContent = `複製：${prevLabel}設備`;
+  }
+}
+
 function updateQuickNavBar(){
   const bar = $("#quickNavBar");
   if(!bar) return;
 
-  const hasUnits = !!(state.units && state.units.length);
+  const units = state.units || [];
+  const hasUnits = !!units.length;
   bar.style.display = hasUnits ? "" : "none";
+
+  // 1) 活動表單總覽（Step3 最底部）
+  const panel = $("#formNavPanel");
+  if(panel){
+    if(!hasUnits){
+      panel.innerHTML = "";
+    }else{
+      const totals = calcGrandTotal();
+      const main = units[0];
+      const isContinuous = (main?.dates?.length||1)>=2;
+
+      const cards = [];
+      units.forEach((u, idx)=>{
+        const isMain = (idx===0);
+        let title = "";
+        let meta = "";
+        let money = "NT$0";
+
+        if(isMain){
+          title = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
+          meta  = isContinuous ? `天數：${main.dates.length} 天` : `單日活動`;
+          money = fmt(totals.main.total);
+        }else{
+          const metaObj = ensurePlanMeta(u.uid);
+          const s2 = metaObj.s2On ? "有第二場" : "無第二場";
+          title = `活動${idx+1}｜${u.date}`;
+          meta  = `第一場：${metaObj.start}～${metaObj.end}｜第二場：${s2}`;
+          money = totals.extras[idx-1] ? fmt(totals.extras[idx-1].total) : "NT$0";
+        }
+
+        const st = u.done ? "✓ 已完成" : "⏳ 未完成";
+
+        cards.push(`
+          <button class="formNavBtn ${u.done?'isDone':'isTodo'} ${idx===state.currentIndex?'isActive':''}" type="button" data-idx="${idx}">
+            <div class="fnTop">
+              <div class="fnTitle">${escapeHtml(title)}</div>
+              <div class="fnMoney">${money}</div>
+            </div>
+            <div class="fnBottom">
+              <span class="fnMeta">${escapeHtml(meta)}</span>
+              <span class="fnStatus">${st}</span>
+            </div>
+          </button>
+        `);
+      });
+
+      // Step4 入口（未完成會提示並導引）
+      const firstTodo = units.findIndex(u=>!u.done);
+      const step4StateText = (firstTodo===-1) ? "可前往列印/送出報價單（Step4）" : `尚有未完成：活動${firstTodo+1}（請先完成）`;
+
+      panel.innerHTML = `
+        <div class="formNavHead">
+          <b>活動表單一覽</b>
+          <button class="btn warn mini" id="btnPanelStep4" type="button">前往列印/送出（Step4）</button>
+        </div>
+        <div class="formNavHint">${escapeHtml(step4StateText)}</div>
+        <div class="formNavGrid">${cards.join("")}</div>
+      `;
+
+      // 綁定：點卡片直接切換
+      panel.querySelectorAll(".formNavBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const idx = Number(btn.getAttribute("data-idx"));
+          if(Number.isFinite(idx)) openUnit(idx);
+        });
+      });
+
+      const btnPanelStep4 = $("#btnPanelStep4");
+      if(btnPanelStep4){
+        btnPanelStep4.addEventListener("click", ()=>{
+          const firstTodo2 = units.findIndex(u=>!u.done);
+          if(firstTodo2 !== -1){
+            alert(`尚有未完成：活動${firstTodo2+1}，請先完成後再前往列印/送出。`);
+            openUnit(firstTodo2);
+            return;
+          }
+          showView(4);
+        });
+      }
+    }
+  }
+
+  // 2) 底部三顆導引按鈕
+  const btnNext = $("#btnQuickNext");
+  const btnStep4 = $("#btnQuickStep4");
+
+  const nextTodo = getNextTodoIndex(state.currentIndex||0);
+  const firstTodo = units.findIndex(u=>!u.done);
+
+  if(btnNext){
+    btnNext.disabled = (nextTodo === -1);
+  }
+
+  if(btnStep4){
+    // 未完成：仍可點，但會提示導引到未完成
+    btnStep4.classList.remove("primary");
+    btnStep4.classList.add("warn");
+    btnStep4.textContent = (firstTodo === -1) ? "前往列印/送出報價單" : "前往列印/送出（未完成）";
+  }
 }
+
+
+function renderUnitJumpList(){
+  const box = $("#unitJumpList");
+  if(!box) return;
+
+  const units = state.units || [];
+  if(!units.length){ box.innerHTML = ""; return; }
+
+  box.innerHTML = units.map((u, idx)=>{
+    const name = (idx===0)
+      ? ((u.dates && u.dates.length>=2) ? `活動1（連續）` : `活動1`)
+      : `活動${idx+1}`;
+    const cls = `ujBtn ${u.done ? "done" : "todo"} ${idx===state.currentIndex ? "current" : ""}`;
+    const tag = u.done ? "✅" : "⏳";
+    return `<button type="button" class="${cls}" data-uj="${idx}">${tag} ${name}</button>`;
+  }).join("");
+
+  box.querySelectorAll("button[data-uj]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const idx = Number(b.dataset.uj||0);
+      openUnit(idx);
+    });
+  });
+}
+
 
 function openUnit(idx){
   idx = Math.max(0, Math.min((state.units||[]).length-1, Number(idx||0)));
@@ -2289,12 +2595,14 @@ function openUnit(idx){
 
   fillSelectOptions();
   fillUnitFormUI(getCurUnit());
+  updateCopyButtons();
   renderEquipmentUI();
   renderUnitTotalsAndCart();
 
   $("#btnPrevUnit").disabled = (idx<=0);
   $("#btnNextUnit").disabled = (idx>=(state.units.length-1));
-  updateQuickNavBar();
+  updateQuickNavBar();  renderUnitJumpList();
+
 }
 
 function renderIfEditingMain(){
@@ -2317,8 +2625,8 @@ function openAfterDoneChoice(){
   const isLast = idx >= (state.units.length-1);
 
   const label = (u.kind==="main")
-    ? (u.dates.length>=2 ? `主案（連續）${u.startDate}～${u.endDate}` : `主案 ${u.startDate}`)
-    : `加開案 ${u.extraIndex}（${u.date}）`;
+    ? (u.dates.length>=2 ? `活動1（連續）${u.startDate}～${u.endDate}` : `主案 ${u.startDate}`)
+    : `活動 ${u.extraIndex}（${u.date}）`;
 
   const title = isLast ? "已完成最後一項" : "已完成本項";
   const msg = `你已標記完成：${escapeHtml(label)}。接下來要做什麼？`;
@@ -2372,47 +2680,115 @@ function markDone(){
 function renderQuote(){
   const tbody = $("#quoteOverview");
   const warn = $("#quoteWarning");
+  if(!tbody) return;
   warn.innerHTML = "";
 
   const units = state.units || [];
-  const main = units[0];
-  const totals = calcGrandTotal();
+  if(!units.length){
+    tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
+    $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(0));
+    return;
+  }
 
   const rows = [];
+  let grand = 0;
 
-  if(main){
-    const isContinuous = (main.dates.length>=2);
-    const label = isContinuous ? `主案（連續）` : `主案`;
-    const dateText = isContinuous ? `${main.startDate}～${main.endDate}` : main.startDate;
-    const desc = isContinuous
-      ? `天數 ${totals.main.N} 天｜設備小計 B=${fmt(totals.main.B)}｜連續加價 ${fmt(totals.main.contFee)}｜第二場 ${totals.main.s2Count} 天（${fmt(totals.main.s2Fee)}）`
-      : `設備小計 B=${fmt(totals.main.B)}｜第二場 ${totals.main.s2Count} 天（${fmt(totals.main.s2Fee)}）`;
-
+  function pushSection(title, subtitle){
     rows.push(`
       <tr>
-        <td><b>${escapeHtml(label)}</b><div class="muted">${escapeHtml(dateText)}</div></td>
-        <td>${escapeHtml(desc)}</td>
-        <td class="ovRight"><b>${fmt(totals.main.total)}</b></td>
+        <td colspan="3" style="background:#f9fafb;border-color:#e5e7eb">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <b>${escapeHtml(title)}</b>
+            <span class="muted">${escapeHtml(subtitle||"")}</span>
+          </div>
+        </td>
       </tr>
     `);
   }
 
-  units.slice(1).forEach((u, i)=>{
-    const r = totals.extras[i] || {B:0,s2Fee:0,total:0};
-    const meta = ensurePlanMeta(u.uid);
-    const desc = `設備小計 B=${fmt(r.B)}${meta.s2On ? `｜第二場 ${fmt(r.s2Fee)}` : ""}`;
+  function pushLine(name, qtyText, amount){
     rows.push(`
       <tr>
-        <td><b>加開案 ${u.extraIndex}</b><div class="muted">${escapeHtml(u.date)}</div></td>
-        <td>${escapeHtml(desc)}</td>
-        <td class="ovRight"><b>${fmt(r.total)}</b></td>
+        <td>${escapeHtml(name)}</td>
+        <td class="muted">${escapeHtml(qtyText||"")}</td>
+        <td class="ovRight"><b>${fmt(amount||0)}</b></td>
       </tr>
     `);
+  }
+
+  function getUnitLabel(idx, u){
+    if(idx===0) return (u.dates && u.dates.length>=2) ? "活動1（連續）" : "活動1";
+    return `活動${idx+1}`;
+  }
+
+  function getUnitDateText(u){
+    if(u.kind==="main"){
+      return (u.dates && u.dates.length>=2) ? `${u.startDate}～${u.endDate}` : (u.startDate||"");
+    }
+    return u.date || "";
+  }
+
+  function listCartLines(u){
+    const out = [];
+    const packs = u.cart?.packs || {};
+    for(const p of Object.values(packs)){
+      if(!p) continue;
+      const title = `${p.label}：${p.name}`;
+      out.push({name:title, qty:"", amount:Number(p.price||0)});
+    }
+    const items = u.cart?.items || {};
+    for(const [id, qty] of Object.entries(items)){
+      const q = Number(qty||0);
+      if(q<=0) continue;
+      const f = findItem(id);
+      if(!f) continue;
+      out.push({name:f.name, qty:`${q} ${f.unit||"件"}`, amount:Number(f.price||0)*q});
+    }
+    return out;
+  }
+
+  units.forEach((u, idx)=>{
+    const label = getUnitLabel(idx, u);
+    const dateText = getUnitDateText(u);
+    pushSection(label, dateText);
+
+    // 明細（8B：全部展開列到底）
+    const lines = listCartLines(u);
+    if(!lines.length){
+      rows.push(`<tr><td colspan="3" class="muted">（尚未選擇設備）</td></tr>`);
+    }else{
+      lines.forEach(li=>pushLine(li.name, li.qty, li.amount));
+    }
+
+    // 活動加價
+    if(u.kind==="main"){
+      const r = calcMainTotal(u);
+      if((r.N||0) >= 2){
+        pushLine("連續多日加價", `第2天 50%｜第3天起 30%`, r.contFee||0);
+      }
+      if((r.s2Count||0) > 0){
+        pushLine("同日第二場加價", `${r.s2Count} 天（B×30%）`, r.s2Fee||0);
+      }
+      pushLine("本活動合計", "", r.total||0);
+      grand += Number(r.total||0);
+    }else{
+      const r = calcExtraTotal(u);
+      const meta = ensurePlanMeta(u.uid);
+      if(meta.s2On){
+        pushLine("同日第二場加價", `B×30%`, r.s2Fee||0);
+      }
+      pushLine("本活動合計", "", r.total||0);
+      grand += Number(r.total||0);
+    }
+
+    // 間隔
+    rows.push(`<tr><td colspan="3" style="background:#fff;height:6px;border:none"></td></tr>`);
   });
 
-  tbody.innerHTML = rows.join("") || `<tr><td colspan="3">—</td></tr>`;
-  $("#quoteGrandTotal").textContent = fmt(totals.total);
+  tbody.innerHTML = rows.join("");
+  $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(grand));
 }
+
 
 function goQuote(){
   setStep(4);
@@ -2474,13 +2850,13 @@ function buildPrint(){
     const rows = [];
     const main = units[0];
     if(main){
-      const label = (main.dates.length>=2) ? "主案（連續）" : "主案";
+      const label = (main.dates.length>=2) ? "活動1（連續）" : "主案";
       const dateText = (main.dates.length>=2) ? `${main.startDate}～${main.endDate}` : main.startDate;
       rows.push(`<tr><td>${label}</td><td>${dateText}</td><td class="right">${fmt(totals.main.total)}</td></tr>`);
     }
     units.slice(1).forEach((u,i)=>{
       const r = totals.extras[i] || {total:0};
-      rows.push(`<tr><td>加開案 ${u.extraIndex}</td><td>${u.date}</td><td class="right">${fmt(r.total)}</td></tr>`);
+      rows.push(`<tr><td>活動 ${u.extraIndex}</td><td>${u.date}</td><td class="right">${fmt(r.total)}</td></tr>`);
     });
     return rows.join("");
   })();
@@ -2528,10 +2904,10 @@ function buildPrint(){
     let money = 0;
 
     if(u.kind==="main"){
-      title = (u.dates.length>=2) ? `主案（連續）｜${u.startDate}～${u.endDate}` : `主案｜${u.startDate}`;
+      title = (u.dates.length>=2) ? `活動1（連續）｜${u.startDate}～${u.endDate}` : `活動1｜${u.startDate}`;
       money = calcMainTotal(u).total;
     }else{
-      title = `加開案 ${u.extraIndex}｜${u.date}`;
+      title = `活動 ${u.extraIndex}｜${u.date}`;
       money = calcExtraTotal(u).total;
     }
 
@@ -2603,7 +2979,7 @@ function buildQuotePayload_v2(){
   const units = state.units || [];
   const main = units[0];
   if(!main){
-    throw new Error("尚未建立任何項目，請先完成 Step1 並生成日期圖框。");
+    throw new Error("尚未建立任何項目，請先完成 Step1 並生成活動表單。");
   }
 
   const sessions = [];
@@ -2645,7 +3021,7 @@ function buildQuotePayload_v2(){
     const items = buildItemsForPayload_(u);
 
     sessions.push({
-      label: `加開案 ${u.extraIndex} 第一場`,
+      label: `活動 ${u.extraIndex} 第一場`,
       date: u.date,
       timeStart: meta.start || "",
       timeEnd: meta.end || "",
@@ -2656,7 +3032,7 @@ function buildQuotePayload_v2(){
 
     if(meta.s2On){
       sessions.push({
-        label: `加開案 ${u.extraIndex} 第二場`,
+        label: `活動 ${u.extraIndex} 第二場`,
         date: u.date,
         timeStart: meta.s2Start || "",
         timeEnd: meta.s2End || "",
@@ -2760,7 +3136,7 @@ function canNavigateToStep(n){
 }
 function navToStep(n){
   if(!canNavigateToStep(n)){
-    alert("請先完成 Step1 並按「下一步：生成日期圖框」。");
+    alert("請先完成 Step1 並按「下一步：生成報價單」。");
     return;
   }
   if(n===1) return goStep1();
@@ -2776,7 +3152,7 @@ function updateStepBarClickable(){
 }
 
 /* =========================
-   Init：時間 select（加開案編輯用）
+   Init：時間 select（活動編輯用）
    ========================= */
 function fillTimeSelectsForEdit(){
   const hours = Array.from({length:24}, (_,i)=>pad2(i));
@@ -2793,11 +3169,30 @@ function fillTimeSelectsForEdit(){
    Buttons & Step1 wiring
    ========================= */
 function bindNavButtons(){
-  // ✅ Step3 底部快速導覽（只有兩顆）
+  // ✅ Step3 底部導引（回日期 / 下一個未完成 / 前往 Step4）
   const qDays  = $("#btnQuickDays");
-  const qQuote = $("#btnQuickQuote");
+  const qNext  = $("#btnQuickNext");
+  const qStep4 = $("#btnQuickStep4");
+
   if(qDays)  qDays.addEventListener("click", ()=>{ goDayList(); });
-  if(qQuote) qQuote.addEventListener("click", ()=>{ goQuote(); });
+
+  if(qNext) qNext.addEventListener("click", ()=>{
+    const nextTodo = getNextTodoIndex(state.currentIndex||0);
+    if(nextTodo !== -1){
+      openUnit(nextTodo);
+    }
+  });
+
+  if(qStep4) qStep4.addEventListener("click", ()=>{
+    const units = state.units || [];
+    const firstTodo = units.findIndex(u=>!u.done);
+    if(firstTodo !== -1){
+      alert(`尚有未完成：活動${firstTodo+1}，請先完成後再前往列印/送出。`);
+      openUnit(firstTodo);
+      return;
+    }
+    showView(4);
+  });
 
   // ✅ 官網
   $("#btnGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
@@ -2807,7 +3202,15 @@ function bindNavButtons(){
   $("#btnBackToDays").addEventListener("click", goDayList);
   $("#btnBackToDays2").addEventListener("click", goDayList);
   $("#btnBackToEdit").addEventListener("click", ()=>openUnit(state.currentIndex));
-  $("#btnGoQuote").addEventListener("click", goQuote);
+  $("#btnGoQuote").addEventListener("click", ()=>{
+    const todo = getNextTodoIndex(-1);
+    if(todo !== -1){
+      alert(`尚有未完成：活動${todo+1}（請先完成）`);
+      openUnit(todo);
+      return;
+    }
+    goQuote();
+  });
 
   $("#btnPrevUnit").addEventListener("click", ()=>openUnit(state.currentIndex-1));
   $("#btnNextUnit").addEventListener("click", ()=>openUnit(state.currentIndex+1));
@@ -2830,7 +3233,9 @@ function bindNavButtons(){
 
   $("#btnPrint").addEventListener("click", printPDF);
   $("#btnPrintTop").addEventListener("click", printPDF);
+  const bp=$("#btnBottomPrint"); if(bp) bp.addEventListener("click", ()=>$("#btnPrint")?.click());
   $("#btnSendQuote").addEventListener("click", submitQuote);
+  const bs=$("#btnBottomSend"); if(bs) bs.addEventListener("click", ()=>$("#btnSendQuote")?.click());
 
   $$("#stepsBar .stepBox").forEach(b=>{
     b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
@@ -2883,7 +3288,7 @@ function bindStep1Events(){
 
   $("#btnAddDate").addEventListener("click", ()=>{
     const d = normalizeDateStr($("#fDateAdd").value||"");
-    if(!d){ alert("請先選擇加開案日期。"); return; }
+    if(!d){ alert("請先選擇活動日期。"); return; }
     if(d < t){ alert("不可以選過去的日期。"); return; }
     state.extraUnits = state.extraUnits || [];
     state.extraUnits.push({ id: genId(), date: d });
