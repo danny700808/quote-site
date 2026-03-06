@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>活動企劃｜燈光音響配置區｜設備選配與即時報價（逐日導引版）</title>
+<title>活動企劃｜設備選配與即時報價</title>
 
 <style>
 :root{
@@ -83,9 +83,9 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .dateCol{display:grid;gap:6px;min-width:0}
 .dateCap{font-size:11px;color:var(--muted);font-weight:900}
 
-.tabs{padding:12px 14px 14px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)}
-.tab{padding:10px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000;font-size:14px}
-.tab.active{background:rgba(30,142,111,.12);border-color:rgba(30,142,111,.35);color:var(--brand2)}
+.tabs{padding:12px 14px 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:1px solid var(--line)}
+.tab{width:100%;min-height:54px;padding:12px 10px;border-radius:14px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000;font-size:14px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.35}
+.tab.active{transform:translateY(-1px)}
 
 .items{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
 .item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center}
@@ -182,14 +182,10 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .stepBox.disabled{cursor:not-allowed;opacity:.55}
 .stepNum{width:32px;height:32px;background:var(--card);border:2px solid var(--line);color:var(--muted);font-weight:900;border-radius:999px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.06)}
 .stepText{font-size:13px;font-weight:900;color:var(--muted);text-align:center;line-height:1.25}
-.stepBox.active .stepNum{border-color:var(--brand);color:var(--brand2);transform:scale(1.08);box-shadow:0 6px 18px rgba(47,143,123,.22)}
+.stepBox.active .stepNum{border-color:var(--brand);color:var(--brand2)}
 .stepBox.active .stepText{color:var(--text)}
 .stepBox.done .stepNum{border-color:var(--brand2);background:rgba(99,191,174,.12);color:var(--brand2)}
 .stepBox.done .stepText{color:var(--text)}
-.stepBox:not(.disabled):active .stepNum{transform:scale(.96)}
-.stepsHint{margin-top:12px;text-align:center;font-size:13px;font-weight:900;color:var(--brand2)}
-.stepsHint .hand{display:inline-block;animation:tapHint 1.15s ease-in-out infinite}
-@keyframes tapHint{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
 /* Views */
 .view{display:none}
@@ -219,6 +215,16 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .planTimes .timeRow{grid-template-columns:1fr auto 1fr}
 .planS2{border:1px dashed var(--line);border-radius:12px;background:#fff;padding:10px;display:grid;gap:8px}
 .planS2 .timeRow{grid-template-columns:1fr auto 1fr}
+
+/* Step3 equipment flow */
+.equipBarWrap{padding:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+.equipUnitBar{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.equipUnitBtn{border-radius:14px;border:2px solid var(--line);background:#fff;padding:12px 10px;text-align:center;font-weight:1000;cursor:pointer;transition:.15s ease;line-height:1.25}
+.equipUnitBtn .sub{display:block;margin-top:4px;font-size:11px;color:inherit;opacity:.8}
+.equipUnitBtn.isCurrent{transform:translateY(-1px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
+.equipUnitBtn.isDone::after{content:"✓";margin-left:6px;font-size:12px}
+.step3Flow{padding:14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.step3Flow .flowHint{margin-right:auto;color:var(--muted);font-size:12px;align-self:center}
 
 /* Quote Overview */
 .quoteBox{padding:14px;display:grid;gap:12px}
@@ -289,10 +295,12 @@ body.printing #printRoot{display:block}
 @media (max-width:920px){
   .levelRow{grid-template-columns:repeat(2, 1fr)}
   .dayGrid{grid-template-columns:1fr}
+  .tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:620px){
   .wrap{padding:8px}
   .form{grid-template-columns:1fr}
+  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .field input,.field select,.field textarea{font-size:16px;padding:10px 12px}
   .items{grid-template-columns:repeat(2,1fr);gap:6px;padding:10px}
   .item{display:flex;flex-direction:column;align-items:stretch}
@@ -388,9 +396,6 @@ body.printing #printRoot{display:block}
   .addBox, .addRow, .addRow *{max-width:100%}
   .addBox{overflow:hidden}
   .addRow input, .addRow select, .addRow button{width:100%}
-  #nonContinuousWrap, #nonContinuousWrap *{max-width:100%}
-  #nonContinuousWrap input, #nonContinuousWrap button{box-sizing:border-box}
-  #nonContinuousWrap .addRow > div{min-width:0 !important; width:100%}
 
   /* Step3：分類 Tabs 在手機直向改成 2 欄平均 */
   .tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -415,90 +420,9 @@ body.printing #printRoot{display:block}
   #step4TopActions .btn{padding:8px 10px;font-size:13px}
 
   /* Step4：底部操作區 */
-  .step4BottomActions{display:flex;gap:10px;flex-wrap:wrap}
-  .step4BottomActions .btn{flex:1;min-width:160px}
+  .step4BottomActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .step4BottomActions .btn{min-width:240px}
 
-}
-
-
-/* 本次流程微調：保留原本邏輯，只調整顯示 */
-#btnGoHome,#btnGoStep1,#btnBackToBasic,#btnBackToDays,#btnPrevUnit,#btnNextUnit,#btnCopyFirst,#btnCopyPrev,
-#btnQuickDays,#btnQuickStep4,.badgeTodo,.badgeDone,.dayRight .pill,.dayBtns,.formNavPanel,
-#btnPanelStep4,.formNavHint,.formNavGrid,#btnBackToDays2{display:none !important;}
-#viewDayEdit .hd.stepHd.step1{display:none !important;}
-#dayForm .field:nth-child(-n+8){display:none !important;}
-#unitProgressBox{padding:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#f8fbff}
-#unitProgressTitle{font-weight:1000;font-size:15px;margin-bottom:10px}
-#unitProgressDots{display:flex;gap:8px;flex-wrap:wrap}
-#unitProgressDots .prog{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:900;font-size:13px}
-#unitProgressDots .prog.active{background:rgba(99,191,174,.14);border-color:rgba(47,143,123,.45);color:var(--brand2)}
-#unitProgressDots .prog.done{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
-#dayCards .dayCard{cursor:pointer}
-#dayCards .dayCard:hover{box-shadow:0 10px 24px rgba(0,0,0,.08)}
-.daySummaryRow{display:grid;gap:6px}
-.dayMetaStrong{font-size:13px;line-height:1.6;color:#374151}
-.dayMetaStrong b{color:#111827}
-
-
-/* === Step1 humanized activity entry === */
-#viewBasic .form{
-  background:linear-gradient(180deg,#e8f7ef 0%, #f6fcf8 100%);
-  border-top:1px solid var(--line);
-}
-#viewBasic .form .field input,
-#viewBasic .form .field select,
-#viewBasic .form .field textarea{
-  background:rgba(255,255,255,.92);
-}
-#viewBasic .form::before{
-  content:"活動1｜第一場完整表單";
-  display:block;
-  grid-column:1 / -1;
-  margin:-2px 0 4px;
-  padding:12px 14px;
-  border-radius:14px;
-  background:rgba(47,143,123,.12);
-  color:var(--brand2);
-  font-weight:1000;
-  border:1px solid rgba(47,143,123,.18);
-}
-#nonContinuousWrap{
-  background:linear-gradient(180deg,#fff3f8 0%, #fff 100%) !important;
-  border:1px solid rgba(236,72,153,.18) !important;
-  border-radius:18px !important;
-  padding:14px !important;
-}
-#nonContinuousWrap .addRow{
-  background:rgba(255,255,255,.85);
-  border:1px dashed rgba(236,72,153,.28);
-  border-radius:16px;
-  padding:14px;
-}
-#btnAddDate{
-  min-width:180px;
-  min-height:46px;
-  font-size:15px;
-  font-weight:1000;
-  background:#fff;
-}
-.extraPalette{
-  border-radius:18px;
-  border:1px solid transparent;
-  padding:12px;
-}
-.extraPalette .planRowTop{
-  border-radius:14px 14px 0 0;
-}
-.extraPalette[data-palette="2"]{ background:linear-gradient(180deg,#fff1f6 0%,#fff 100%); border-color:rgba(236,72,153,.20);}
-.extraPalette[data-palette="3"]{ background:linear-gradient(180deg,#fff8e8 0%,#fff 100%); border-color:rgba(245,158,11,.22);}
-.extraPalette[data-palette="4"]{ background:linear-gradient(180deg,#fff1f2 0%,#fff 100%); border-color:rgba(239,68,68,.20);}
-.extraPalette[data-palette="5"]{ background:linear-gradient(180deg,#eef4ff 0%,#fff 100%); border-color:rgba(59,130,246,.18);}
-.extraPalette[data-palette="6"]{ background:linear-gradient(180deg,#f5f3ff 0%,#fff 100%); border-color:rgba(139,92,246,.18);}
-.extraPalette[data-palette="7"]{ background:linear-gradient(180deg,#ecfeff 0%,#fff 100%); border-color:rgba(6,182,212,.18);}
-.addHintTitle{
-  font-weight:1000;
-  color:#be185d;
-  margin-bottom:8px;
 }
 
 </style>
@@ -508,33 +432,30 @@ body.printing #printRoot{display:block}
 <header>
   <div class="head">
     <div class="title">
-      <h1>活動企劃｜設備選配與即時報價（逐日導引）</h1>
+      <h1>活動企劃｜設備選配與即時報價</h1>
       <div class="stepsWrap">
         <div class="steps" id="stepsBar">
           <div class="stepBox" data-step="1">
             <div class="stepNum">1</div>
-            <div class="stepText">基本資料<br>＋日期規劃</div>
+            <div class="stepText">基本資料<br>填寫</div>
           </div>
           <div class="stepBox" data-step="2">
             <div class="stepNum">2</div>
-            <div class="stepText">生成活動<br>表單</div>
+            <div class="stepText">生成<br>表單</div>
           </div>
           <div class="stepBox" data-step="3">
             <div class="stepNum">3</div>
-            <div class="stepText">選設備<br>（主案/活動）</div>
+            <div class="stepText">選<br>設備</div>
           </div>
           <div class="stepBox" data-step="4">
             <div class="stepNum">4</div>
-            <div class="stepText">列印送出<br>報價單</div>
+            <div class="stepText">列印<br>報價單</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="actions">
-      <button class="btn warn" id="btnPrintTop" style="display:none">列印 PDF</button>
-    </div>
-    <div class="stepsHint"><span class="hand">👇</span> 點上方 1～4 可直接切換步驟</div>
+    <div class="actions"></div>
   </div>
 </header>
 
@@ -550,8 +471,7 @@ body.printing #printRoot{display:block}
     <!-- ======================= VIEW: Step1 ======================= -->
     <section class="card view show" id="viewBasic">
       <div class="hd stepHd step1">
-        <h2>1) 基本資料（完成後再進行選設備）</h2>
-        <span class="pill" id="basicStatus">尚未建立</span>
+        <h2>1) 活動1</h2>
       </div>
 
       <div class="form" id="basicForm">
@@ -652,73 +572,24 @@ body.printing #printRoot{display:block}
           </div>
 
           <div style="display:grid;gap:8px;margin-top:10px">
+            <input type="checkbox" id="fIsMultiDay" hidden>
+            <input id="fDateStartMirror" type="date" hidden>
+            <input id="fDateEnd" type="date" hidden>
 
-            <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
-              <input type="checkbox" id="fIsMultiDay" style="width:18px;height:18px">
-              活動1 連續多日（需要的話打勾）
-            </label>
-
-            <div id="multiDayWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
-              <div class="dateRow" style="grid-template-columns:1fr 1fr;gap:12px">
-                <div class="dateCol">
-                  <div class="dateCap">開始（活動1）</div>
-                  <input id="fDateStartMirror" type="date" disabled>
-                </div>
-                <div class="dateCol">
-                  <div class="dateCap">結束（至少第2天）</div>
-                  <input id="fDateEnd" type="date">
-                </div>
-              </div>
-              <div class="hint" style="margin-top:8px">
-                連續多日加價：第2天 <b>B×50%</b>；第3天起每一天 <b>B×30%</b>。<br>
-                <b>提醒：</b>活動1若為連續多日，設備只需選一次，會套用整段。
-              </div>
-            </div>
-
-            <!-- ✅ 主案：就地時間規劃 -->
             <div id="mainInlineWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
-              <div class="note" style="font-weight:900;color:#374151">
-                活動1 時間規劃（日期確定後直接填：每天可不同；需要第二場就打勾）
-              </div>
-              <div id="mainInlinePlanner" class="planList" style="margin-top:8px"></div>
-              <div class="hint" style="margin-top:8px">
-                第二場開始不得早於第一場結束（會自動修正）。
-              </div>
-            </div>
-
-            <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
-              <input type="checkbox" id="fIsNonContinuous" style="width:18px;height:18px">
-              新增其他活動（活動2 / 活動3…：先帶入第一場資料，再自行修改）
-            </label>
-
-            <div id="nonContinuousWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
-              <div class="addHintTitle">下一張會是新的完整活動表單，聯絡資料會先沿用第一場。</div>
-              <div class="addRow" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
-                <div style="flex:1;min-width:220px">
-                  <div class="dateCap">活動日期</div>
-                  <input id="fDateAdd" type="date" style="width:100%">
-                </div>
-                <button class="btn" id="btnAddDate" type="button">＋新增活動2</button>
-              </div>
-
-              <div class="note" style="margin-top:10px">已加入的活動（每筆加入後，會在下方直接出現時間設定）：</div>
-              <div id="extraList" class="planList" style="margin-top:8px"></div>
-
-              <div class="hint" style="margin-top:8px">
-                ✅ 活動可與主案日期重疊（例如主案 26–28，加開 27）→ Step2 會出現「活動1（連續）」＋該筆「活動」兩張卡。
-              </div>
+              <div id="mainInlinePlanner" class="planList" style="margin-top:0"></div>
             </div>
           </div>
         </div>
 
         <div class="field span2">
           <label>備註 / 需求</label>
-          <textarea id="fNote" placeholder="例：室內婚禮120人，需四支無線麥，場地有220V插座，需含進退場..."></textarea>
+          <textarea id="fNote" placeholder=""></textarea>
         </div>
       </div>
 
       <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
-        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成報價單</button>
+        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成活動表單</button>
       </div>
     </section>
 
@@ -736,7 +607,7 @@ body.printing #printRoot{display:block}
       <div class="dayGrid" id="dayCards"></div>
 
       <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
-          <button class="btn primary" id="btnGoQuote" type="button">前往新增／添加設備</button>
+        <button class="btn primary" id="btnGoSelectEquip" type="button">下一步：選設備</button>
       </div>
     </section>
 
@@ -744,187 +615,54 @@ body.printing #printRoot{display:block}
     <section class="card view" id="viewDayEdit">
       <div class="hd stepHd step3">
         <h2 id="dayEditTitle">3) 選設備</h2>
-        <div id="step4TopActions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="btnBackToDays" type="button">回到日期圖框</button>
-          <button class="btn" id="btnPrevUnit" type="button">上一項</button>
-          <button class="btn" id="btnNextUnit" type="button">下一項</button>
-          <button class="btn primary" id="btnMarkDone" type="button">完成</button>
-        </div>
       </div>
 
-      <div id="unitProgressBox">
-        <div id="unitProgressTitle">正在填寫：活動 1 / 1</div>
-        <div id="unitProgressDots"></div>
-      </div>
-
-      <div class="hd stepHd step1" style="border-top:1px solid var(--line);border-bottom:none">
-        <h2>本項資料（此頁可單獨修改）</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="btnCopyFirst" type="button">複製：活動1設備</button>
-          <button class="btn" id="btnCopyPrev" type="button">複製：上一個活動設備</button>
-        </div>
-      </div>
-
-      <div class="form" id="dayForm">
-        <div class="field">
-          <label>日期（本項）</label>
-          <input id="dDate" type="text" disabled>
-        </div>
-
-        <div class="field">
-          <label>姓名 / 單位</label>
-          <input id="dName" placeholder="例：柚子樂器 / 王小明">
-        </div>
-
-        <div class="field">
-          <label>行動電話</label>
-          <input id="dPhone" type="tel" inputmode="tel" placeholder="例：09xx-xxx-xxx">
-        </div>
-
-        <div class="field">
-          <label>Email</label>
-          <input id="dEmail" type="email" placeholder="例：you@example.com">
-        </div>
-
-        <div class="field span2">
-          <label>活動地點（縣市/區）</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <select id="dCity"></select>
-            <select id="dArea"></select>
-          </div>
-        </div>
-
-        <div class="field span2">
-          <label>詳細地址（路名/號）</label>
-          <input id="dAddr" placeholder="例：中山路 100 號">
-        </div>
-
-        <div class="field span2">
-          <label>大樓/棟別/樓層/入口（讓地址更清楚）</label>
-          <input id="dBldg" placeholder="例：XX大樓 A棟 3F（從側門進）">
-        </div>
-
-        <div class="field">
-          <label>活動類型</label>
-          <select id="dEventType"></select>
-        </div>
-
-        <div class="field">
-          <label>預估人數</label>
-          <select id="dCrowd"></select>
-        </div>
-
-        <div class="field">
-          <label>室內 / 戶外</label>
-          <select id="dIndoor"></select>
-        </div>
-
-        <!-- 活動：單筆時間（維持原本 UI） -->
-        <div class="field span2" id="singleTimeBlock">
-          <label>第一場時間（00/10/20/30/40/50 分）</label>
-          <div class="timeRow">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-              <select id="dStartH"></select>
-              <select id="dStartM"></select>
-            </div>
-            <div class="sep">～</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-              <select id="dEndH"></select>
-              <select id="dEndM"></select>
-            </div>
-          </div>
-        </div>
-
-        <div class="field span2" id="singleS2Block">
-          <label>同日第二場（選填）</label>
-          <div class="planS2">
-            <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
-              <input type="checkbox" id="dHasSession2" style="width:18px;height:18px">
-              需要第二場（每一場加價：<b>B × 30%</b>）
-            </label>
-
-            <div id="dSession2Time" style="display:none">
-              <div class="timeRow" style="margin-top:8px">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                  <select id="d2StartH"></select>
-                  <select id="d2StartM"></select>
-                </div>
-                <div class="sep">～</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                  <select id="d2EndH"></select>
-                  <select id="d2EndM"></select>
-                </div>
-              </div>
-              <div class="hint">第二場開始時間會自動限制「不得早於第一場結束」。</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 主案：逐日時間（選1） -->
-        <div class="field span2" id="mainEditTimeBlock" style="display:none">
-          <label>主案逐日時間（每一天可不同，含第二場）</label>
-          <div class="note">主案連續視同同一案子：設備只選一次套用整段；時間可逐日調整。</div>
-          <div id="mainEditPlanner" class="planList" style="margin-top:8px"></div>
-        </div>
-
-        <div class="field span2">
-          <label>備註 / 需求（本項）</label>
-          <textarea id="dNote" placeholder="本項特別需求（若不同可在此填）"></textarea>
-        </div>
+      <div class="equipBarWrap">
+        <div id="equipUnitBar" class="equipUnitBar"></div>
       </div>
 
       <!-- 三模組 -->
       <div class="hd stepHd step2" style="border-top:1px solid var(--line);border-bottom:none">
-        <h2>燈光音響三模組（安全 / 氣氛 / 升級）</h2>
-        <span class="pill" id="tierPills">安全—｜氣氛—｜升級—</span>
+        <h2>燈光音響</h2>
       </div>
 
       <div class="tierWrap">
         <div class="tierGrid">
           <div class="tierCard">
             <div class="tierHead">
-              <b>安全等級 <span style="font-size:12px;color:var(--muted);font-weight:normal;">（不包含燈光）</span></b>
-              <span class="pill" id="pillSafety">未選</span>
+              <b>安全等級</b>
             </div>
             <div class="tierBody">
+              <div class="mini">不包含燈光</div>
               <div class="levelRow" id="levelsSafety"></div>
-              <div class="hint">建議：一般活動多數選 <b>第3級</b>；戶外建議至少 <b>第3級</b>。</div>
             </div>
           </div>
 
           <div class="tierCard">
             <div class="tierHead">
-              <b>氣氛等級 <span style="font-size:12px;color:var(--muted);font-weight:normal;">（含燈光+簡易特效）</span></b>
-              <span class="pill" id="pillAmbience">未選</span>
+              <b>氣氛等級</b>
             </div>
             <div class="tierBody">
+              <div class="mini">含燈光與簡易特效</div>
               <div class="levelRow" id="levelsAmbience"></div>
-              <div class="hint">想要「看起來不寒酸」：至少選到 <b>第2級</b>；有表演感：選到 <b>第4級</b>。</div>
             </div>
           </div>
 
           <div class="tierCard">
             <div class="tierHead">
-              <b>升級等級 <span style="font-size:12px;color:var(--muted);font-weight:normal;">（含進階燈光+高級特效）</span></b>
-              <span class="pill" id="pillUpgrade">未選</span>
+              <b>升級等級</b>
             </div>
             <div class="tierBody">
+              <div class="mini">最高階</div>
               <div class="levelRow" id="levelsUpgrade"></div>
-              <div class="hint">升級是高滿意度來源：先看內容與價格再選等級，之後再微調。</div>
             </div>
           </div>
-        </div>
-
-        <div class="hint">
-          主案連續：設備只選一次套用整段。<br>
-          活動：獨立活動，可與主案不同設備。
         </div>
       </div>
 
       <!-- 加購分類 -->
       <div class="hd stepHd step3" style="border-top:1px solid var(--line);border-bottom:none">
-        <h2>設備/服務分類（自由加減）</h2>
-        <span class="pill" id="catName">—</span>
+        <h2>設備服務分類（自由加減）</h2>
       </div>
 
       <div class="tabs" id="tabs"></div>
@@ -952,25 +690,18 @@ body.printing #printRoot{display:block}
         </div>
 
         <div class="cart" id="cart"></div>
+      </div>
 
-        <!-- ✅ Step3：底部導引（手機優先）：活動表單總覽 + 下一步/前往報價 -->
-        <div class="formNavPanel" id="formNavPanel"></div>
-
-        <div class="quickNav" id="quickNavBar">
-          <button class="btn primary" id="btnQuickNext" type="button">下一步：前往下一筆活動設備</button>
-        </div>
-
+      <div class="step3Flow" id="step3Flow">
+        <div class="flowHint" id="step3FlowHint">請依序完成每一個活動的設備填寫。</div>
+        <button class="btn primary" id="btnStep3Continue" type="button">完成本活動，前往下一項</button>
       </div>
     </section>
 
     <!-- ======================= VIEW: Step4 ======================= -->
     <section class="card view" id="viewQuote">
       <div class="hd stepHd step4">
-        <h2>4) 列印送出報價單</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn warn" id="btnPrint" type="button">列印成 PDF</button>
-          <button class="btn primary" id="btnSendQuote" type="button">送出報價單</button>
-        </div>
+        <h2>4) 列印報價單</h2>
       </div>
 
       <div class="quoteBox">
@@ -992,19 +723,8 @@ body.printing #printRoot{display:block}
           </tfoot>
         </table>
 
-        <div class="note">
-          PDF 版面：第 1 頁會列出「主案＋活動金額總覽」，後面會列出每一項的詳細清單。
-        </div>
-
-        <!-- ✅ 手機：主要操作放在最底部（保留上方按鈕但縮小） -->
         <div class="step4BottomActions" id="step4BottomActions">
-          <button class="btn warn" id="btnBottomPrint" type="button">列印成 PDF</button>
-          <button class="btn primary" id="btnBottomSend" type="button">送出報價單</button>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-          <button class="btn" id="btnBackToDays2" type="button">回到日期圖框（Step2）</button>
-          <button class="btn" id="btnBackToEdit" type="button">回到編輯（Step3）</button>
+          <button class="btn primary" id="btnBottomSend" type="button">送出報價單／Email 寄送</button>
         </div>
       </div>
     </section>
@@ -1044,7 +764,6 @@ const ORDER_API_URL = "https://script.google.com/macros/s/AKfycbwXwMYFPFx8KnyJ43
 
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
-const on = (sel, ev, fn)=>{ const el = typeof sel === "string" ? $(sel) : sel; if(el) el.addEventListener(ev, fn); };
 const escapeHtml = (v)=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const fmt = (n)=>"NT$"+Number(n||0).toLocaleString("zh-Hant-TW");
 
@@ -1074,16 +793,6 @@ function todayStr(){
   return `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
 }
 function genId(){ return "x" + Math.random().toString(36).slice(2,8) + Date.now().toString(36); }
-function getActivityPaletteNo(idx){
-  const arr = [1,2,3,4,5,6,7];
-  return arr[Math.max(0, idx) % arr.length];
-}
-function refreshAddButtonLabel(){
-  const btn = $("#btnAddDate");
-  if(!btn) return;
-  const nextNo = (state.extraUnits?.length || 0) + 2;
-  btn.textContent = `＋新增活動${nextNo}`;
-}
 
 function svgThumb(label){
   const safe = (label||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -1116,7 +825,7 @@ function setStep(step){
     b.classList.toggle("active", n===step);
     b.classList.toggle("done", n<step);
   });
-  $("#btnPrintTop").style.display = (step>=4) ? "" : "none";
+  const topPrintBtn = $("#btnPrintTop"); if(topPrintBtn) topPrintBtn.style.display = (step>=4) ? "" : "none";
   updateStepBarClickable();
 }
 
@@ -1479,9 +1188,9 @@ function renderPlannerRows(containerEl, rows, onChange){
         <div class="planRowTop">
           <div>
             <b>${escapeHtml(r.title)}：${escapeHtml(r.dateText)}</b>
-            ${r.sub ? `<div class="note">${escapeHtml(r.sub)}</div>` : ``}
+            
           </div>
-          <span class="pill">${escapeHtml(r.pill||"")}</span>
+          
         </div>
 
         <div class="planTimes">
@@ -1500,7 +1209,7 @@ function renderPlannerRows(containerEl, rows, onChange){
           <div class="planS2">
             <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
               <input type="checkbox" data-s2="1" ${s2On?"checked":""} style="width:18px;height:18px">
-              需要第二場（每一場加價：<b>B×30%</b>）
+              需要第二場
             </label>
 
             <div class="s2Times" style="${s2On?"":"display:none"}">
@@ -1515,7 +1224,7 @@ function renderPlannerRows(containerEl, rows, onChange){
                   ${makeHMSelectHTML("s2EndM", e2m||"00", true)}
                 </div>
               </div>
-              <div class="hint">第二場開始不得早於第一場結束（會自動修正）。</div>
+              
             </div>
           </div>
         </div>
@@ -1578,7 +1287,7 @@ function renderMainInline(){
     title: `主案第${i+1}天`,
     dateText: d,
     sub: "",
-    pill: ($("#fIsMultiDay").checked ? "主案連續" : "主案單日")
+    pill: ($("#fIsMultiDay")?.checked ? "主案連續" : "主案單日")
   }));
 
   renderPlannerRows(list, rows, ()=>{ if(state.units.length){ renderDayCards(); renderIfEditingMain(); } });
@@ -1591,34 +1300,27 @@ function renderExtraInline(){
 
   const list = (state.extraUnits||[]).map(u=>({id:u.id, date:normalizeDateStr(u.date||"")})).filter(x=>!!x.date);
   state.extraUnits = list;
-  refreshAddButtonLabel();
 
   if(!list.length){
-    box.innerHTML = `<div class="note">目前還沒有新增其他活動。按上方「新增活動2」後，會先沿用第一場聯絡資料。</div>`;
+    box.innerHTML = `<div class="note">目前沒有加入活動。</div>`;
     return;
   }
 
-  box.innerHTML = list.map((u, idx)=>{
-    const activityNo = idx + 2;
-    const paletteNo = getActivityPaletteNo(activityNo-1);
-    return `
-      <div class="extraPalette" data-extra="${u.id}" data-palette="${paletteNo}">
-        <div class="planRow" data-extra="${u.id}">
-          <div class="planRowTop">
-            <div>
-              <b>活動${activityNo}：${u.date}</b>
-              <div class="note">這一場會先沿用第一場聯絡資料，可在下一步個別修改。</div>
-            </div>
-            <div style="display:flex;gap:10px;align-items:center">
-              <span class="pill">活動${activityNo}</span>
-              <button class="btn danger" type="button" data-del="${u.id}" style="padding:8px 10px">刪除</button>
-            </div>
-          </div>
-          <div class="planTimes" data-slot="${u.id}"></div>
+  box.innerHTML = list.map((u, idx)=>`
+    <div class="planRow" data-extra="${u.id}">
+      <div class="planRowTop">
+        <div>
+          <b>活動 ${idx+1}：${u.date}</b>
+          <div class="note">此筆為獨立活動/地點（可與主案同日）。</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span class="pill">活動</span>
+          <button class="btn danger" type="button" data-del="${u.id}" style="padding:8px 10px">刪除</button>
         </div>
       </div>
-    `;
-  }).join("");
+      <div class="planTimes" data-slot="${u.id}"></div>
+    </div>
+  `).join("");
 
   box.querySelectorAll("button[data-del]").forEach(b=>{
     b.addEventListener("click", ()=>{
@@ -1633,19 +1335,17 @@ function renderExtraInline(){
   list.forEach((u, idx)=>{
     const slot = box.querySelector(`[data-slot="${u.id}"]`);
     if(!slot) return;
-    const activityNo = idx + 2;
     renderPlannerRows(slot, [{
       key: `extra-${u.id}`,
-      title: `活動${activityNo}`,
+      title: `活動 ${idx+1}`,
       dateText: u.date,
       sub: "",
-      pill: `活動${activityNo}`
+      pill: "活動"
     }], ()=>{
       if(state.units.length){ renderDayCards(); renderIfEditingExtra(`extra-${u.id}`); }
     });
   });
 }
-
 
 /* =========================
    Step1：表單
@@ -1846,83 +1546,87 @@ function renderDayCards(){
   if(!box) return;
 
   const units = state.units || [];
-  $("#daysCountPill").textContent = `${units.length} 項`;
+  const pill = $("#daysCountPill");
+  if(pill) pill.textContent = `${units.length} 項`;
 
   const note = $("#dayListNote");
   if(note){
-    const main = units[0];
-    const isContinuous = !!$("#fIsMultiDay")?.checked && (main?.dates?.length||1)>=2;
-    note.innerHTML = isContinuous
-      ? `你目前有 <b>活動1（連續）</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。請依序完成每一筆活動的設備。`
-      : `你目前有 <b>活動1</b>＋<b>${Math.max(0,units.length-1)} 筆其他活動</b>。請依序完成每一筆活動的設備。`;
+    note.textContent = "這一頁只顯示各活動的日期、地點、時間與基本資料摘要。確認無誤後，請從下方進入設備選擇。";
   }
 
-  const gf = getGlobalFormNow();
-  const main = units[0];
-  const isContinuous = (main?.dates?.length||1)>=2;
-  const cardsHTML = [];
+  const COLORS = [
+    {bg:'#e8f7ee', border:'#4ca976', text:'#21543b'},
+    {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a'},
+    {bg:'#fff0d8', border:'#d98d2b', text:'#7a4a00'},
+    {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7'}
+  ];
+  const colorOf = (idx)=>COLORS[(idx-1)%COLORS.length];
 
-  function metaHtml(unit){
-    const form = unit?.form || {};
-    const city = form.city || gf.city || "";
-    const area = form.area || gf.area || "";
-    const eventType = form.eventType || gf.eventType || "未填寫";
-    const m = ensurePlanMeta(unit.uid);
-    let timeText = `${m.start||"--:--"}～${m.end||"--:--"}`;
-    if(unit?.kind==="main" && isContinuous && unit?.dates?.length){
-      timeText = `連續 ${unit.dates.length} 天`;
+  const safe = (v)=>escapeHtml(v == null ? "" : String(v));
+  const locText = (f)=>{
+    const arr = [f.city, f.area, f.addr, f.bldg].filter(Boolean);
+    return arr.join(" ");
+  };
+  const timeText = (meta)=>{
+    const one = `${meta.start || "—"}～${meta.end || "—"}`;
+    if(meta.s2On){
+      return `${one}；第二場 ${meta.s2Start || "—"}～${meta.s2End || "—"}`;
     }
-    if(m.s2On){
-      timeText += `｜第二場 ${m.s2Start||"--:--"}～${m.s2End||"--:--"}`;
-    }
-    return `<div class="daySummaryRow">
-      <div class="dayMetaStrong"><b>活動地點：</b>${escapeHtml([city, area].filter(Boolean).join("／") || "未填寫")}</div>
-      <div class="dayMetaStrong"><b>活動類型：</b>${escapeHtml(eventType)}</div>
-      <div class="dayMetaStrong"><b>活動時間：</b>${escapeHtml(timeText)}</div>
-    </div>`;
-  }
+    return `${one}；第二場：無`;
+  };
+  const basicRows = (form)=>{
+    const rows = [];
+    if(form.eventType) rows.push(`活動類型：${form.eventType}`);
+    if(form.indoor) rows.push(`場地類型：${form.indoor}`);
+    if(form.crowd) rows.push(`預估人數：${form.crowd}`);
+    if(form.name) rows.push(`姓名 / 單位：${form.name}`);
+    if(form.phone) rows.push(`電話：${form.phone}`);
+    if(form.email) rows.push(`Email：${form.email}`);
+    return rows;
+  };
+  const dayLines = (u)=>{
+    const dates = (u.dates && u.dates.length) ? u.dates : [u.date];
+    return dates.map((d, i)=>{
+      const key = u.kind === "main" ? `main-${d}` : `${u.uid}-${d}`;
+      const meta = ensurePlanMeta(key);
+      const location = locText(u.form || {});
+      return `
+        <div style="border:1px solid rgba(255,255,255,.6);border-radius:12px;background:rgba(255,255,255,.62);padding:10px;display:grid;gap:6px">
+          <div style="font-weight:900">${safe(`第${i+1}天｜${d}`)}</div>
+          <div class="mini">${safe(location || "地點未填寫")}</div>
+          <div class="mini">${safe(timeText(meta))}</div>
+        </div>
+      `;
+    }).join("");
+  };
 
-  if(main){
-    const label = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
-    cardsHTML.push(`
-      <div class="dayCard" data-idx="0">
+  const cardsHTML = units.map((u, i)=>{
+    const idx = i + 1;
+    const color = colorOf(idx);
+    const form = u.form || {};
+    const basic = basicRows(form).map(x=>`<div class="mini">${safe(x)}</div>`).join("");
+    const days = dayLines(u);
+    return `
+      <div class="dayCard" data-idx="${i}" style="background:${color.bg};border:2px solid ${color.border};box-shadow:0 6px 18px rgba(0,0,0,.05)">
         <div class="dayTop">
           <div>
-            <div class="dayDate">${escapeHtml(label)}</div>
-            <div class="dayMeta">點這張卡片即可進入設備填寫。</div>
+            <div class="dayDate" style="color:${color.text}">活動${idx}</div>
+            <div class="dayMeta">活動摘要</div>
           </div>
         </div>
-        ${metaHtml(main)}
-      </div>
-    `);
-  }
-
-  units.slice(1).forEach((u, i)=>{
-    const idx = i+1;
-    cardsHTML.push(`
-      <div class="dayCard" data-idx="${idx}">
-        <div class="dayTop">
-          <div>
-            <div class="dayDate">活動${idx+1}｜${u.date}</div>
-            <div class="dayMeta">點這張卡片即可進入設備填寫。</div>
+        <div style="display:grid;gap:10px">
+          <div style="display:grid;gap:8px">${days}</div>
+          <div style="border-top:1px dashed ${color.border};padding-top:10px;display:grid;gap:6px">
+            <div style="font-weight:900;color:${color.text}">基本資料</div>
+            ${basic || '<div class="mini">尚未填寫其他基本資料</div>'}
           </div>
         </div>
-        ${metaHtml(u)}
       </div>
-    `);
+    `;
   });
 
   box.innerHTML = cardsHTML.join("");
-  box.querySelectorAll(".dayCard").forEach(card=>{
-    const idx = Number(card.dataset.idx||0);
-    card.addEventListener("click", ()=>openUnit(idx));
-  });
-
-  const btnGo = $("#btnGoQuote");
-  if(btnGo){
-    btnGo.style.display = units.length ? "" : "none";
-    btnGo.textContent = "前往新增／添加設備";
-  }
+  renderUnitJumpList();
 }
   /* =========================
    Step3：編輯（主案/活動）
@@ -1930,155 +1634,92 @@ function renderDayCards(){
 function getCurUnit(){ return state.units[state.currentIndex]; }
 
 function fillSelectOptions(){
-  if($("#dEventType")) $("#dEventType").innerHTML = $("#fEventType")?.innerHTML || "";
-  if($("#dCrowd")) $("#dCrowd").innerHTML = $("#fCrowd")?.innerHTML || "";
-  if($("#dIndoor")) $("#dIndoor").innerHTML = $("#fIndoor")?.innerHTML || "";
+  return;
+}
+function getStep3UnitLabelByIndex(idx){
+  return `活動${Number(idx||0)+1}`;
+}
+
+function getUnitColors(idx){
+  const COLORS = [
+    {bg:'#e8f7ee', border:'#4ca976', text:'#21543b'},
+    {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a'},
+    {bg:'#fff0d8', border:'#d98d2b', text:'#7a4a00'},
+    {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7'},
+    {bg:'#e0f2fe', border:'#0284c7', text:'#0c4a6e'},
+    {bg:'#fef3c7', border:'#d97706', text:'#78350f'}
+  ];
+  return COLORS[(Number(idx||0)) % COLORS.length];
+}
+
+function renderEquipUnitBar(){
+  const box = $("#equipUnitBar");
+  if(!box) return;
+  const units = state.units || [];
+  if(!units.length){ box.innerHTML = ""; return; }
+
+  box.innerHTML = units.map((u, idx)=>{
+    const color = getUnitColors(idx);
+    const active = idx===state.currentIndex;
+    const label = getStep3UnitLabelByIndex(idx);
+    const status = active ? "目前填寫中" : (u.done ? "已完成" : "待填寫");
+    return `
+      <button type="button" class="equipUnitBtn ${active?'isCurrent':''} ${u.done?'isDone':''}" data-equip-idx="${idx}"
+        style="background:${color.bg};border-color:${color.border};color:${color.text}">
+        <span>${label}</span>
+        <span class="sub">${status}</span>
+      </button>
+    `;
+  }).join("");
+
+  box.querySelectorAll('[data-equip-idx]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = Number(btn.getAttribute('data-equip-idx')||0);
+      openUnit(idx);
+    });
+  });
 }
 
 function fillUnitFormUI(u){
-  const isMain = u.kind==="main";
-  const title = isMain
-    ? ((u.dates.length>=2) ? `3) 選設備｜活動1（連續） ${u.startDate}～${u.endDate}` : `3) 選設備｜主案 ${u.startDate}`)
-    : `3) 選設備｜活動 ${u.extraIndex}：${u.date}`;
-  $("#dayEditTitle").textContent = title;
-
-  $("#dDate").value = isMain
-    ? ((u.dates.length>=2) ? `${u.startDate} ～ ${u.endDate}` : u.startDate)
-    : u.date;
-
-  $("#dName").value = u.form?.name || "";
-  $("#dPhone").value= u.form?.phone || "";
-  $("#dEmail").value= u.form?.email || "";
-  $("#dAddr").value = u.form?.addr || "";
-  $("#dBldg").value = u.form?.bldg || "";
-  $("#dEventType").value = u.form?.eventType || "";
-  $("#dCrowd").value = u.form?.crowd || "";
-  $("#dIndoor").value = u.form?.indoor || "";
-  $("#dNote").value = u.form?.dayNote || "";
-
-  fillCityArea($("#dCity"), $("#dArea"), u.form?.city || "", u.form?.area || "");
-
-  $("#mainEditTimeBlock").style.display = isMain ? "" : "none";
-  $("#singleTimeBlock").style.display = isMain ? "none" : "";
-  $("#singleS2Block").style.display   = isMain ? "none" : "";
-
-  $("#btnMarkDone").textContent = isMain ? "完成主案" : "完成活動";
-
-  if(!isMain){
-    const meta = ensurePlanMeta(u.uid);
-    const [sh, sm] = (meta.start||"09:00").split(":");
-    const [eh, em] = (meta.end||"12:00").split(":");
-    $("#dStartH").value = sh || "09";
-    $("#dStartM").value = sm || "00";
-    $("#dEndH").value   = eh || "12";
-    $("#dEndM").value   = em || "00";
-
-    $("#dHasSession2").checked = !!meta.s2On;
-    $("#dSession2Time").style.display = meta.s2On ? "" : "none";
-    const [s2h, s2m] = (meta.s2Start||"18:00").split(":");
-    const [e2h, e2m] = (meta.s2End||"21:00").split(":");
-    $("#d2StartH").value = s2h || "18";
-    $("#d2StartM").value = s2m || "00";
-    $("#d2EndH").value   = e2h || "21";
-    $("#d2EndM").value   = e2m || "00";
-  }else{
-    const rows = u.dates.map((d,i)=>({
-      key: `main-${d}`,
-      title: `主案第${i+1}天`,
-      dateText: d,
-      sub: "",
-      pill: "主案"
-    }));
-    renderPlannerRows($("#mainEditPlanner"), rows, ()=>{
-      renderUnitTotalsAndCart();
-      renderDayCards();
-    });
-  }
+  const idx = Number(state.currentIndex||0);
+  const label = getStep3UnitLabelByIndex(idx);
+  const dateText = (u && u.kind==='main')
+    ? (((u.dates||[]).length>=2) ? `${u.startDate} ～ ${u.endDate}` : (u.startDate||''))
+    : (u?.date || u?.startDate || '');
+  const title = dateText ? `3) 選設備｜${label}｜${dateText}` : `3) 選設備｜${label}`;
+  const titleEl = $("#dayEditTitle");
+  if(titleEl) titleEl.textContent = title;
+  renderEquipUnitBar();
+  renderStep3FlowButton();
 }
-
 function bindUnitFormEvents(){
-  const ids = ["dName","dPhone","dEmail","dAddr","dBldg","dEventType","dCrowd","dIndoor","dNote","dCity","dArea"];
-  ids.forEach(id=>{
-    const el = $("#"+id);
-    if(!el) return;
-    const handler = ()=>{
-      const u = getCurUnit(); if(!u) return;
-      u.form = u.form || {};
-      if(id==="dName") u.form.name = el.value.trim();
-      if(id==="dPhone") u.form.phone = el.value.trim();
-      if(id==="dEmail") u.form.email = el.value.trim();
-      if(id==="dAddr") u.form.addr = el.value.trim();
-      if(id==="dBldg") u.form.bldg = el.value.trim();
-      if(id==="dEventType") u.form.eventType = el.value;
-      if(id==="dCrowd") u.form.crowd = el.value;
-      if(id==="dIndoor") u.form.indoor = el.value;
-      if(id==="dNote") u.form.dayNote = el.value;
-      if(id==="dCity") u.form.city = el.value;
-      if(id==="dArea") u.form.area = el.value;
-    };
-    el.addEventListener("input", handler);
-    el.addEventListener("change", handler);
-  });
-
-  ["dStartH","dStartM","dEndH","dEndM"].forEach(id=>{
-    $("#"+id).addEventListener("change", ()=>{
-      const u = getCurUnit(); if(!u || u.kind==="main") return;
-      const meta = ensurePlanMeta(u.uid);
-      meta.start = `${$("#dStartH").value}:${$("#dStartM").value}`;
-      meta.end   = `${$("#dEndH").value}:${$("#dEndM").value}`;
-      if(meta.s2On) fixDaySession2(true);
-      renderUnitTotalsAndCart();
-      renderDayCards();
-    });
-  });
-
-  $("#dHasSession2").addEventListener("change", ()=>{
-    const u = getCurUnit(); if(!u || u.kind==="main") return;
-    const meta = ensurePlanMeta(u.uid);
-    meta.s2On = !!$("#dHasSession2").checked;
-    $("#dSession2Time").style.display = meta.s2On ? "" : "none";
-    if(meta.s2On) fixDaySession2(true);
-    renderUnitTotalsAndCart();
-    renderDayCards();
-  });
-
-  ["d2StartH","d2StartM","d2EndH","d2EndM"].forEach(id=>{
-    $("#"+id).addEventListener("change", ()=>{
-      const u = getCurUnit(); if(!u || u.kind==="main") return;
-      fixDaySession2(true);
-      renderUnitTotalsAndCart();
-      renderDayCards();
-    });
-  });
+  return;
 }
-
 function fixDaySession2(writeBack=true){
   const u = getCurUnit(); if(!u) return;
   const meta = ensurePlanMeta(u.uid);
-  const fEnd = toMin($("#dEndH").value, $("#dEndM").value);
+  const endH = $("#dEndH"), endM = $("#dEndM"), s2H = $("#d2StartH"), s2M = $("#d2StartM"), e2H = $("#d2EndH"), e2M = $("#d2EndM");
+  if(!endH || !endM || !s2H || !s2M || !e2H || !e2M) return;
+  const fEnd = toMin(endH.value, endM.value);
   const STEP=10;
 
-  let s2Start = toMin($("#d2StartH").value, $("#d2StartM").value);
-  let s2End   = toMin($("#d2EndH").value, $("#d2EndM").value);
+  let s2Start = toMin(s2H.value, s2M.value);
+  let s2End   = toMin(e2H.value, e2M.value);
 
   if(s2Start < fEnd){
     s2Start = fEnd;
     const [hh,mm]=fromMin(s2Start);
-    if(writeBack){ $("#d2StartH").value=hh; $("#d2StartM").value=mm; }
+    if(writeBack){ s2H.value=hh; s2M.value=mm; }
   }
   if(s2End <= s2Start){
     s2End = s2Start + STEP;
     const [hh,mm]=fromMin(s2End);
-    if(writeBack){ $("#d2EndH").value=hh; $("#d2EndM").value=mm; }
+    if(writeBack){ e2H.value=hh; e2M.value=mm; }
   }
 
-  meta.s2Start = `${$("#d2StartH").value}:${$("#d2StartM").value}`;
-  meta.s2End   = `${$("#d2EndH").value}:${$("#d2EndM").value}`;
+  meta.s2Start = `${s2H.value}:${s2M.value}`;
+  meta.s2End   = `${e2H.value}:${e2M.value}`;
 }
-
-/* =========================
-   options（沿用）
-   ========================= */
 function getItemOpts(u, itemId){
   u.itemOpts = u.itemOpts || {};
   return u.itemOpts[itemId] ? u.itemOpts[itemId] : {};
@@ -2221,13 +1862,7 @@ function removePack(u, tierKey){
 }
 
 function renderTierPills(u){
-  const s = u.tiers?.safety ? `安全第${u.tiers.safety}級` : "安全—";
-  const a = u.tiers?.ambience ? `氣氛第${u.tiers.ambience}級` : "氣氛—";
-  const up= u.tiers?.upgrade ? `升級第${u.tiers.upgrade}級` : "升級—";
-  $("#tierPills").textContent = `${s}｜${a}｜${up}`;
-  $("#pillSafety").textContent = u.tiers?.safety ? `第${u.tiers.safety}級` : "未選";
-  $("#pillAmbience").textContent = u.tiers?.ambience ? `第${u.tiers.ambience}級` : "未選";
-  $("#pillUpgrade").textContent = u.tiers?.upgrade ? `第${u.tiers.upgrade}級` : "未選";
+  return;
 }
 
 function renderTierButtons(u){
@@ -2286,7 +1921,22 @@ function renderTierButtons(u){
 
 function renderTabs(u){
   const el=$("#tabs");
-  el.innerHTML=CATEGORIES.map(c=>`<button class="tab ${c.id===u.catId?"active":""}" data-cat="${c.id}">${c.name}</button>`).join("");
+  const palette = [
+    {bg:"#e8f7ee", border:"#4ca976", text:"#21543b"},
+    {bg:"#ffe4ef", border:"#d95c96", text:"#7a1f4a"},
+    {bg:"#fff0d8", border:"#d98d2b", text:"#7a4a00"},
+    {bg:"#f3e8ff", border:"#8b5cf6", text:"#4b2ea7"},
+    {bg:"#e0f2fe", border:"#0284c7", text:"#0c4a6e"},
+    {bg:"#fef3c7", border:"#d97706", text:"#78350f"},
+  ];
+  el.innerHTML=CATEGORIES.map((c, idx)=>{
+    const p = palette[idx % palette.length];
+    const active = c.id===u.catId;
+    const style = active
+      ? `background:${p.bg};border-color:${p.border};color:${p.text};box-shadow:0 8px 18px rgba(0,0,0,.06);`
+      : `background:#fff;border-color:var(--line);color:var(--text);`;
+    return `<button class="tab ${active?"active":""}" data-cat="${c.id}" style="${style}">${c.name}</button>`;
+  }).join("");
   el.querySelectorAll(".tab").forEach(b=>b.addEventListener("click", ()=>{
     u.catId=b.dataset.cat;
     renderItems(u);
@@ -2295,7 +1945,6 @@ function renderTabs(u){
 
 function renderItems(u){
   const cat=CATEGORIES.find(c=>c.id===u.catId);
-  $("#catName").textContent=cat?.name||"—";
   const el=$("#items");
   el.innerHTML=(cat?.items||[]).map(it=>{
     const qty=Number(u.cart?.items?.[it.id]||0);
@@ -2526,181 +2175,15 @@ function isAnyEquipChosen(u){
 }
 
 function updateCopyButtons(){
-  const u = getCurUnit();
-  const idx = Number(state.currentIndex||0);
-  const btnFirst = $("#btnCopyFirst");
-  const btnPrev  = $("#btnCopyPrev");
-
-  if(btnFirst){
-    // 第一筆不顯示；且必須已選設備才顯示
-    const show = (idx>0) && isAnyEquipChosen(state.units?.[0]);
-    btnFirst.style.display = show ? "" : "none";
-    // 動態文案：複製「活動1」設備
-    btnFirst.textContent = "複製：活動1設備";
-  }
-  if(btnPrev){
-    // 第一筆不顯示；且上一筆必須已選設備才顯示
-    const prev = state.units?.[idx-1];
-    const show = (idx>0) && isAnyEquipChosen(prev);
-    btnPrev.style.display = show ? "" : "none";
-    // 動態文案：複製「上一個活動」設備（若可取得序號就顯示）
-    const prevLabel = prev?.label || (idx>1 ? `活動${idx}` : "活動1");
-    btnPrev.textContent = `複製：${prevLabel}設備`;
-  }
+  return;
 }
-
 function updateQuickNavBar(){
-  const bar = $("#quickNavBar");
-  if(!bar) return;
-
-  const units = state.units || [];
-  const hasUnits = !!units.length;
-  bar.style.display = hasUnits ? "" : "none";
-
-  // 1) 活動表單總覽（Step3 最底部）
-  const panel = $("#formNavPanel");
-  if(panel){
-    if(!hasUnits){
-      panel.innerHTML = "";
-    }else{
-      const totals = calcGrandTotal();
-      const main = units[0];
-      const isContinuous = (main?.dates?.length||1)>=2;
-
-      const cards = [];
-      units.forEach((u, idx)=>{
-        const isMain = (idx===0);
-        let title = "";
-        let meta = "";
-        let money = "NT$0";
-
-        if(isMain){
-          title = isContinuous ? `活動1（連續）｜${main.startDate} ～ ${main.endDate}` : `活動1｜${main.startDate}`;
-          meta  = isContinuous ? `天數：${main.dates.length} 天` : `單日活動`;
-          money = fmt(totals.main.total);
-        }else{
-          const metaObj = ensurePlanMeta(u.uid);
-          const s2 = metaObj.s2On ? "有第二場" : "無第二場";
-          title = `活動${idx+1}｜${u.date}`;
-          meta  = `第一場：${metaObj.start}～${metaObj.end}｜第二場：${s2}`;
-          money = totals.extras[idx-1] ? fmt(totals.extras[idx-1].total) : "NT$0";
-        }
-
-        const st = u.done ? "✓ 已完成" : "⏳ 未完成";
-
-        cards.push(`
-          <button class="formNavBtn ${u.done?'isDone':'isTodo'} ${idx===state.currentIndex?'isActive':''}" type="button" data-idx="${idx}">
-            <div class="fnTop">
-              <div class="fnTitle">${escapeHtml(title)}</div>
-              <div class="fnMoney">${money}</div>
-            </div>
-            <div class="fnBottom">
-              <span class="fnMeta">${escapeHtml(meta)}</span>
-              <span class="fnStatus">${st}</span>
-            </div>
-          </button>
-        `);
-      });
-
-      // Step4 入口（未完成會提示並導引）
-      const firstTodo = units.findIndex(u=>!u.done);
-      const step4StateText = (firstTodo===-1) ? "可前往列印/送出報價單（Step4）" : `尚有未完成：活動${firstTodo+1}（請先完成）`;
-
-      panel.innerHTML = `
-        <div class="formNavHead">
-          <b>活動表單一覽</b>
-          <button class="btn warn mini" id="btnPanelStep4" type="button">前往列印/送出（Step4）</button>
-        </div>
-        <div class="formNavHint">${escapeHtml(step4StateText)}</div>
-        <div class="formNavGrid">${cards.join("")}</div>
-      `;
-
-      // 綁定：點卡片直接切換
-      panel.querySelectorAll(".formNavBtn").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-          const idx = Number(btn.getAttribute("data-idx"));
-          if(Number.isFinite(idx)) openUnit(idx);
-        });
-      });
-
-      const btnPanelStep4 = $("#btnPanelStep4");
-      if(btnPanelStep4){
-        btnPanelStep4.addEventListener("click", ()=>{
-          const firstTodo2 = units.findIndex(u=>!u.done);
-          if(firstTodo2 !== -1){
-            alert(`尚有未完成：活動${firstTodo2+1}，請先完成後再前往列印/送出。`);
-            openUnit(firstTodo2);
-            return;
-          }
-          showView(4);
-        });
-      }
-    }
-  }
-
-  // 2) 底部單一路徑導引
-  const btnNext = $("#btnQuickNext");
-  const firstTodo = units.findIndex(u=>!u.done);
-  const nextTodo = getNextTodoIndex(state.currentIndex||0);
-
-  if(btnNext){
-    if(firstTodo === -1){
-      btnNext.disabled = false;
-      btnNext.textContent = "下一步：前往報價單（Step4）";
-    }else if(nextTodo !== -1){
-      btnNext.disabled = false;
-      btnNext.textContent = "下一步：前往下一筆活動設備";
-    }else{
-      btnNext.disabled = false;
-      btnNext.textContent = "下一步：完成本筆後前往報價單";
-    }
-  }
+  renderStep3FlowButton();
+  renderEquipUnitBar();
 }
-
-
 function renderUnitJumpList(){
-  const box = $("#unitJumpList");
-  if(!box) return;
-
-  const units = state.units || [];
-  if(!units.length){ box.innerHTML = ""; return; }
-
-  box.innerHTML = units.map((u, idx)=>{
-    const name = (idx===0)
-      ? ((u.dates && u.dates.length>=2) ? `活動1（連續）` : `活動1`)
-      : `活動${idx+1}`;
-    const cls = `ujBtn ${u.done ? "done" : "todo"} ${idx===state.currentIndex ? "current" : ""}`;
-    const tag = u.done ? "✅" : "⏳";
-    return `<button type="button" class="${cls}" data-uj="${idx}">${tag} ${name}</button>`;
-  }).join("");
-
-  box.querySelectorAll("button[data-uj]").forEach(b=>{
-    b.addEventListener("click", ()=>{
-      const idx = Number(b.dataset.uj||0);
-      openUnit(idx);
-    });
-  });
+  return;
 }
-
-
-function renderUnitProgress(){
-  const titleEl = $("#unitProgressTitle");
-  const dotsEl = $("#unitProgressDots");
-  const units = state.units || [];
-  if(!titleEl || !dotsEl) return;
-  if(!units.length){
-    titleEl.textContent = "正在填寫：活動 1 / 1";
-    dotsEl.innerHTML = "";
-    return;
-  }
-  const cur = Math.max(0, Number(state.currentIndex||0));
-  titleEl.textContent = `正在填寫：活動 ${cur+1} / ${units.length}`;
-  dotsEl.innerHTML = units.map((u, idx)=>{
-    const cls = `prog ${idx===cur ? "active" : ""} ${u.done ? "done" : ""}`;
-    return `<span class="${cls}">活動${idx+1}</span>`;
-  }).join("");
-}
-
 function openUnit(idx){
   idx = Math.max(0, Math.min((state.units||[]).length-1, Number(idx||0)));
   state.currentIndex = idx;
@@ -2710,17 +2193,12 @@ function openUnit(idx){
 
   fillSelectOptions();
   fillUnitFormUI(getCurUnit());
-  renderUnitProgress();
-  updateCopyButtons();
   renderEquipmentUI();
   renderUnitTotalsAndCart();
-
-  $("#btnPrevUnit").disabled = (idx<=0);
-  $("#btnNextUnit").disabled = (idx>=(state.units.length-1));
-  updateQuickNavBar();  renderUnitJumpList();
-
+  renderEquipUnitBar();
+  renderStep3FlowButton();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-
 function renderIfEditingMain(){
   const u = getCurUnit();
   if(u && u.kind==="main"){
@@ -2736,63 +2214,16 @@ function renderIfEditingExtra(uid){
 
 /* 完成後彈窗（保留） */
 function openAfterDoneChoice(){
-  const idx = state.currentIndex;
-  const u = getCurUnit();
-  const isLast = idx >= (state.units.length-1);
-
-  const label = (u.kind==="main")
-    ? (u.dates.length>=2 ? `活動1（連續）${u.startDate}～${u.endDate}` : `主案 ${u.startDate}`)
-    : `活動 ${u.extraIndex}（${u.date}）`;
-
-  const title = isLast ? "已完成最後一項" : "已完成本項";
-  const msg = `你已標記完成：${escapeHtml(label)}。接下來要做什麼？`;
-
-  const nextBtn = isLast
-    ? `<button class="btn primary" id="choiceNext" disabled style="opacity:.55;cursor:not-allowed">前往下一項</button>`
-    : `<button class="btn primary" id="choiceNext">前往下一項</button>`;
-
-  openModal(title, `
-    <span class="note" style="display:block;margin-bottom:12px">${msg}</span>
-    <span style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-      ${nextBtn}
-      <button class="btn" id="choiceDayList" type="button">回到日期圖框</button>
-      <button class="btn warn" id="choiceQuote" type="button">前往報價</button>
-    </span>
-  `);
-
-  const btnNext = $("#choiceNext");
-  const btnList = $("#choiceDayList");
-  const btnQuote= $("#choiceQuote");
-
-  if(btnNext && !isLast){
-    btnNext.addEventListener("click", ()=>{
-      closeModal();
-      openUnit(idx+1);
-    });
-  }
-  if(btnList){
-    btnList.addEventListener("click", ()=>{
-      closeModal();
-      goDayList();
-    });
-  }
-  if(btnQuote){
-    btnQuote.addEventListener("click", ()=>{
-      closeModal();
-      goQuote();
-    });
-  }
+  renderStep3FlowButton();
+  renderEquipUnitBar();
 }
-
 function markDone(){
   const u = getCurUnit(); if(!u) return;
   u.done = true;
   renderDayCards();
-  openAfterDoneChoice();
+  renderStep3FlowButton();
+  renderEquipUnitBar();
 }
-  /* =========================
-   Step4：render quote
-   ========================= */
 function renderQuote(){
   const tbody = $("#quoteOverview");
   const warn = $("#quoteWarning");
@@ -2802,20 +2233,28 @@ function renderQuote(){
   const units = state.units || [];
   if(!units.length){
     tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
-    $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(0));
+    $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(0));
     return;
   }
 
   const rows = [];
   let grand = 0;
 
-  function pushSection(title, subtitle){
+  function pushSection(title, subtitle, idx){
+    const sectionPalette = [
+      {bg:'#e8f7ee', border:'#4ca976', text:'#21543b'},
+      {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a'},
+      {bg:'#fff0d8', border:'#d98d2b', text:'#7a4a00'},
+      {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7'},
+      {bg:'#ffe4e6', border:'#ef4444', text:'#991b1b'}
+    ];
+    const c = sectionPalette[idx % sectionPalette.length];
     rows.push(`
       <tr>
-        <td colspan="3" style="background:#f9fafb;border-color:#e5e7eb">
-          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-            <b>${escapeHtml(title)}</b>
-            <span class="muted">${escapeHtml(subtitle||"")}</span>
+        <td colspan="3" style="background:${c.bg};border:2px solid ${c.border};color:${c.text};border-radius:12px">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+            <b style="font-size:15px">${escapeHtml(title)}</b>
+            <span style="font-weight:700;color:${c.text};opacity:.92">${escapeHtml(subtitle||"")}</span>
           </div>
         </td>
       </tr>
@@ -2833,7 +2272,6 @@ function renderQuote(){
   }
 
   function getUnitLabel(idx, u){
-    if(idx===0) return (u.dates && u.dates.length>=2) ? "活動1（連續）" : "活動1";
     return `活動${idx+1}`;
   }
 
@@ -2858,7 +2296,7 @@ function renderQuote(){
       if(q<=0) continue;
       const f = findItem(id);
       if(!f) continue;
-      out.push({name:f.name, qty:`${q} ${f.unit||"件"}`, amount:Number(f.price||0)*q});
+      out.push({name:f.item.name, qty:`${q} ${f.item.unit||"件"}`, amount:getLineSubtotal(f.item, q)});
     }
     return out;
   }
@@ -2866,7 +2304,7 @@ function renderQuote(){
   units.forEach((u, idx)=>{
     const label = getUnitLabel(idx, u);
     const dateText = getUnitDateText(u);
-    pushSection(label, dateText);
+    pushSection(`${label} 報價`, dateText, idx);
 
     // 明細（8B：全部展開列到底）
     const lines = listCartLines(u);
@@ -2902,9 +2340,48 @@ function renderQuote(){
   });
 
   tbody.innerHTML = rows.join("");
-  $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(grand));
+  $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(grand));
 }
 
+
+function renderStep3FlowButton(){
+  const btn = $("#btnStep3Continue");
+  const hint = $("#step3FlowHint");
+  const units = state.units || [];
+  const idx = Number(state.currentIndex||0);
+  if(!btn) return;
+  if(!units.length){
+    btn.style.display = 'none';
+    if(hint) hint.textContent = '';
+    return;
+  }
+  btn.style.display = '';
+  const curLabel = getStep3UnitLabelByIndex(idx);
+  const nextLabel = getStep3UnitLabelByIndex(idx+1);
+  if(idx < units.length-1){
+    btn.textContent = `完成${curLabel}，前往${nextLabel}繼續填表`;
+    if(hint) hint.textContent = `完成 ${curLabel} 後，系統會帶你到 ${nextLabel}。`;
+  }else{
+    btn.textContent = '完成全部活動，前往列印/送出報價單';
+    if(hint) hint.textContent = '這是最後一個活動，完成後會前往列印 / 送出報價單。';
+  }
+}
+
+function completeCurrentAndContinue(){
+  const units = state.units || [];
+  if(!units.length) return;
+  const idx = Number(state.currentIndex||0);
+  const u = units[idx];
+  if(u) u.done = true;
+  renderDayCards();
+  renderEquipUnitBar();
+  renderStep3FlowButton();
+  if(idx < units.length-1){
+    openUnit(idx+1);
+  }else{
+    goQuote();
+  }
+}
 
 function goQuote(){
   setStep(4);
@@ -3252,20 +2729,13 @@ function canNavigateToStep(n){
 }
 function navToStep(n){
   if(!canNavigateToStep(n)){
-    alert("請先完成 Step1 並按「下一步：生成報價單」。");
+    alert("請先完成 Step1 並按「下一步：生成活動表單」。");
     return;
   }
   if(n===1) return goStep1();
   if(n===2) return goDayList();
   if(n===3) return openUnit(state.currentIndex||0);
-  if(n===4){
-    const todo = getNextTodoIndex(-1);
-    if(todo !== -1){
-      alert(`尚有未完成：活動${todo+1}（請先完成）`);
-      return openUnit(todo);
-    }
-    return goQuote();
-  }
+  if(n===4) return goQuote();
 }
 function updateStepBarClickable(){
   $$("#stepsBar .stepBox").forEach(b=>{
@@ -3292,84 +2762,43 @@ function fillTimeSelectsForEdit(){
    Buttons & Step1 wiring
    ========================= */
 function bindNavButtons(){
-  // ✅ Step3 底部導引（回日期 / 下一個未完成 / 前往 Step4）
-  const qDays  = $("#btnQuickDays");
-  const qNext  = $("#btnQuickNext");
-  const qStep4 = $("#btnQuickStep4");
+  $("#btnGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
 
-  if(qDays)  qDays.addEventListener("click", ()=>{ goDayList(); });
-
-  if(qNext) qNext.addEventListener("click", ()=>{
-    const units = state.units || [];
-    const firstTodo = units.findIndex(u=>!u.done);
-    if(firstTodo === -1){
-      goQuote();
+  $("#btnGoStep1")?.addEventListener("click", goStep1);
+  $("#btnBackToBasic")?.addEventListener("click", goStep1);
+  $("#btnBackToDays2")?.addEventListener("click", goDayList);
+  $("#btnBackToEdit")?.addEventListener("click", ()=>openUnit(state.currentIndex));
+  $("#btnGoQuote")?.addEventListener("click", ()=>{
+    const todo = getNextTodoIndex(-1);
+    if(todo !== -1){
+      alert(`尚有未完成：活動${todo+1}（請先完成）`);
+      openUnit(todo);
       return;
     }
-    const nextTodo = getNextTodoIndex(state.currentIndex||0);
-    if(nextTodo !== -1){
-      openUnit(nextTodo);
-    }else{
-      alert("請先按「完成」標記本筆活動，完成後就會前往報價單。");
-    }
+    goQuote();
   });
 
-  if(qStep4) qStep4.addEventListener("click", ()=>{
-    const units = state.units || [];
-    const firstTodo = units.findIndex(u=>!u.done);
-    if(firstTodo !== -1){
-      alert(`尚有未完成：活動${firstTodo+1}，請先完成後再前往列印/送出。`);
-      openUnit(firstTodo);
-      return;
-    }
-    showView(4);
-  });
-
-  on("#btnGoHome", "click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
-  on("#btnGoStep1", "click", goStep1);
-  on("#btnBackToBasic", "click", goStep1);
-  on("#btnBackToDays", "click", goDayList);
-  on("#btnBackToDays2", "click", goDayList);
-  on("#btnBackToEdit", "click", ()=>openUnit(state.currentIndex));
-  on("#btnGoQuote", "click", ()=>{
+  $("#btnGoSelectEquip")?.addEventListener("click", ()=>{
     const units = state.units || [];
     if(!units.length){
-      const ok = buildUnitsFromStep1();
-      if(!ok) return;
+      alert("請先完成 Step1 並生成活動表單。");
+      return;
     }
-    const todo = getNextTodoIndex(-1);
-    openUnit(todo !== -1 ? todo : 0);
+    openUnit(0);
   });
 
-  on("#btnPrevUnit", "click", ()=>openUnit(state.currentIndex-1));
-  on("#btnNextUnit", "click", ()=>openUnit(state.currentIndex+1));
-  on("#btnMarkDone", "click", markDone);
+  $("#btnStep3Continue")?.addEventListener("click", completeCurrentAndContinue);
 
-  on("#btnCopyFirst", "click", ()=>{
-    if(state.currentIndex===0) return;
-    copyEquip(0, state.currentIndex);
-    renderEquipmentUI();
-    renderUnitTotalsAndCart();
-    renderDayCards();
-  });
-  on("#btnCopyPrev", "click", ()=>{
-    if(state.currentIndex<=0) return;
-    copyEquip(state.currentIndex-1, state.currentIndex);
-    renderEquipmentUI();
-    renderUnitTotalsAndCart();
-    renderDayCards();
-  });
-
-  on("#btnPrint", "click", printPDF);
-  on("#btnPrintTop", "click", printPDF);
+  $("#btnPrint")?.addEventListener("click", printPDF);
+  $("#btnPrintTop")?.addEventListener("click", printPDF);
   const bp=$("#btnBottomPrint"); if(bp) bp.addEventListener("click", ()=>$("#btnPrint")?.click());
-  on("#btnSendQuote", "click", submitQuote);
-  const bs=$("#btnBottomSend"); if(bs) bs.addEventListener("click", ()=>$("#btnSendQuote")?.click());
+  const bs=$("#btnBottomSend"); if(bs) bs.addEventListener("click", submitQuote);
 
   $$("#stepsBar .stepBox").forEach(b=>{
     b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
   });
 }
+
 
 function bindStep1Events(){
   const t = todayStr();
@@ -3384,7 +2813,7 @@ function bindStep1Events(){
     if(!ds) return;
     const end = $("#fDateEnd");
     if(!end) return;
-    if($("#fIsMultiDay").checked){
+    if($("#fIsMultiDay")?.checked){
       const minEnd = addDays(ds, 1);
       end.min = minEnd;
       if(!end.value || normalizeDateStr(end.value) < minEnd){
@@ -3395,27 +2824,27 @@ function bindStep1Events(){
     }
   }
 
-  on("#fIsMultiDay", "change", ()=>{
-    $("#multiDayWrap").style.display = $("#fIsMultiDay").checked ? "block" : "none";
+  $("#fIsMultiDay")?.addEventListener("change", ()=>{
+    if($("#multiDayWrap")) $("#multiDayWrap").style.display = $("#fIsMultiDay")?.checked ? "block" : "none";
     syncEndMin();
     renderMainInline();
   });
 
-  on("#fIsNonContinuous", "change", ()=>{
-    $("#nonContinuousWrap").style.display = $("#fIsNonContinuous").checked ? "block" : "none";
+  $("#fIsNonContinuous")?.addEventListener("change", ()=>{
+    if($("#nonContinuousWrap")) $("#nonContinuousWrap").style.display = $("#fIsNonContinuous")?.checked ? "block" : "none";
     renderExtraInline();
   });
 
-  on("#fDateStart", "change", ()=>{
+  $("#fDateStart").addEventListener("change", ()=>{
     syncEndMin();
     renderMainInline();
   });
-  on("#fDateEnd", "change", ()=>{
+  $("#fDateEnd")?.addEventListener("change", ()=>{
     syncEndMin();
     renderMainInline();
   });
 
-  on("#btnAddDate", "click", ()=>{
+  $("#btnAddDate")?.addEventListener("click", ()=>{
     const d = normalizeDateStr($("#fDateAdd").value||"");
     if(!d){ alert("請先選擇活動日期。"); return; }
     if(d < t){ alert("不可以選過去的日期。"); return; }
@@ -3425,10 +2854,10 @@ function bindStep1Events(){
     renderExtraInline();
   });
 
-  on("#btnNextToDays", "click", ()=>{
+  $("#btnNextToDays").addEventListener("click", ()=>{
     const ok = buildUnitsFromStep1();
     if(!ok) return;
-    $("#basicStatus").textContent = "已建立";
+    
     goDayList();
   });
 }
@@ -3484,17 +2913,17 @@ async function tryLoadEditMode_(){
       $("#fDateStart").value = j.uiState.ui.fDateStart || (gf.dateStart||"");
       $("#fDateEnd").value = j.uiState.ui.fDateEnd || (gf.dateEnd||"");
       $("#fIsMultiDay").checked = !!j.uiState.ui.fIsMultiDay;
-      $("#fIsNonContinuous").checked = !!j.uiState.ui.fIsNonContinuous;
+      if($("#fIsNonContinuous")) $("#fIsNonContinuous").checked = !!j.uiState.ui.fIsNonContinuous;
     }
 
-    $("#multiDayWrap").style.display = $("#fIsMultiDay").checked ? "block" : "none";
-    $("#nonContinuousWrap").style.display = $("#fIsNonContinuous").checked ? "block" : "none";
+    if($("#multiDayWrap")) $("#multiDayWrap").style.display = $("#fIsMultiDay")?.checked ? "block" : "none";
+    if($("#nonContinuousWrap")) $("#nonContinuousWrap").style.display = $("#fIsNonContinuous")?.checked ? "block" : "none";
 
     renderMainInline();
     renderExtraInline();
     renderDayCards();
 
-    $("#basicStatus").textContent = "修改模式";
+    
     goQuote();
 
     openModal("已進入修改模式", `
@@ -3520,8 +2949,8 @@ async function tryLoadEditMode_(){
 (async function init(){
   fillCityArea($("#fCity"), $("#fArea"), "台中市", "豐原區");
 
-  $("#multiDayWrap").style.display = "none";
-  $("#nonContinuousWrap").style.display = "none";
+  if($("#multiDayWrap")) $("#multiDayWrap").style.display = "none";
+  if($("#nonContinuousWrap")) $("#nonContinuousWrap").style.display = "none";
 
   fillTimeSelectsForEdit();
   fillSelectOptions();
@@ -3533,10 +2962,579 @@ async function tryLoadEditMode_(){
   showView("viewBasic");
   renderMainInline();
   renderExtraInline();
-  refreshAddButtonLabel();
 
   await tryLoadEditMode_();
 })();
 </script>
+
+<script>
+(function(){
+  const PALETTE = [
+    {bg:'#e8f7ee', border:'#4ca976', text:'#21543b', badge:'#4ca976', name:''},
+    {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a', badge:'#d95c96', name:''},
+    {bg:'#fff0d8', border:'#d98d2b', text:'#7a4a00', badge:'#d98d2b', name:''},
+    {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7', badge:'#8b5cf6', name:''},
+    {bg:'#ffe4e6', border:'#ef4444', text:'#991b1b', badge:'#ef4444', name:''}
+  ];
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
+  function paletteByIndex(i){ return PALETTE[(i-1)%PALETTE.length]; }
+  function getActivityColorCSS(i){ const p=paletteByIndex(i); return `background:${p.bg};border:2px solid ${p.border};`; }
+  function getMainFormValues(){
+    return {
+      name: document.getElementById('fName')?.value || '',
+      phone: document.getElementById('fPhone')?.value || '',
+      email: document.getElementById('fEmail')?.value || '',
+      city: document.getElementById('fCity')?.value || '',
+      area: document.getElementById('fArea')?.value || '',
+      addr: document.getElementById('fAddr')?.value || '',
+      bldg: document.getElementById('fBldg')?.value || '',
+      eventType: document.getElementById('fEventType')?.value || '',
+      crowd: document.getElementById('fCrowd')?.value || '',
+      indoor: document.getElementById('fIndoor')?.value || '',
+      note: document.getElementById('fNote')?.value || '',
+      date: document.getElementById('fDateStart')?.value || ''
+    };
+  }
+  
+function makeExtraFormHtml(index, seed){
+    const p = paletteByIndex(index);
+    const uid = 'extraCard-' + Date.now() + '-' + Math.random().toString(36).slice(2,7);
+    return `
+      <div class="extraActivityCard" data-activity-index="${index}" data-uid="${uid}" style="${getActivityColorCSS(index)}border-radius:18px;padding:18px;margin-top:18px;box-shadow:0 8px 20px rgba(0,0,0,.05)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+          <div class="extraCardTitle" style="font-weight:900;font-size:18px;color:${p.text}">活動${index}</div>
+          <button class="btn danger extraRemoveBtn" type="button">刪除此活動</button>
+        </div>
+        <div class="form extraFormGrid" style="background:transparent;border:none;box-shadow:none;padding:0;margin:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+          <div class="field"><label>姓名 / 單位</label><input class="xName" value="${esc(seed.name||'')}"></div>
+          <div class="field"><label>行動電話</label><input class="xPhone" value="${esc(seed.phone||'')}"></div>
+          <div class="field"><label>Email</label><input class="xEmail" type="email" value="${esc(seed.email||'')}"></div>
+          <div class="field"><label>活動類型</label><select class="xEventType"></select></div>
+          <div class="field span2"><label>活動地點（縣市/區）</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><select class="xCity"></select><select class="xArea"></select></div></div>
+          <div class="field span2"><label>詳細地址（路名/號）</label><input class="xAddr" value="${esc(seed.addr||'')}"></div>
+          <div class="field span2"><label>大樓/棟別/樓層/入口（讓地址更清楚）</label><input class="xBldg" value="${esc(seed.bldg||'')}"></div>
+          <div class="field"><label>預估人數</label><select class="xCrowd"></select></div>
+          <div class="field"><label>室內 / 戶外</label><select class="xIndoor"></select></div>
+          <div class="field span2"><label>活動日期</label><input class="xDateStart" type="date"></div>
+          <div class="field span2 xPlannerWrap" style="display:none"><label>活動時間規劃</label><div class="xPlannerList planList"></div></div>
+          <div class="field span2 xAddDayWrap">
+            <label>連續增加天數</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <button class="btn xDayAddBtn" type="button">＋再增加一天</button>
+              <button class="btn xDayRemoveBtn" type="button">－移除最後一天</button>
+              <span class="pill xDayCountText">目前 1 天</span>
+            </div>
+            <input class="xDayCount" type="hidden" value="1">
+            <div class="hint" style="margin-top:8px">需要幾天就往下加幾天；每一天都可以各自勾選第二場。</div>
+          </div>
+          <div class="field span2"><label>備註 / 需求</label><textarea class="xNote">${esc(seed.note||'')}</textarea></div>
+        </div>
+      </div>`;
+  }
+
+  function getExtraFormsHost(){ return document.getElementById('extraFormsHost'); }
+  function getAddLauncher(){ return document.getElementById('addActivityLauncher'); }
+  function currentExtraCount(){ return document.querySelectorAll('.extraActivityCard').length; }
+  
+function updateAddLauncher(){
+    const b = getAddLauncher(); if(!b) return;
+    const next = currentExtraCount()+2;
+    const p = paletteByIndex(next);
+    b.innerHTML = `<div style="font-size:18px;font-weight:900;margin-bottom:6px;color:${p.text}">新增活動${next}</div><div style="font-size:13px;color:#374151">按下後，會在最下方直接展開一張新的完整活動表單，並先帶入上一張已填資料。</div>`;
+    b.style.background = p.bg;
+    b.style.border = `2px solid ${p.border}`;
+    b.style.width = '100%';
+  }
+  function copySeedFromPrevious(){
+    const cards = document.querySelectorAll('.extraActivityCard');
+    if(cards.length){
+      const last = cards[cards.length-1];
+      return {
+        name:last.querySelector('.xName')?.value||'', phone:last.querySelector('.xPhone')?.value||'', email:last.querySelector('.xEmail')?.value||'', city:last.querySelector('.xCity')?.value||'', area:last.querySelector('.xArea')?.value||'', addr:last.querySelector('.xAddr')?.value||'', bldg:last.querySelector('.xBldg')?.value||'', eventType:last.querySelector('.xEventType')?.value||'', crowd:last.querySelector('.xCrowd')?.value||'', indoor:last.querySelector('.xIndoor')?.value||'', note:last.querySelector('.xNote')?.value||'', date:last.querySelector('.xDateStart')?.value||''
+      };
+    }
+    return getMainFormValues();
+  }
+  
+function extraCardDates(card){
+    const ds = normalizeDateStr(card.querySelector('.xDateStart')?.value||'');
+    if(!ds) return [];
+    const count = Math.max(1, Number(card.querySelector('.xDayCount')?.value || 1));
+    const out = [];
+    for(let i=0;i<count;i++) out.push(addDays(ds, i));
+    return out;
+  }
+  function renderExtraCardPlanner(card){
+    const list = card.querySelector('.xPlannerList');
+    const wrap = card.querySelector('.xPlannerWrap');
+    if(!list || !wrap) return;
+    const dates = extraCardDates(card);
+    const idx = Number(card.dataset.activityIndex||2);
+    if(!dates.length){ wrap.style.display='none'; list.innerHTML=''; return; }
+    wrap.style.display='';
+    const rows = dates.map((d,i)=>({ key:`${card.dataset.uid}-${d}`, title:`活動${idx} 第${i+1}天`, dateText:d, sub:'', pill:`活動${idx}` }));
+    renderPlannerRows(list, rows, ()=>{});
+  }
+  
+function bindExtraCard(card){
+    card.querySelector('.xEventType').innerHTML = document.getElementById('fEventType')?.innerHTML || '<option value="">請選擇</option>';
+    card.querySelector('.xCrowd').innerHTML = document.getElementById('fCrowd')?.innerHTML || '<option value="">請選擇</option>';
+    card.querySelector('.xIndoor').innerHTML = document.getElementById('fIndoor')?.innerHTML || '<option value="">請選擇</option>';
+    const seed = copySeedFromPrevious();
+    fillCityArea(card.querySelector('.xCity'), card.querySelector('.xArea'), seed.city||'台中市', seed.area||'豐原區');
+    if(seed.eventType) card.querySelector('.xEventType').value = seed.eventType;
+    if(seed.crowd) card.querySelector('.xCrowd').value = seed.crowd;
+    if(seed.indoor) card.querySelector('.xIndoor').value = seed.indoor;
+    if(seed.date) card.querySelector('.xDateStart').value = seed.date;
+
+    const startEl = card.querySelector('.xDateStart');
+    const countEl = card.querySelector('.xDayCount');
+    const countText = card.querySelector('.xDayCountText');
+    const addBtn = card.querySelector('.xDayAddBtn');
+    const removeBtn = card.querySelector('.xDayRemoveBtn');
+
+    const sync = ()=>{
+      const count = Math.max(1, Number(countEl.value || 1));
+      countText.textContent = `目前 ${count} 天`;
+      renderExtraCardPlanner(card);
+    };
+
+    startEl.addEventListener('change', sync);
+    addBtn.addEventListener('click', ()=>{
+      if(!normalizeDateStr(startEl.value||'')) return alert('請先選擇這個活動的日期。');
+      countEl.value = String(Math.max(1, Number(countEl.value||1)) + 1);
+      sync();
+    });
+    removeBtn.addEventListener('click', ()=>{
+      countEl.value = String(Math.max(1, Number(countEl.value||1) - 1));
+      sync();
+    });
+    card.querySelector('.extraRemoveBtn').addEventListener('click', ()=>{ card.remove(); reorderExtraCards(); });
+    sync();
+  }
+  
+function reorderExtraCards(){
+    document.querySelectorAll('.extraActivityCard').forEach((card, i)=>{
+      const idx = i+2; card.dataset.activityIndex = idx;
+      const p = paletteByIndex(idx);
+      card.style.background = p.bg;
+      card.style.border = `2px solid ${p.border}`;
+      const title = card.querySelector('.extraCardTitle');
+      if(title){ title.textContent = `活動${idx}`; title.style.color = p.text; }
+      renderExtraCardPlanner(card);
+    });
+    updateAddLauncher();
+  }
+  function addExtraActivityCard(){
+    const host = getExtraFormsHost(); if(!host) return;
+    const idx = currentExtraCount()+2;
+    const seed = copySeedFromPrevious();
+    const tmp = document.createElement('div'); tmp.innerHTML = makeExtraFormHtml(idx, seed);
+    const card = tmp.firstElementChild;
+    host.appendChild(card); bindExtraCard(card); reorderExtraCards();
+    card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  
+function humanizeStep1(){
+    const basic = document.getElementById('viewBasic');
+    const form = basic?.querySelector('.form');
+    if(!basic || !form || document.getElementById('addActivityLauncher')) return;
+    const p = paletteByIndex(1);
+    form.style.background = p.bg;
+    form.style.border = `2px solid ${p.border}`;
+    form.style.padding = '18px';
+    form.style.borderRadius = '18px';
+
+    const firstLabel = basic.querySelector('.hd h2');
+    if(firstLabel) firstLabel.textContent = '1) 活動1';
+
+    const dateField = Array.from(form.querySelectorAll('.field.span2')).find(el => el.querySelector('#fDateStart'));
+    const noteField = Array.from(form.querySelectorAll('.field.span2')).find(el => el.querySelector('#fNote'));
+    const footer = basic.querySelector('div[style*="justify-content:flex-end"]');
+    const dateInner = dateField?.querySelector('div[style*="display:grid;gap:8px"]');
+    if(dateInner){
+      const dateRow = dateField.querySelector('.dateRow');
+      const multiLabel = Array.from(dateInner.children).find(el => el.querySelector('#fIsMultiDay'));
+      const multiWrap = document.getElementById('multiDayWrap');
+      const mainWrap = document.getElementById('mainInlineWrap');
+      const nonLabel = Array.from(dateInner.children).find(el => el.querySelector('#fIsNonContinuous'));
+      const nonWrap = document.getElementById('nonContinuousWrap');
+      if(dateRow && mainWrap){
+        dateInner.innerHTML='';
+        dateInner.appendChild(dateRow);
+        dateInner.appendChild(mainWrap);
+
+        const dayAdder = document.createElement('div');
+        dayAdder.className = 'field span2';
+        dayAdder.innerHTML = `
+          <label>連續增加天數</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn" id="mainAddDayBtn" type="button">＋再增加一天</button>
+            <button class="btn" id="mainRemoveDayBtn" type="button">－移除最後一天</button>
+            <span class="pill" id="mainDayCountText">目前 1 天</span>
+          </div>
+          <div class="hint" style="margin-top:8px">需要幾天就往下增加幾天；每一天都可以各自勾選第二場。</div>`;
+        dateInner.appendChild(dayAdder);
+
+        if(multiLabel) multiLabel.style.display='none';
+        if(multiWrap) multiWrap.style.display='none';
+        if(nonLabel) nonLabel.style.display='none';
+        if(nonWrap) nonWrap.style.display='none';
+
+        const startEl = document.getElementById('fDateStart');
+        const multiEl = document.getElementById('fIsMultiDay');
+        const endEl = document.getElementById('fDateEnd');
+        const countText = document.getElementById('mainDayCountText');
+        const syncMainDays = ()=>{
+          const ds = normalizeDateStr(startEl?.value||'');
+          let count = ds ? 1 : 0;
+          if(ds && multiEl?.checked && normalizeDateStr(endEl?.value||'')){
+            const arr = listDatesBetween(ds, normalizeDateStr(endEl.value));
+            count = arr.length || 1;
+          }
+          countText.textContent = `目前 ${count||0} 天`;
+        };
+        document.getElementById('mainAddDayBtn')?.addEventListener('click', ()=>{
+          const ds = normalizeDateStr(startEl?.value||'');
+          if(!ds) return alert('請先選擇活動1日期。');
+          if(!multiEl.checked){ multiEl.checked = true; endEl.value = addDays(ds,1); }
+          else endEl.value = addDays(normalizeDateStr(endEl.value||ds),1);
+          renderMainInline(); syncMainDays();
+        });
+        document.getElementById('mainRemoveDayBtn')?.addEventListener('click', ()=>{
+          const ds = normalizeDateStr(startEl?.value||'');
+          if(!ds) return;
+          if(!multiEl.checked) return;
+          const curEnd = normalizeDateStr(endEl.value||'');
+          const minEnd = addDays(ds,1);
+          if(curEnd > minEnd){
+            const d = new Date(curEnd+'T00:00:00'); d.setDate(d.getDate()-1);
+            endEl.value = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+          }else{
+            multiEl.checked = false; endEl.value = '';
+          }
+          renderMainInline(); syncMainDays();
+        });
+        startEl?.addEventListener('change', syncMainDays);
+        endEl?.addEventListener('change', syncMainDays);
+        syncMainDays();
+      }
+    }
+
+    const launcher = document.createElement('div');
+    launcher.id = 'addActivityLauncher';
+    launcher.className = 'card';
+    launcher.style.cssText = 'margin-top:18px;padding:18px;border-radius:18px;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.05);width:100%';
+    launcher.addEventListener('click', addExtraActivityCard);
+
+    const host = document.createElement('div');
+    host.id = 'extraFormsHost';
+    host.style.marginTop = '12px';
+
+    if(footer){
+      basic.insertBefore(host, footer);
+      basic.insertBefore(launcher, footer);
+    }else{
+      basic.appendChild(host);
+      basic.appendChild(launcher);
+    }
+    updateAddLauncher();
+
+    if(noteField){ noteField.style.marginBottom = '8px'; }
+  }
+
+  const _oldGetGlobalFormFromUI = window.getGlobalFormFromUI;
+  window.getGlobalFormFromUI = function(){
+    const g = _oldGetGlobalFormFromUI ? _oldGetGlobalFormFromUI() : {};
+    return g;
+  };
+
+  window.buildUnitsFromStep1 = function(){
+    const ds = normalizeDateStr(document.getElementById('fDateStart')?.value||'');
+    if(!ds){ alert('請先選擇活動1日期。'); return false; }
+    if(ds < todayStr()){ alert('不可以選過去的日期。'); return false; }
+    state.globalForm = getGlobalFormFromUI();
+
+    const main = createMainUnit();
+    applyGlobalFormToUnit(main);
+    main.form = Object.assign({}, state.globalForm || {});
+
+    const extraCards = Array.from(document.querySelectorAll('.extraActivityCard'));
+    const extraUnits = [];
+    for(let i=0;i<extraCards.length;i++){
+      const card = extraCards[i];
+      const dates = extraCardDates(card);
+      if(!dates.length){ alert(`請先填寫活動${i+2}的日期。`); return false; }
+      const u = createExtraUnit({id: card.dataset.uid, date: dates[0]}, i);
+      u.form = {
+        name: card.querySelector('.xName')?.value?.trim() || '',
+        phone: card.querySelector('.xPhone')?.value?.trim() || '',
+        email: card.querySelector('.xEmail')?.value?.trim() || '',
+        city: card.querySelector('.xCity')?.value || '',
+        area: card.querySelector('.xArea')?.value || '',
+        addr: card.querySelector('.xAddr')?.value?.trim() || '',
+        bldg: card.querySelector('.xBldg')?.value?.trim() || '',
+        eventType: card.querySelector('.xEventType')?.value || '',
+        crowd: card.querySelector('.xCrowd')?.value || '',
+        indoor: card.querySelector('.xIndoor')?.value || '',
+        note: card.querySelector('.xNote')?.value?.trim() || '',
+        dayNote: card.querySelector('.xNote')?.value?.trim() || ''
+      };
+      u.dates = dates;
+      u.startDate = dates[0];
+      u.endDate = dates[dates.length-1];
+      u.date = dates[0];
+      // sync first-day meta into legacy key for other views
+      const firstKey = `${card.dataset.uid}-${dates[0]}`;
+      state.planMeta[u.uid] = JSON.parse(JSON.stringify(state.planMeta[firstKey] || {start:'09:00', end:'12:00', s2On:false, s2Start:'18:00', s2End:'21:00'}));
+      extraUnits.push(u);
+    }
+    state.units = [main, ...extraUnits];
+    state.currentIndex = 0;
+    return true;
+  };
+
+  // small support for extra cards in Step2/Step3 totals; keeps prior flow but allows better labels.
+  window.countUnitS2Days = function(u){
+    if(!u || !u.dates || !u.dates.length) return 0;
+    return (u.dates||[]).reduce((n,d)=>{
+      const meta = ensurePlanMeta((u.kind==='main' ? `main-${d}` : `${u.uid}-${d}`));
+      return n + (meta.s2On ? 1 : 0);
+    },0);
+  };
+  window.calcExtraTotal = function(extraUnit){
+    const B = calcEquipSubtotal(extraUnit);
+    const dates = (extraUnit.dates && extraUnit.dates.length) ? extraUnit.dates : [extraUnit.date];
+    const N = Math.max(1, dates.filter(Boolean).length);
+    let contFee = 0;
+    if(N>=2) contFee += Math.round(B*0.50);
+    if(N>=3) contFee += Math.round(B*0.30) * (N-2);
+    let s2Count = 0;
+    dates.forEach((d, i)=>{
+      const key = extraUnit.dates && extraUnit.dates.length ? `${extraUnit.uid}-${d}` : extraUnit.uid;
+      const meta = ensurePlanMeta(key);
+      if(meta.s2On) s2Count++;
+    });
+    const s2Fee = Math.round(B*0.30) * s2Count;
+    return {B, N, contFee, s2Count, s2Fee, total: B + contFee + s2Fee};
+  };
+  window.calcGrandTotal = function(){
+    const units = state.units || [];
+    const main = units[0];
+    const mainR = main ? calcMainTotal(main) : {total:0};
+    const extras = units.slice(1).map(u=>calcExtraTotal(u));
+    const extraSum = extras.reduce((a,x)=>a+Number(x.total||0),0);
+    return { main: mainR, extras, total: Number(mainR.total||0) + extraSum };
+  };
+
+  const _oldBuildPayload = window.buildQuotePayload_v2;
+  window.buildQuotePayload_v2 = function(){
+    const units = state.units || [];
+    const main = units[0];
+    if(!main) throw new Error('尚未建立任何項目，請先完成 Step1 並生成活動表單。');
+    const sessions=[]; const g = state.globalForm || {};
+    const B = calcEquipSubtotal(main); const mainItems = buildItemsForPayload_(main);
+    (main.dates||[]).forEach((d,i)=>{
+      const meta = ensurePlanMeta(`main-${d}`); const dayBase = calcMainDayBase_(B,i);
+      sessions.push({label:`主案 Day${i+1} 第一場`,date:d,timeStart:meta.start||'',timeEnd:meta.end||'',total:dayBase,form:Object.assign({}, main.form||g,{sessionNote:(main.form&&main.form.dayNote)||''}),items:mainItems});
+      if(meta.s2On) sessions.push({label:`主案 Day${i+1} 第二場`,date:d,timeStart:meta.s2Start||'',timeEnd:meta.s2End||'',total:Math.round(B*0.30),form:Object.assign({}, main.form||g,{sessionNote:(main.form&&main.form.dayNote)||''}),items:mainItems});
+    });
+    units.slice(1).forEach((u)=>{
+      const Bx = calcEquipSubtotal(u); const items = buildItemsForPayload_(u); const dates = (u.dates&&u.dates.length)?u.dates:[u.date];
+      dates.forEach((d,i)=>{
+        const meta = ensurePlanMeta((u.dates&&u.dates.length)?`${u.uid}-${d}`:u.uid);
+        let dayBase = Number(Bx||0); if(i===1) dayBase = Math.round(Bx*0.50); else if(i>=2) dayBase = Math.round(Bx*0.30);
+        sessions.push({label:`活動 ${u.extraIndex} Day${i+1} 第一場`,date:d,timeStart:meta.start||'',timeEnd:meta.end||'',total:dayBase,form:Object.assign({}, u.form||g,{sessionNote:(u.form&&u.form.dayNote)||''}),items});
+        if(meta.s2On) sessions.push({label:`活動 ${u.extraIndex} Day${i+1} 第二場`,date:d,timeStart:meta.s2Start||'',timeEnd:meta.s2End||'',total:Math.round(Bx*0.30),form:Object.assign({}, u.form||g,{sessionNote:(u.form&&u.form.dayNote)||''}),items});
+      });
+    });
+    const baseTotal = sessions.reduce((a,s)=>a+Number(s.total||0),0);
+    return { action:'submitQuote_v2', editToken: EDIT_TOKEN || '', globalForm:g, sessions:sessions, baseTotal:baseTotal, grandTotal:baseTotal, uiState:{ state:state, ui:{ fIsMultiDay:!!document.getElementById('fIsMultiDay')?.checked, globalFormNow:getGlobalFormFromUI() } } };
+  };
+
+  setTimeout(humanizeStep1, 50);
+})();
+</script>
+
+
+<script>
+(function(){
+  function onReady(fn){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
+    else fn();
+  }
+  onReady(function(){
+    const $ = (s, root=document)=>root.querySelector(s);
+    const hiddenCss = document.createElement('style');
+    hiddenCss.textContent = `
+      .legacyForceHide{display:none !important;}
+      #mainSequentialControls{margin-top:10px;padding:10px;border:1px dashed var(--line);border-radius:12px;background:#fff;}
+      #mainSequentialControls .btn{min-width:132px}
+    `;
+    document.head.appendChild(hiddenCss);
+
+    function hideLegacyBits(){
+      Array.from(document.querySelectorAll('#viewBasic label')).forEach(el=>{
+        if(el.querySelector('#fIsMultiDay') || el.querySelector('#fIsNonContinuous')) el.classList.add('legacyForceHide');
+      });
+      ['multiDayWrap','nonContinuousWrap'].forEach(id=>document.getElementById(id)?.classList.add('legacyForceHide'));
+      const oldAdder = document.getElementById('mainAddDayBtn')?.closest('.field.span2');
+      if(oldAdder) oldAdder.classList.add('legacyForceHide');
+    }
+
+    function getCountHidden(){
+      let el = document.getElementById('mainDayCountHidden');
+      if(!el){
+        el = document.createElement('input');
+        el.type = 'hidden';
+        el.id = 'mainDayCountHidden';
+        el.value = '1';
+        (document.getElementById('fDateEnd')?.parentElement || document.body).appendChild(el);
+      }
+      return el;
+    }
+
+    function norm(v){ return window.normalizeDateStr ? window.normalizeDateStr(v||'') : (v||''); }
+
+    function setCount(n){
+      const el = getCountHidden();
+      const ds = norm(document.getElementById('fDateStart')?.value || '');
+      const count = ds ? Math.max(1, Number(n||1)) : 0;
+      el.value = String(count);
+      syncLegacyFields();
+      const pill = document.getElementById('mainDayCountText');
+      if(pill) pill.textContent = `目前 ${count || 0} 天`;
+      const pill2 = document.querySelector('#mainSequentialControls .pill');
+      if(pill2) pill2.textContent = `目前 ${count || 0} 天`;
+    }
+
+    function getCount(){
+      const ds = norm(document.getElementById('fDateStart')?.value || '');
+      if(!ds) return 0;
+      return Math.max(1, Number(getCountHidden().value || 1));
+    }
+
+    function syncLegacyFields(){
+      const ds = norm(document.getElementById('fDateStart')?.value || '');
+      const count = ds ? Math.max(1, Number(getCountHidden().value || 1)) : 0;
+      const multi = document.getElementById('fIsMultiDay');
+      const endEl = document.getElementById('fDateEnd');
+      const mirror = document.getElementById('fDateStartMirror');
+      if(multi) multi.checked = count > 1;
+      if(mirror) mirror.value = ds || '';
+      if(endEl){
+        endEl.value = (ds && count > 1 && window.addDays) ? window.addDays(ds, count - 1) : '';
+      }
+    }
+
+    function syncCountFromInputs(){
+      const ds = norm(document.getElementById('fDateStart')?.value || '');
+      if(!ds){ setCount(0); return; }
+      const end = norm(document.getElementById('fDateEnd')?.value || '');
+      if(end && window.listDatesBetween){
+        const arr = window.listDatesBetween(ds, end) || [];
+        setCount(arr.length || 1);
+      }else{
+        setCount(1);
+      }
+    }
+
+    window.getMainDates = function(){
+      const ds = norm(document.getElementById('fDateStart')?.value || '');
+      if(!ds) return [];
+      const count = Math.max(1, Number(getCountHidden().value || 1));
+      const out = [];
+      for(let i=0;i<count;i++) out.push(window.addDays ? window.addDays(ds, i) : ds);
+      syncLegacyFields();
+      return out;
+    };
+
+    function attachSequentialControls(dates){
+      const planner = document.getElementById('mainInlinePlanner');
+      if(!planner) return;
+      let controls = document.getElementById('mainSequentialControls');
+      if(!controls){
+        controls = document.createElement('div');
+        controls.id = 'mainSequentialControls';
+        planner.after(controls);
+      }
+      const count = dates.length;
+      controls.innerHTML = `
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn" id="mainAddDayBtn_v2" type="button">＋再增加一天</button>
+          ${count > 1 ? '<button class="btn" id="mainRemoveDayBtn_v2" type="button">－移除最後一天</button>' : ''}
+          <span class="pill">目前 ${count} 天</span>
+        </div>
+      `;
+      controls.querySelector('#mainAddDayBtn_v2')?.addEventListener('click', ()=>{
+        const ds = norm(document.getElementById('fDateStart')?.value || '');
+        if(!ds) return alert('請先選擇活動1日期。');
+        setCount(getCount() + 1);
+        window.renderMainInline?.();
+      });
+      controls.querySelector('#mainRemoveDayBtn_v2')?.addEventListener('click', ()=>{
+        const ds = norm(document.getElementById('fDateStart')?.value || '');
+        if(!ds) return;
+        setCount(Math.max(1, getCount() - 1));
+        window.renderMainInline?.();
+      });
+    }
+
+    window.renderMainInline = function(){
+      const ds = norm(document.getElementById('fDateStart')?.value || '');
+      const wrap = document.getElementById('mainInlineWrap');
+      const list = document.getElementById('mainInlinePlanner');
+      if(!wrap || !list) return;
+      hideLegacyBits();
+      if(!ds){
+        wrap.style.display = 'none';
+        list.innerHTML = '';
+        document.getElementById('mainSequentialControls')?.remove();
+        setCount(0);
+        return;
+      }
+      if(getCount() < 1) setCount(1); else syncLegacyFields();
+      const dates = window.getMainDates();
+      wrap.style.display = 'block';
+      const rows = dates.map((d,i)=>({
+        key: `main-${d}`,
+        title: `活動1｜第${i+1}天`,
+        dateText: d,
+        sub: '',
+        pill: ''
+      }));
+      window.renderPlannerRows?.(list, rows, ()=>{
+        if(window.state && window.state.units && window.state.units.length){
+          window.renderDayCards?.();
+          window.renderIfEditingMain?.();
+        }
+      });
+      attachSequentialControls(dates);
+      hideLegacyBits();
+    };
+
+    function patchDateField(){
+      hideLegacyBits();
+      const startEl = document.getElementById('fDateStart');
+      if(!startEl) return;
+      startEl.addEventListener('change', ()=>{
+        const hadDate = !!norm(startEl.value);
+        if(hadDate && getCount() < 1) setCount(1);
+        if(!hadDate) setCount(0);
+        window.renderMainInline?.();
+      });
+    }
+
+    hideLegacyBits();
+    syncCountFromInputs();
+    patchDateField();
+    setTimeout(()=>{ hideLegacyBits(); syncCountFromInputs(); window.renderMainInline?.(); }, 120);
+    setTimeout(()=>{ hideLegacyBits(); syncCountFromInputs(); window.renderMainInline?.(); }, 400);
+  });
+})();
+</script>
+
 </body>
 </html>
