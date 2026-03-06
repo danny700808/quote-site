@@ -3412,11 +3412,11 @@ async function tryLoadEditMode_(){
 <script>
 (function(){
   const PALETTE = [
-    {bg:'#e8f7ee', border:'#4ca976', text:'#21543b', badge:'#4ca976', name:'綠色'},
-    {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a', badge:'#d95c96', name:'粉紅色'},
-    {bg:'#fff0d8', border:'#d98d2b', text:'#7a4a00', badge:'#d98d2b', name:'橘色'},
-    {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7', badge:'#8b5cf6', name:'紫色'},
-    {bg:'#ffe4e6', border:'#ef4444', text:'#991b1b', badge:'#ef4444', name:'紅色'}
+    {bg:'#e8f7ee', border:'#4ca976', text:'#21543b', badge:'#4ca976', name:''},
+    {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a', badge:'#d95c96', name:''},
+    {bg:'#fff0d8', border:'#d98d2b', text:'#7a4a00', badge:'#d98d2b', name:''},
+    {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7', badge:'#8b5cf6', name:''},
+    {bg:'#ffe4e6', border:'#ef4444', text:'#991b1b', badge:'#ef4444', name:''}
   ];
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
@@ -3438,17 +3438,15 @@ async function tryLoadEditMode_(){
       date: document.getElementById('fDateStart')?.value || ''
     };
   }
-  function makeExtraFormHtml(index, seed){
+  
+function makeExtraFormHtml(index, seed){
     const p = paletteByIndex(index);
     const uid = 'extraCard-' + Date.now() + '-' + Math.random().toString(36).slice(2,7);
     return `
-      <div class="extraActivityCard" data-activity-index="${index}" data-uid="${uid}" style="${getActivityColorCSS(index)}border-radius:18px;padding:16px;margin-top:16px;box-shadow:0 8px 20px rgba(0,0,0,.05)">
+      <div class="extraActivityCard" data-activity-index="${index}" data-uid="${uid}" style="${getActivityColorCSS(index)}border-radius:18px;padding:18px;margin-top:18px;box-shadow:0 8px 20px rgba(0,0,0,.05)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
-          <div style="font-weight:900;font-size:18px;color:${p.text}">活動${index}</div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <span style="background:${p.badge};color:#fff;padding:6px 12px;border-radius:999px;font-weight:900">${p.name}</span>
-            <button class="btn danger extraRemoveBtn" type="button">刪除此活動</button>
-          </div>
+          <div class="extraCardTitle" style="font-weight:900;font-size:18px;color:${p.text}">活動${index}</div>
+          <button class="btn danger extraRemoveBtn" type="button">刪除此活動</button>
         </div>
         <div class="form extraFormGrid" style="background:transparent;border:none;box-shadow:none;padding:0;margin:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
           <div class="field"><label>姓名 / 單位</label><input class="xName" value="${esc(seed.name||'')}"></div>
@@ -3461,9 +3459,17 @@ async function tryLoadEditMode_(){
           <div class="field"><label>預估人數</label><select class="xCrowd"></select></div>
           <div class="field"><label>室內 / 戶外</label><select class="xIndoor"></select></div>
           <div class="field span2"><label>活動日期</label><input class="xDateStart" type="date"></div>
-          <div class="field span2 xPlannerWrap" style="display:none"><label>活動時間規劃</label><div class="xPlannerList planList"></div><div class="hint" style="margin-top:8px">先選日期，時間會直接顯示在日期下方；需要第二場再勾選。</div></div>
-          <div class="field span2"><label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;"><input class="xIsMultiDay" type="checkbox" style="width:18px;height:18px"> 連續多日（需要的話再打勾）</label></div>
-          <div class="field span2 xMultiWrap" style="display:none"><label>連續多日結束日期</label><input class="xDateEnd" type="date"><div class="hint" style="margin-top:8px">第2天加價 50%；第3天起每一天加價 30%。</div></div>
+          <div class="field span2 xPlannerWrap" style="display:none"><label>活動時間規劃</label><div class="xPlannerList planList"></div></div>
+          <div class="field span2 xAddDayWrap">
+            <label>連續增加天數</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <button class="btn xDayAddBtn" type="button">＋再增加一天</button>
+              <button class="btn xDayRemoveBtn" type="button">－移除最後一天</button>
+              <span class="pill xDayCountText">目前 1 天</span>
+            </div>
+            <input class="xDayCount" type="hidden" value="1">
+            <div class="hint" style="margin-top:8px">需要幾天就往下加幾天；每一天都可以各自勾選第二場。</div>
+          </div>
           <div class="field span2"><label>備註 / 需求</label><textarea class="xNote">${esc(seed.note||'')}</textarea></div>
         </div>
       </div>`;
@@ -3472,12 +3478,15 @@ async function tryLoadEditMode_(){
   function getExtraFormsHost(){ return document.getElementById('extraFormsHost'); }
   function getAddLauncher(){ return document.getElementById('addActivityLauncher'); }
   function currentExtraCount(){ return document.querySelectorAll('.extraActivityCard').length; }
-  function updateAddLauncher(){
+  
+function updateAddLauncher(){
     const b = getAddLauncher(); if(!b) return;
     const next = currentExtraCount()+2;
     const p = paletteByIndex(next);
-    b.innerHTML = `<div style="font-size:18px;font-weight:900;margin-bottom:6px;color:${p.text}">新增活動${next}</div><div style="font-size:13px;color:#374151">按下後，會直接展開第 ${next} 張完整活動表單；聯絡資料會沿用上一張，您再修改不同的地方即可。</div>`;
-    b.style.background = p.bg; b.style.border = `2px dashed ${p.border}`;
+    b.innerHTML = `<div style="font-size:18px;font-weight:900;margin-bottom:6px;color:${p.text}">新增活動${next}</div><div style="font-size:13px;color:#374151">按下後，會在最下方直接展開一張新的完整活動表單，並先帶入上一張已填資料。</div>`;
+    b.style.background = p.bg;
+    b.style.border = `2px solid ${p.border}`;
+    b.style.width = '100%';
   }
   function copySeedFromPrevious(){
     const cards = document.querySelectorAll('.extraActivityCard');
@@ -3489,22 +3498,13 @@ async function tryLoadEditMode_(){
     }
     return getMainFormValues();
   }
-  function extraCardDates(card){
+  
+function extraCardDates(card){
     const ds = normalizeDateStr(card.querySelector('.xDateStart')?.value||'');
     if(!ds) return [];
-    const isMulti = !!card.querySelector('.xIsMultiDay')?.checked;
-    if(!isMulti) return [ds];
-    const deRaw = normalizeDateStr(card.querySelector('.xDateEnd')?.value||'');
-    const de = deRaw || addDays(ds,1);
-    const s = new Date(ds+'T00:00:00');
-    const e = new Date(de+'T00:00:00');
-    const start = new Date(Math.min(s.getTime(), e.getTime()));
-    const finish = new Date(Math.max(s.getTime(), e.getTime()));
-    const out=[]; let cur = new Date(start);
-    while(cur.getTime()<=finish.getTime()){
-      out.push(`${cur.getFullYear()}-${pad2(cur.getMonth()+1)}-${pad2(cur.getDate())}`);
-      cur.setDate(cur.getDate()+1);
-    }
+    const count = Math.max(1, Number(card.querySelector('.xDayCount')?.value || 1));
+    const out = [];
+    for(let i=0;i<count;i++) out.push(addDays(ds, i));
     return out;
   }
   function renderExtraCardPlanner(card){
@@ -3518,33 +3518,52 @@ async function tryLoadEditMode_(){
     const rows = dates.map((d,i)=>({ key:`${card.dataset.uid}-${d}`, title:`活動${idx} 第${i+1}天`, dateText:d, sub:'', pill:`活動${idx}` }));
     renderPlannerRows(list, rows, ()=>{});
   }
-  function bindExtraCard(card){
+  
+function bindExtraCard(card){
     card.querySelector('.xEventType').innerHTML = document.getElementById('fEventType')?.innerHTML || '<option value="">請選擇</option>';
     card.querySelector('.xCrowd').innerHTML = document.getElementById('fCrowd')?.innerHTML || '<option value="">請選擇</option>';
     card.querySelector('.xIndoor').innerHTML = document.getElementById('fIndoor')?.innerHTML || '<option value="">請選擇</option>';
-    fillCityArea(card.querySelector('.xCity'), card.querySelector('.xArea'), copySeedFromPrevious().city||'台中市', copySeedFromPrevious().area||'豐原區');
     const seed = copySeedFromPrevious();
+    fillCityArea(card.querySelector('.xCity'), card.querySelector('.xArea'), seed.city||'台中市', seed.area||'豐原區');
     if(seed.eventType) card.querySelector('.xEventType').value = seed.eventType;
     if(seed.crowd) card.querySelector('.xCrowd').value = seed.crowd;
     if(seed.indoor) card.querySelector('.xIndoor').value = seed.indoor;
     if(seed.date) card.querySelector('.xDateStart').value = seed.date;
+
     const startEl = card.querySelector('.xDateStart');
-    const multiEl = card.querySelector('.xIsMultiDay');
-    const endEl = card.querySelector('.xDateEnd');
-    const multiWrap = card.querySelector('.xMultiWrap');
-    const sync = ()=>{ if(multiEl.checked){ multiWrap.style.display=''; const ds = normalizeDateStr(startEl.value||''); if(ds){ endEl.min = addDays(ds,1); if(!endEl.value || normalizeDateStr(endEl.value)<endEl.min) endEl.value = endEl.min; } } else { multiWrap.style.display='none'; } renderExtraCardPlanner(card); };
-    startEl.addEventListener('change', sync); multiEl.addEventListener('change', sync); endEl.addEventListener('change', sync);
+    const countEl = card.querySelector('.xDayCount');
+    const countText = card.querySelector('.xDayCountText');
+    const addBtn = card.querySelector('.xDayAddBtn');
+    const removeBtn = card.querySelector('.xDayRemoveBtn');
+
+    const sync = ()=>{
+      const count = Math.max(1, Number(countEl.value || 1));
+      countText.textContent = `目前 ${count} 天`;
+      renderExtraCardPlanner(card);
+    };
+
+    startEl.addEventListener('change', sync);
+    addBtn.addEventListener('click', ()=>{
+      if(!normalizeDateStr(startEl.value||'')) return alert('請先選擇這個活動的日期。');
+      countEl.value = String(Math.max(1, Number(countEl.value||1)) + 1);
+      sync();
+    });
+    removeBtn.addEventListener('click', ()=>{
+      countEl.value = String(Math.max(1, Number(countEl.value||1) - 1));
+      sync();
+    });
     card.querySelector('.extraRemoveBtn').addEventListener('click', ()=>{ card.remove(); reorderExtraCards(); });
     sync();
   }
-  function reorderExtraCards(){
+  
+function reorderExtraCards(){
     document.querySelectorAll('.extraActivityCard').forEach((card, i)=>{
       const idx = i+2; card.dataset.activityIndex = idx;
       const p = paletteByIndex(idx);
-      card.style.background = p.bg; card.style.border = `2px solid ${p.border}`;
-      const title = card.querySelector('div[style*="font-weight:900;font-size:18px"]');
+      card.style.background = p.bg;
+      card.style.border = `2px solid ${p.border}`;
+      const title = card.querySelector('.extraCardTitle');
       if(title){ title.textContent = `活動${idx}`; title.style.color = p.text; }
-      const badge = card.querySelector('span'); if(badge){ badge.textContent=p.name; badge.style.background=p.badge; }
       renderExtraCardPlanner(card);
     });
     updateAddLauncher();
@@ -3559,7 +3578,8 @@ async function tryLoadEditMode_(){
     card.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
-  function humanizeStep1(){
+  
+function humanizeStep1(){
     const basic = document.getElementById('viewBasic');
     const form = basic?.querySelector('.form');
     if(!basic || !form || document.getElementById('addActivityLauncher')) return;
@@ -3570,11 +3590,11 @@ async function tryLoadEditMode_(){
     form.style.borderRadius = '18px';
 
     const firstLabel = basic.querySelector('.hd h2');
-    if(firstLabel) firstLabel.textContent = '1) 活動1 基本資料';
+    if(firstLabel) firstLabel.textContent = '1) 活動1 完整資料';
 
-    // reorder date/time flow
     const dateField = Array.from(form.querySelectorAll('.field.span2')).find(el => el.querySelector('#fDateStart'));
     const noteField = Array.from(form.querySelectorAll('.field.span2')).find(el => el.querySelector('#fNote'));
+    const footer = basic.querySelector('div[style*="justify-content:flex-end"]');
     const dateInner = dateField?.querySelector('div[style*="display:grid;gap:8px"]');
     if(dateInner){
       const dateRow = dateField.querySelector('.dateRow');
@@ -3583,33 +3603,88 @@ async function tryLoadEditMode_(){
       const mainWrap = document.getElementById('mainInlineWrap');
       const nonLabel = Array.from(dateInner.children).find(el => el.querySelector('#fIsNonContinuous'));
       const nonWrap = document.getElementById('nonContinuousWrap');
-      if(dateRow && mainWrap && multiLabel && multiWrap){
+      if(dateRow && mainWrap){
         dateInner.innerHTML='';
         dateInner.appendChild(dateRow);
         dateInner.appendChild(mainWrap);
-        dateInner.appendChild(multiLabel);
-        dateInner.appendChild(multiWrap);
+
+        const dayAdder = document.createElement('div');
+        dayAdder.className = 'field span2';
+        dayAdder.innerHTML = `
+          <label>連續增加天數</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn" id="mainAddDayBtn" type="button">＋再增加一天</button>
+            <button class="btn" id="mainRemoveDayBtn" type="button">－移除最後一天</button>
+            <span class="pill" id="mainDayCountText">目前 1 天</span>
+          </div>
+          <div class="hint" style="margin-top:8px">需要幾天就往下增加幾天；每一天都可以各自勾選第二場。</div>`;
+        dateInner.appendChild(dayAdder);
+
+        if(multiLabel) multiLabel.style.display='none';
+        if(multiWrap) multiWrap.style.display='none';
         if(nonLabel) nonLabel.style.display='none';
         if(nonWrap) nonWrap.style.display='none';
+
+        const startEl = document.getElementById('fDateStart');
+        const multiEl = document.getElementById('fIsMultiDay');
+        const endEl = document.getElementById('fDateEnd');
+        const countText = document.getElementById('mainDayCountText');
+        const syncMainDays = ()=>{
+          const ds = normalizeDateStr(startEl?.value||'');
+          let count = ds ? 1 : 0;
+          if(ds && multiEl?.checked && normalizeDateStr(endEl?.value||'')){
+            const arr = listDatesBetween(ds, normalizeDateStr(endEl.value));
+            count = arr.length || 1;
+          }
+          countText.textContent = `目前 ${count||0} 天`;
+        };
+        document.getElementById('mainAddDayBtn')?.addEventListener('click', ()=>{
+          const ds = normalizeDateStr(startEl?.value||'');
+          if(!ds) return alert('請先選擇活動1日期。');
+          if(!multiEl.checked){ multiEl.checked = true; endEl.value = addDays(ds,1); }
+          else endEl.value = addDays(normalizeDateStr(endEl.value||ds),1);
+          renderMainInline(); syncMainDays();
+        });
+        document.getElementById('mainRemoveDayBtn')?.addEventListener('click', ()=>{
+          const ds = normalizeDateStr(startEl?.value||'');
+          if(!ds) return;
+          if(!multiEl.checked) return;
+          const curEnd = normalizeDateStr(endEl.value||'');
+          const minEnd = addDays(ds,1);
+          if(curEnd > minEnd){
+            const d = new Date(curEnd+'T00:00:00'); d.setDate(d.getDate()-1);
+            endEl.value = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+          }else{
+            multiEl.checked = false; endEl.value = '';
+          }
+          renderMainInline(); syncMainDays();
+        });
+        startEl?.addEventListener('change', syncMainDays);
+        endEl?.addEventListener('change', syncMainDays);
+        syncMainDays();
       }
     }
 
     const launcher = document.createElement('div');
     launcher.id = 'addActivityLauncher';
     launcher.className = 'card';
-    launcher.style.cssText = 'margin-top:16px;padding:18px;border-radius:18px;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.05)';
+    launcher.style.cssText = 'margin-top:18px;padding:18px;border-radius:18px;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.05);width:100%';
     launcher.addEventListener('click', addExtraActivityCard);
 
     const host = document.createElement('div');
     host.id = 'extraFormsHost';
-    host.style.marginTop = '8px';
+    host.style.marginTop = '12px';
 
-    noteField?.insertAdjacentElement('afterend', launcher);
-    launcher.insertAdjacentElement('afterend', host);
+    if(footer){
+      basic.insertBefore(launcher, footer);
+      basic.insertBefore(host, footer);
+    }else{
+      basic.appendChild(launcher);
+      basic.appendChild(host);
+    }
     updateAddLauncher();
 
-    // make note before launcher obvious
-    if(noteField){ noteField.style.marginBottom = '4px'; }
+    if(noteField){ noteField.style.marginBottom = '8px'; }
   }
 
   const _oldGetGlobalFormFromUI = window.getGlobalFormFromUI;
