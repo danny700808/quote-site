@@ -251,45 +251,6 @@ body.printing #printRoot{display:block}
   .pageBreak{break-after:page}
   @page{size:auto;margin:10mm}
 }
-
-/* 使用者指定：隱藏上方返回按鈕，只保留步驟列 */
-#btnGoHome,#btnGoStep1{display:none!important}
-.stepTapHint{margin-top:6px;font-size:12px;color:var(--brand2);font-weight:900;animation:tapHintFloat 1.5s ease-in-out infinite}
-@keyframes tapHintFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-.stepBox{cursor:pointer;transition:transform .16s ease, box-shadow .16s ease, background .16s ease}
-.stepBox:hover,.stepBox:active{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
-.stepBox .stepNum{box-shadow:0 3px 10px rgba(0,0,0,.08)}
-.stepBox.active .stepNum,.stepBox.current .stepNum{transform:scale(1.06)}
-/* Step2 明確卡片資訊 */
-.dayCard{cursor:pointer}
-.daySummaryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
-.dayInfo{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdfc}
-.dayInfo .cap{font-size:11px;color:var(--muted);font-weight:900;margin-bottom:4px}
-.dayInfo .val{font-size:14px;font-weight:900;line-height:1.4}
-.dayCard .dayTop{align-items:flex-start}
-.dayCard .dayBtns{display:none!important}
-/* Step3：只保留進度與設備 */
-#dayFormHeader{display:none!important}
-#step4TopActions{display:none!important}
-#dayForm{display:none!important}
-#formNavPanel{display:none!important}
-#btnQuickDays,#btnQuickStep4{display:none!important}
-#quickNavBar{justify-content:flex-end}
-#quickNavBar .btn{flex:0 1 auto;min-width:min(100%,360px)}
-.editProgressBox{padding:14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#f8fffd,#fff)}
-.editProgressTitle{font-weight:1000;margin-bottom:10px}
-.editProgressSub{font-size:13px;color:var(--muted);margin-bottom:10px}
-.editProgressMeta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.editProgressMeta .metaCard{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
-.editProgressMeta .metaCard .cap{font-size:11px;color:var(--muted);font-weight:900;margin-bottom:4px}
-.editProgressMeta .metaCard .val{font-size:14px;font-weight:900;line-height:1.4}
-@media (max-width: 720px){
-  .editProgressMeta{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .daySummaryGrid{grid-template-columns:1fr}
-  #nonContinuousWrap .addRow{display:grid!important;grid-template-columns:1fr!important}
-  #nonContinuousWrap .addRow > *{min-width:0!important;width:100%!important}
-}
-
 /* Step3：活動表單總覽（底部） */
 .formNavPanel{margin-top:12px}
 .formNavHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0}
@@ -452,6 +413,36 @@ body.printing #printRoot{display:block}
 
 }
 
+
+.stepsHint{margin-top:8px;font-size:12px;color:var(--muted);font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px;animation:stepHintFloat 1.4s ease-in-out infinite}
+@keyframes stepHintFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.dayCard{cursor:pointer;transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease}
+.dayCard:hover{transform:translateY(-2px)}
+.dayDate{font-weight:1000;font-size:15px}
+.dayMetaGrid{display:grid;gap:6px;margin-top:8px}
+.dayMetaLine{font-size:13px;line-height:1.5;color:#374151}
+.dayMetaLine b{color:#111827}
+.activityTone-1{background:#eef8f1;border-color:#cfe9d6}
+.activityTone-2{background:#fff3e8;border-color:#f6d4b2}
+.activityTone-3{background:#edf5ff;border-color:#c9defa}
+.activityTone-4{background:#f5efff;border-color:#ddcff9}
+.activityTone-5{background:#fffbe8;border-color:#f6e3a7}
+.activityTone-6{background:#fff0f4;border-color:#f3cad9}
+.activityTone-7{background:#eef7f7;border-color:#c7e5e3}
+.activityTone-1.isCurrent,.activityTone-2.isCurrent,.activityTone-3.isCurrent,.activityTone-4.isCurrent,.activityTone-5.isCurrent,.activityTone-6.isCurrent,.activityTone-7.isCurrent{box-shadow:0 10px 24px rgba(0,0,0,.08);border-width:2px}
+.unitProgressBox{padding:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;gap:12px;background:#fff}
+.unitProgressHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.unitProgressTitle{font-size:15px;font-weight:1000}
+.unitProgressPill{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#fff;font-weight:900}
+.unitProgressList{display:flex;gap:8px;flex-wrap:wrap}
+.unitProgressTag{padding:8px 12px;border-radius:999px;border:1px solid transparent;font-size:13px;font-weight:900;opacity:.7}
+.unitProgressTag.isActive{opacity:1;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+#step4TopActions,#btnGoHome,#btnGoStep1,#btnPrintTop,#btnBackToBasic,#btnBackToDays,#btnBackToDays2,#btnBackToEdit,#btnQuickDays,#btnQuickStep4,#formNavPanel,#btnPrint,#btnSendQuote,#btnBottomPrint{display:none !important}
+#dayForm{display:none !important}
+#step4BottomActions{justify-content:center}
+#btnBottomSend{min-width:260px}
+.quoteToneHead{border-radius:12px;padding:10px 12px;font-weight:1000;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
 </style>
 </head>
 
@@ -479,14 +470,12 @@ body.printing #printRoot{display:block}
             <div class="stepText">列印送出<br>報價單</div>
           </div>
         </div>
-        <div class="stepTapHint">👇 點上方 1～4 可直接切換步驟</div>
+        <div class="stepsHint">☝ 點上方 1～4 可直接切換步驟</div>
       </div>
     </div>
 
     <div class="actions">
-      <button class="btn ghost" id="btnGoHome">回柚子樂器官網</button>
-      <button class="btn" id="btnGoStep1">回到基本資料/日期</button>
-      <button class="btn warn" id="btnPrintTop" style="display:none">列印 PDF</button>
+      
     </div>
   </div>
 </header>
@@ -670,7 +659,7 @@ body.printing #printRoot{display:block}
       </div>
 
       <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
-        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成活動表單</button>
+        <button class="btn primary" id="btnNextToDays" type="button">下一步：生成報價單</button>
       </div>
     </section>
 
@@ -687,7 +676,7 @@ body.printing #printRoot{display:block}
 
       <div class="dayGrid" id="dayCards"></div>
 
-      <div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
+      <div style="padding:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
         <button class="btn primary" id="btnGoQuote" type="button">前往新增／添加設備</button>
       </div>
     </section>
@@ -696,28 +685,10 @@ body.printing #printRoot{display:block}
     <section class="card view" id="viewDayEdit">
       <div class="hd stepHd step3">
         <h2 id="dayEditTitle">3) 選設備</h2>
-        <div id="step4TopActions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="btnBackToDays" type="button">回到日期圖框</button>
-          <button class="btn" id="btnPrevUnit" type="button">上一項</button>
-          <button class="btn" id="btnNextUnit" type="button">下一項</button>
-          <button class="btn primary" id="btnMarkDone" type="button">完成</button>
-        </div>
+        <div id="step4TopActions"></div>
       </div>
 
-      <div class="editProgressBox" id="editProgressBox">
-        <div class="editProgressTitle" id="editProgressTitle">正在填寫：活動 1</div>
-        <div class="editProgressSub" id="editProgressSub">完成本項設備後，系統會自動帶你前往下一項，並回到最上方開始填寫。</div>
-        <div class="unitJumpList" id="unitJumpList"></div>
-        <div class="editProgressMeta" id="editProgressMeta"></div>
-      </div>
-
-      <div class="hd stepHd step1" id="dayFormHeader" style="border-top:1px solid var(--line);border-bottom:none">
-        <h2>本項資料（此頁可單獨修改）</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="btnCopyFirst" type="button">複製：活動1設備</button>
-          <button class="btn" id="btnCopyPrev" type="button">複製：上一個活動設備</button>
-        </div>
-      </div>
+      <div id="unitProgressBox" class="unitProgressBox"></div>
 
       <div class="form" id="dayForm">
         <div class="field">
@@ -911,9 +882,7 @@ body.printing #printRoot{display:block}
         <div class="formNavPanel" id="formNavPanel"></div>
 
         <div class="quickNav" id="quickNavBar">
-          <button class="btn" id="btnQuickDays" type="button">回到日期</button>
-          <button class="btn primary" id="btnQuickNext" type="button">編輯下一個活動表單</button>
-          <button class="btn warn" id="btnQuickStep4" type="button">前往列印/送出報價單</button>
+          <button class="btn primary" id="btnQuickNext" type="button">完成本項活動，繼續前往下一項</button>
         </div>
 
       </div>
@@ -923,10 +892,7 @@ body.printing #printRoot{display:block}
     <section class="card view" id="viewQuote">
       <div class="hd stepHd step4">
         <h2>4) 列印送出報價單</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn warn" id="btnPrint" type="button">列印成 PDF</button>
-          <button class="btn primary" id="btnSendQuote" type="button">送出報價單</button>
-        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end"></div>
       </div>
 
       <div class="quoteBox">
@@ -954,14 +920,10 @@ body.printing #printRoot{display:block}
 
         <!-- ✅ 手機：主要操作放在最底部（保留上方按鈕但縮小） -->
         <div class="step4BottomActions" id="step4BottomActions">
-          <button class="btn warn" id="btnBottomPrint" type="button">列印成 PDF</button>
-          <button class="btn primary" id="btnBottomSend" type="button">送出報價單</button>
+          <button class="btn primary" id="btnBottomSend" type="button">送出報價單（將寄送到您的信箱）</button>
         </div>
 
-        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-          <button class="btn" id="btnBackToDays2" type="button">回到日期圖框（Step2）</button>
-          <button class="btn" id="btnBackToEdit" type="button">回到編輯（Step3）</button>
-        </div>
+        
       </div>
     </section>
 
@@ -1061,7 +1023,6 @@ function setStep(step){
     b.classList.toggle("active", n===step);
     b.classList.toggle("done", n<step);
   });
-  $("#btnPrintTop").style.display = (step>=4) ? "" : "none";
   updateStepBarClickable();
 }
 
@@ -1774,83 +1735,103 @@ function calcGrandTotal(){
   };
 }
 
+
+function getActivityTone(idx){
+  const tones = ["activityTone-1","activityTone-2","activityTone-3","activityTone-4","activityTone-5","activityTone-6","activityTone-7"];
+  return tones[idx % tones.length];
+}
+function getActivityToneStyle(idx){
+  const styles = [
+    'background:#eef8f1;border-color:#cfe9d6',
+    'background:#fff3e8;border-color:#f6d4b2',
+    'background:#edf5ff;border-color:#c9defa',
+    'background:#f5efff;border-color:#ddcff9',
+    'background:#fffbe8;border-color:#f6e3a7',
+    'background:#fff0f4;border-color:#f3cad9',
+    'background:#eef7f7;border-color:#c7e5e3'
+  ];
+  return styles[idx % styles.length];
+}
+function getActivityDisplayName(idx, u){
+  if(idx===0) return (u.dates && u.dates.length>=2) ? '活動1（連續）' : '活動1';
+  return `活動${idx+1}`;
+}
+function getActivityDateText(idx,u){
+  if(idx===0) return (u.dates && u.dates.length>=2) ? `${u.startDate} ～ ${u.endDate}` : `${u.startDate||''}`;
+  return `${u.date||''}`;
+}
+function getActivityTimeText(idx,u){
+  if(idx===0){
+    const dates = u.dates || [];
+    if(!dates.length) return '請先設定時間';
+    return dates.map((d,i)=>{ const m = ensurePlanMeta(`main-${d}`); const s2 = m.s2On ? `；第二場 ${m.s2Start||''}～${m.s2End||''}` : ''; return `Day${i+1} ${m.start||''}～${m.end||''}${s2}`; }).join('｜');
+  }
+  const m = ensurePlanMeta(u.uid); const s2 = m.s2On ? `${m.s2Start||''}～${m.s2End||''}` : '無';
+  return `第一場 ${m.start||''}～${m.end||''}｜第二場 ${s2}`;
+}
+function getActivityLocationText(u){
+  return [u.form?.city||'', u.form?.area||'', u.form?.addr||'', u.form?.bldg||''].filter(Boolean).join(' ');
+}
+function renderUnitProgressBox(){
+  const box = $("#unitProgressBox"); if(!box) return;
+  const units = state.units || []; if(!units.length){ box.innerHTML=''; return; }
+  const idx = Number(state.currentIndex||0); const u = units[idx];
+  const tone = getActivityTone(idx);
+  const tags = units.map((x,i)=>`<span class="unitProgressTag ${getActivityTone(i)} ${i===idx?'isActive':''}">${escapeHtml(getActivityDisplayName(i,x))}</span>`).join('');
+  box.className = `unitProgressBox ${tone}`;
+  box.innerHTML = `
+    <div class="unitProgressHead">
+      <div class="unitProgressTitle">正在填寫：${escapeHtml(getActivityDisplayName(idx,u))}</div>
+      <div class="unitProgressPill">${idx+1} / ${units.length}</div>
+    </div>
+    <div class="dayMetaGrid">
+      <div class="dayMetaLine"><b>日期：</b>${escapeHtml(getActivityDateText(idx,u))}</div>
+    </div>
+    <div class="unitProgressList">${tags}</div>`;
+}
+function getNextSequentialIndex(idx){
+  const units = state.units || [];
+  return idx < units.length-1 ? idx+1 : -1;
+}
+
 /* =========================
    Step2：render day cards（主案只出一張）
    ========================= */
 function renderDayCards(){
   const box = $("#dayCards");
   if(!box) return;
-
   const units = state.units || [];
   $("#daysCountPill").textContent = `${units.length} 項`;
-
   const note = $("#dayListNote");
   if(note){
-    note.innerHTML = units.length
-      ? `目前共建立 <b>${units.length}</b> 個活動圖框。請先確認每一筆的日期、地點、活動類型、室內外與時間，再開始填寫設備。`
-      : `尚未建立活動。`;
+    note.innerHTML = `目前共建立 <b>${units.length}</b> 個活動表單。請先確認每一張卡片的日期、地點、活動類型、室內／戶外與時間資訊，再前往新增設備。`;
   }
-
-  function unitTimeText(u){
-    if(u.kind==="main"){
-      const first = ensurePlanMeta(`main-${u.dates?.[0]||u.startDate||""}`);
-      if((u.dates?.length||0) >= 2){
-        return `連續 ${u.dates.length} 天｜首日 ${first.start||"09:00"}～${first.end||"12:00"}${first.s2On ? `；第二場 ${first.s2Start||""}～${first.s2End||""}` : ""}`;
-      }
-      return `${first.start||"09:00"}～${first.end||"12:00"}${first.s2On ? `；第二場 ${first.s2Start||""}～${first.s2End||""}` : ""}`;
-    }
-    const meta = ensurePlanMeta(u.uid);
-    return `${meta.start||"09:00"}～${meta.end||"12:00"}${meta.s2On ? `；第二場 ${meta.s2Start||""}～${meta.s2End||""}` : "；單場"}`;
-  }
-
-  const cardsHTML = units.map((u, idx)=>{
-    const title = idx===0 ? ((u.dates?.length||1)>=2 ? `活動1（連續）` : `活動1`) : `活動${idx+1}`;
-    const dateText = idx===0
-      ? (((u.dates?.length||1)>=2) ? `${u.startDate} ～ ${u.endDate}` : (u.startDate||""))
-      : (u.date||"");
-    const area = [u.form?.city, u.form?.area].filter(Boolean).join(" / ") || "尚未填寫";
-    const eventType = u.form?.eventType || "尚未填寫";
-    const indoor = u.form?.indoor || "尚未填寫";
-    const timeText = unitTimeText(u);
+  box.innerHTML = units.map((u, idx)=>{
+    const tone = getActivityTone(idx);
+    const current = idx===Number(state.currentIndex||0) ? 'isCurrent' : '';
+    const name = getActivityDisplayName(idx,u);
+    const dateText = getActivityDateText(idx,u);
+    const loc = getActivityLocationText(u) || '尚未填寫';
+    const type = u.form?.eventType || '尚未填寫';
+    const indoor = u.form?.indoor || '尚未填寫';
+    const timeText = getActivityTimeText(idx,u) || '尚未設定';
     return `
-      <div class="dayCard" data-idx="${idx}" role="button" tabindex="0">
+      <div class="dayCard ${tone} ${current}" data-idx="${idx}">
         <div class="dayTop">
-          <div>
-            <div class="dayDate">${escapeHtml(title)}</div>
-            <div class="dayMeta">共 ${units.length} 項活動中的第 ${idx+1} 項</div>
-          </div>
-          <div class="pill">點此查看並填寫設備</div>
+          <div class="dayDate">${escapeHtml(name)}</div>
         </div>
-        <div class="daySummaryGrid">
-          <div class="dayInfo"><div class="cap">活動日期</div><div class="val">${escapeHtml(dateText||"尚未填寫")}</div></div>
-          <div class="dayInfo"><div class="cap">活動地點</div><div class="val">${escapeHtml(area)}</div></div>
-          <div class="dayInfo"><div class="cap">活動類型</div><div class="val">${escapeHtml(eventType)}</div></div>
-          <div class="dayInfo"><div class="cap">室內／戶外</div><div class="val">${escapeHtml(indoor)}</div></div>
-          <div class="dayInfo" style="grid-column:1/-1"><div class="cap">時間安排</div><div class="val">${escapeHtml(timeText)}</div></div>
+        <div class="dayMetaGrid">
+          <div class="dayMetaLine"><b>日期：</b>${escapeHtml(dateText)}</div>
+          <div class="dayMetaLine"><b>地點：</b>${escapeHtml(loc)}</div>
+          <div class="dayMetaLine"><b>活動類型：</b>${escapeHtml(type)}</div>
+          <div class="dayMetaLine"><b>室內／戶外：</b>${escapeHtml(indoor)}</div>
+          <div class="dayMetaLine"><b>時間：</b>${escapeHtml(timeText)}</div>
         </div>
-      </div>
-    `;
+      </div>`;
+  }).join('');
+  box.querySelectorAll('.dayCard').forEach(card=>{
+    card.addEventListener('click', ()=> openUnit(Number(card.dataset.idx||0)));
   });
-
-  box.innerHTML = cardsHTML.join("");
-
-  box.querySelectorAll(".dayCard").forEach(card=>{
-    const idx = Number(card.dataset.idx||0);
-    const open = ()=>openUnit(idx);
-    card.addEventListener("click", open);
-    card.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        open();
-      }
-    });
-  });
-
-  const btnGo = $("#btnGoQuote");
-  if(btnGo){
-    btnGo.style.display = units.length ? "" : "none";
-    btnGo.textContent = "前往新增／添加設備";
-  }
 }
   /* =========================
    Step3：編輯（主案/活動）
@@ -1864,21 +1845,16 @@ function fillSelectOptions(){
 }
 
 function fillUnitFormUI(u){
-  const units = state.units || [];
   const isMain = u.kind==="main";
-  const curNo = Number(state.currentIndex||0) + 1;
-  const totalNo = units.length;
-
   const title = isMain
-    ? ((u.dates.length>=2) ? `3) 選設備｜活動1（連續）` : `3) 選設備｜活動1`)
-    : `3) 選設備｜活動${curNo}`;
+    ? ((u.dates.length>=2) ? `3) 選設備｜活動1（連續） ${u.startDate}～${u.endDate}` : `3) 選設備｜主案 ${u.startDate}`)
+    : `3) 選設備｜活動 ${u.extraIndex}：${u.date}`;
   $("#dayEditTitle").textContent = title;
 
-  const dateText = isMain
+  $("#dDate").value = isMain
     ? ((u.dates.length>=2) ? `${u.startDate} ～ ${u.endDate}` : u.startDate)
     : u.date;
 
-  $("#dDate").value = dateText || "";
   $("#dName").value = u.form?.name || "";
   $("#dPhone").value= u.form?.phone || "";
   $("#dEmail").value= u.form?.email || "";
@@ -1895,27 +1871,7 @@ function fillUnitFormUI(u){
   $("#singleTimeBlock").style.display = isMain ? "none" : "";
   $("#singleS2Block").style.display   = isMain ? "none" : "";
 
-  const isLast = curNo >= totalNo;
-  $("#btnMarkDone").textContent = isLast
-    ? "完成最後一項，前往報價單"
-    : `完成第${curNo}項活動，繼續前往下一項`;
-
-  const pTitle = $("#editProgressTitle");
-  const pSub = $("#editProgressSub");
-  const pMeta = $("#editProgressMeta");
-  if(pTitle) pTitle.textContent = `正在填寫：活動 ${curNo} / ${totalNo}`;
-  if(pSub) pSub.textContent = isLast
-    ? "這是最後一項活動，完成後會直接帶你前往報價單。"
-    : `完成這一項後，會自動跳到活動 ${curNo+1}，並回到畫面最上方。`;
-  if(pMeta){
-    const area = [u.form?.city, u.form?.area].filter(Boolean).join(" / ") || "尚未填寫";
-    pMeta.innerHTML = `
-      <div class="metaCard"><div class="cap">活動日期</div><div class="val">${escapeHtml(dateText || "尚未填寫")}</div></div>
-      <div class="metaCard"><div class="cap">活動地點</div><div class="val">${escapeHtml(area)}</div></div>
-      <div class="metaCard"><div class="cap">活動類型</div><div class="val">${escapeHtml(u.form?.eventType || "尚未填寫")}</div></div>
-      <div class="metaCard"><div class="cap">室內／戶外</div><div class="val">${escapeHtml(u.form?.indoor || "尚未填寫")}</div></div>
-    `;
-  }
+  renderUnitProgressBox();
 
   if(!isMain){
     const meta = ensurePlanMeta(u.uid);
@@ -2478,57 +2434,22 @@ function isAnyEquipChosen(u){
   return Object.keys(packs).length>0 || Object.values(items).some(q=>Number(q||0)>0);
 }
 
-function updateCopyButtons(){
-  const u = getCurUnit();
-  const idx = Number(state.currentIndex||0);
-  const btnFirst = $("#btnCopyFirst");
-  const btnPrev  = $("#btnCopyPrev");
-
-  if(btnFirst){
-    // 第一筆不顯示；且必須已選設備才顯示
-    const show = (idx>0) && isAnyEquipChosen(state.units?.[0]);
-    btnFirst.style.display = show ? "" : "none";
-    // 動態文案：複製「活動1」設備
-    btnFirst.textContent = "複製：活動1設備";
-  }
-  if(btnPrev){
-    // 第一筆不顯示；且上一筆必須已選設備才顯示
-    const prev = state.units?.[idx-1];
-    const show = (idx>0) && isAnyEquipChosen(prev);
-    btnPrev.style.display = show ? "" : "none";
-    // 動態文案：複製「上一個活動」設備（若可取得序號就顯示）
-    const prevLabel = prev?.label || (idx>1 ? `活動${idx}` : "活動1");
-    btnPrev.textContent = `複製：${prevLabel}設備`;
-  }
-}
+function updateCopyButtons(){ ["btnCopyFirst","btnCopyPrev"].forEach(id=>{ const el=$("#"+id); if(el) el.style.display="none"; }); }
 
 function updateQuickNavBar(){
   const bar = $("#quickNavBar");
   if(!bar) return;
-
   const units = state.units || [];
-  const hasUnits = !!units.length;
-  bar.style.display = hasUnits ? "" : "none";
-
+  if(!units.length){ bar.style.display='none'; return; }
+  bar.style.display='';
+  renderUnitProgressBox();
   const btnNext = $("#btnQuickNext");
-  const btnStep4 = $("#btnQuickStep4");
-  const curNo = Number(state.currentIndex||0) + 1;
-  const isLast = curNo >= units.length;
-
-  if(btnNext){
-    btnNext.disabled = false;
-    btnNext.classList.remove("warn");
-    btnNext.classList.add("primary");
-    btnNext.textContent = isLast
-      ? "完成最後一項，前往報價單"
-      : `完成第${curNo}項活動，繼續前往下一項`;
-  }
-
-  if(btnStep4){
-    btnStep4.style.display = "none";
-  }
+  if(!btnNext) return;
+  const idx = Number(state.currentIndex||0);
+  const isLast = idx >= units.length-1;
+  btnNext.disabled = false;
+  btnNext.textContent = isLast ? '完成最後一項，前往報價單' : `完成第${idx+1}項活動，繼續前往下一項`;
 }
-
 
 function renderUnitJumpList(){
   const box = $("#unitJumpList");
@@ -2568,13 +2489,10 @@ function openUnit(idx){
   renderEquipmentUI();
   renderUnitTotalsAndCart();
 
-  const prevBtn = $("#btnPrevUnit");
-  const nextBtn = $("#btnNextUnit");
-  if(prevBtn) prevBtn.disabled = (idx<=0);
-  if(nextBtn) nextBtn.disabled = (idx>=(state.units.length-1));
   updateQuickNavBar();
   renderUnitJumpList();
   window.scrollTo({top:0, behavior:"smooth"});
+
 }
 
 function renderIfEditingMain(){
@@ -2590,68 +2508,20 @@ function renderIfEditingExtra(uid){
   }
 }
 
-/* 完成後彈窗（保留） */
-function openAfterDoneChoice(){
-  const idx = state.currentIndex;
-  const u = getCurUnit();
-  const isLast = idx >= (state.units.length-1);
-
-  const label = (u.kind==="main")
-    ? (u.dates.length>=2 ? `活動1（連續）${u.startDate}～${u.endDate}` : `主案 ${u.startDate}`)
-    : `活動 ${u.extraIndex}（${u.date}）`;
-
-  const title = isLast ? "已完成最後一項" : "已完成本項";
-  const msg = `你已標記完成：${escapeHtml(label)}。接下來要做什麼？`;
-
-  const nextBtn = isLast
-    ? `<button class="btn primary" id="choiceNext" disabled style="opacity:.55;cursor:not-allowed">前往下一項</button>`
-    : `<button class="btn primary" id="choiceNext">前往下一項</button>`;
-
-  openModal(title, `
-    <span class="note" style="display:block;margin-bottom:12px">${msg}</span>
-    <span style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-      ${nextBtn}
-      <button class="btn" id="choiceDayList" type="button">回到日期圖框</button>
-      <button class="btn warn" id="choiceQuote" type="button">前往報價</button>
-    </span>
-  `);
-
-  const btnNext = $("#choiceNext");
-  const btnList = $("#choiceDayList");
-  const btnQuote= $("#choiceQuote");
-
-  if(btnNext && !isLast){
-    btnNext.addEventListener("click", ()=>{
-      closeModal();
-      openUnit(idx+1);
-    });
-  }
-  if(btnList){
-    btnList.addEventListener("click", ()=>{
-      closeModal();
-      goDayList();
-    });
-  }
-  if(btnQuote){
-    btnQuote.addEventListener("click", ()=>{
-      closeModal();
-      goQuote();
-    });
-  }
-}
-
 function markDone(){
   const u = getCurUnit(); if(!u) return;
   u.done = true;
   renderDayCards();
-
-  const isLast = state.currentIndex >= (state.units.length - 1);
-  if(isLast){
+  const idx = Number(state.currentIndex||0);
+  const nextIdx = getNextSequentialIndex(idx);
+  if(nextIdx === -1){
     goQuote();
-  }else{
-    openUnit(state.currentIndex + 1);
+    window.scrollTo({top:0, behavior:"smooth"});
+    return;
   }
+  openUnit(nextIdx);
 }
+
   /* =========================
    Step4：render quote
    ========================= */
@@ -2664,18 +2534,18 @@ function renderQuote(){
   const units = state.units || [];
   if(!units.length){
     tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
-    $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(0));
+$("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(0));
     return;
   }
 
   const rows = [];
   let grand = 0;
 
-  function pushSection(title, subtitle){
+  function pushSection(title, subtitle, idx){
     rows.push(`
       <tr>
-        <td colspan="3" style="background:#f9fafb;border-color:#e5e7eb">
-          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <td colspan="3" style="${getActivityToneStyle(idx)}">
+          <div class="quoteToneHead">
             <b>${escapeHtml(title)}</b>
             <span class="muted">${escapeHtml(subtitle||"")}</span>
           </div>
@@ -2719,8 +2589,9 @@ function renderQuote(){
       const q = Number(qty||0);
       if(q<=0) continue;
       const f = findItem(id);
-      if(!f) continue;
-      out.push({name:f.name, qty:`${q} ${f.unit||"件"}`, amount:Number(f.price||0)*q});
+      if(!f || !f.item) continue;
+      const up = getUnitPrice(f.item, q);
+      out.push({name:f.item.name, qty:`${q} ${f.item.unit||"件"}`, amount:Number(up||0)*q});
     }
     return out;
   }
@@ -2728,7 +2599,7 @@ function renderQuote(){
   units.forEach((u, idx)=>{
     const label = getUnitLabel(idx, u);
     const dateText = getUnitDateText(u);
-    pushSection(label, dateText);
+    pushSection(label, dateText, idx);
 
     // 明細（8B：全部展開列到底）
     const lines = listCartLines(u);
@@ -2764,7 +2635,7 @@ function renderQuote(){
   });
 
   tbody.innerHTML = rows.join("");
-  $("#quoteGrand") && ($("#quoteGrand").textContent = fmt(grand));
+$("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(grand));
 }
 
 
@@ -2772,6 +2643,7 @@ function goQuote(){
   setStep(4);
   showView("viewQuote");
   renderQuote();
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
 /* =========================
@@ -3071,14 +2943,12 @@ async function submitQuote(){
           之後若要修改，可用信件內的「修改訂單」連結回來更新。
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="btn" id="afterGoHome" type="button">回柚子樂器官網</button>
           <button class="btn primary" id="afterNew" type="button">新增一筆新的表單</button>
           <button class="btn" id="afterClose" type="button">關閉</button>
         </div>
       `);
 
       setTimeout(()=>{
-        $("#afterGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
         $("#afterNew")?.addEventListener("click", ()=>{
           window.location.href = getSiteBaseUrl_();
         });
@@ -3148,63 +3018,19 @@ function fillTimeSelectsForEdit(){
    ========================= */
 function bindNavButtons(){
   // ✅ Step3 底部導引（回日期 / 下一個未完成 / 前往 Step4）
-  const qDays  = $("#btnQuickDays");
   const qNext  = $("#btnQuickNext");
-  const qStep4 = $("#btnQuickStep4");
-
-  if(qDays)  qDays.addEventListener("click", ()=>{ goDayList(); });
 
   if(qNext) qNext.addEventListener("click", markDone);
 
-  if(qStep4) qStep4.addEventListener("click", ()=>{
-    const units = state.units || [];
-    const firstTodo = units.findIndex(u=>!u.done);
-    if(firstTodo !== -1){
-      openUnit(firstTodo);
-      return;
-    }
-    showView(4);
-  });
-
-  // ✅ 官網
-  $("#btnGoHome")?.addEventListener("click", ()=>window.open(OFFICIAL_HOME_URL, "_blank", "noopener"));
-
-  $("#btnGoStep1")?.addEventListener("click", goStep1);
-  $("#btnBackToBasic")?.addEventListener("click", goStep1);
-  $("#btnBackToDays")?.addEventListener("click", goDayList);
-  $("#btnBackToDays2")?.addEventListener("click", goDayList);
-  $("#btnBackToEdit")?.addEventListener("click", ()=>openUnit(state.currentIndex));
-  $("#btnGoQuote")?.addEventListener("click", ()=>{
+  $("#btnGoQuote").addEventListener("click", ()=>{
     const units = state.units || [];
     if(!units.length) return;
     const firstTodo = units.findIndex(u=>!u.done);
     openUnit(firstTodo === -1 ? 0 : firstTodo);
   });
 
-  $("#btnPrevUnit")?.addEventListener("click", ()=>openUnit(state.currentIndex-1));
-  $("#btnNextUnit")?.addEventListener("click", ()=>openUnit(state.currentIndex+1));
-  $("#btnMarkDone")?.addEventListener("click", markDone);
-
-  $("#btnCopyFirst").addEventListener("click", ()=>{
-    if(state.currentIndex===0) return;
-    copyEquip(0, state.currentIndex);
-    renderEquipmentUI();
-    renderUnitTotalsAndCart();
-    renderDayCards();
-  });
-  $("#btnCopyPrev").addEventListener("click", ()=>{
-    if(state.currentIndex<=0) return;
-    copyEquip(state.currentIndex-1, state.currentIndex);
-    renderEquipmentUI();
-    renderUnitTotalsAndCart();
-    renderDayCards();
-  });
-
-  $("#btnPrint").addEventListener("click", printPDF);
-  $("#btnPrintTop").addEventListener("click", printPDF);
-  const bp=$("#btnBottomPrint"); if(bp) bp.addEventListener("click", ()=>$("#btnPrint")?.click());
-  $("#btnSendQuote").addEventListener("click", submitQuote);
-  const bs=$("#btnBottomSend"); if(bs) bs.addEventListener("click", ()=>$("#btnSendQuote")?.click());
+  $("#btnSendQuote")?.addEventListener("click", submitQuote);
+  const bs=$("#btnBottomSend"); if(bs) bs.addEventListener("click", submitQuote);
 
   $$("#stepsBar .stepBox").forEach(b=>{
     b.addEventListener("click", ()=>navToStep(Number(b.dataset.step||0)));
