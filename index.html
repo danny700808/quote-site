@@ -486,6 +486,8 @@ body.printing #printRoot{display:block}
 @media (max-width:900px){
   .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .catTitle{font-size:20px}
+  .equipItemGrid{grid-template-columns:1fr}
+  #viewDayEdit .equipItemGrid{grid-template-columns:1fr}
 }
 @media (max-width:640px){
   .equipOverview{padding:8px 12px 0}
@@ -497,8 +499,10 @@ body.printing #printRoot{display:block}
   .equipFocusTitle{font-size:24px; padding:12px 14px}
   .equipFocusNotes{padding:12px 13px}
   .equipFocusActions{grid-template-columns:1fr 1fr; gap:10px}
-  .equipItemGrid{grid-template-columns:1fr}
-  .equipItemCard{grid-template-columns:72px 1fr; gap:10px}
+  .equipItemGrid{grid-template-columns:1fr !important}
+  #viewDayEdit .equipItemGrid{grid-template-columns:1fr !important}
+  .equipItemCard{grid-template-columns:72px 1fr; gap:10px; padding:12px}
+  #viewDayEdit .equipItemCard{grid-template-columns:72px 1fr; gap:10px; padding:12px}
   .equipItemPrice{grid-column:2; text-align:left}
 }
 
@@ -1995,6 +1999,12 @@ function buildOptionsHTML(u, item){
 /* =========================
    設備選擇（沿用）
    ========================= */
+function adjustQty(itemId, delta){
+  const u = getCurUnit(); if(!u) return;
+  const now = Number(u.cart?.items?.[itemId]||0);
+  setQty(u, itemId, Math.max(0, now + Number(delta||0)));
+}
+
 function setQty(u, itemId, qty){
   u.cart = u.cart || {packs:{}, items:{}};
   u.cart.items = u.cart.items || {};
