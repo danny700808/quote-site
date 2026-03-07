@@ -421,6 +421,87 @@ body.printing #printRoot{display:block}
 
 }
 
+
+@media (max-width:980px){
+  .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .equipGuide h3{font-size:20px}
+}
+
+
+/* ===== Step3 focus flow refresh ===== */
+.equipOverview{padding:10px 14px 0}
+.equipOverview .equipTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.equipOverview .tab{
+  min-height:0; padding:0; border:1px solid #d6e2dc; background:#fff; border-radius:20px;
+  overflow:hidden; align-items:stretch; justify-content:stretch; text-align:left;
+  box-shadow:0 12px 26px rgba(15,23,42,.05); transition:.18s ease; display:block;
+}
+.equipOverview .tab:hover{transform:translateY(-2px); box-shadow:0 18px 30px rgba(15,23,42,.08)}
+.equipOverview .tab.active{border-color:#1e8e6f; box-shadow:0 18px 32px rgba(30,142,111,.14); transform:translateY(-2px)}
+.catCard{display:grid; gap:10px; padding:16px}
+.catPhoto{
+  width:100%; aspect-ratio: 16 / 9; border-radius:16px; overflow:hidden; background:linear-gradient(180deg,#f4faf7,#eef5f1);
+  border:1px solid #dfe9e4; display:flex; align-items:center; justify-content:center;
+}
+.catPhoto img{width:100%; height:100%; object-fit:cover; display:block}
+.catBody{display:grid; gap:6px}
+.catTopLine{display:flex; align-items:flex-start; justify-content:space-between; gap:8px}
+.catTitle{font-size:22px; line-height:1.15; color:#1f3b32; font-weight:1000; letter-spacing:.5px}
+.catDesc{font-size:12px; line-height:1.5; color:#7b8794; min-height:36px}
+.catMeta{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:2px}
+.catCount,.catEnter{display:inline-flex; align-items:center; justify-content:center; min-height:30px; border-radius:999px; padding:0 12px; font-size:12px; font-weight:900}
+.catCount{background:#edf7f2; color:#21614c; border:1px solid #cfe4d8}
+.catEnter{background:#f5f6f8; color:#6b7280; border:1px solid #e3e6ea}
+.equipFocusWrap{padding:12px 14px 0}
+.equipFocusHeader{display:grid; gap:14px; margin-bottom:14px}
+.equipFocusTitle{
+  text-align:center; padding:14px 18px; border-radius:18px; border:1px solid #cfe4d8;
+  background:linear-gradient(180deg,#eaf7ef 0%, #dcf1e3 100%); color:#184f3a; font-weight:1000; font-size:28px; letter-spacing:1px;
+}
+.equipFocusNotes{border:1px solid #dfe7e2; background:#fafcfb; border-radius:18px; padding:14px 16px}
+.equipFocusNotesTitle{font-size:14px; font-weight:1000; color:#385c50; margin-bottom:8px}
+.equipFocusNotes ul{margin:0; padding-left:18px; display:grid; gap:7px; color:#4b5563; font-size:13px; line-height:1.55}
+.equipFocusActions{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:12px 0 4px}
+.equipFocusBtn{min-height:52px; font-size:15px; font-weight:1000; border-width:2px}
+.equipFocusBtn:not(.primary){background:#fff; color:#17644a; border-color:#1e8e6f}
+.equipFocusBtn.primary{box-shadow:none}
+.equipItemGrid{padding:0;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.equipItemCard{border:1px solid #dfe5e1;border-radius:16px;padding:14px;display:grid;grid-template-columns:82px 1fr auto;gap:12px;align-items:center;background:#fff;box-shadow:0 10px 24px rgba(15,23,42,.04)}
+.equipItemThumb{width:82px;height:82px;border-radius:16px;object-fit:cover;border:1px solid var(--line);background:linear-gradient(180deg,#f6faf8,#eef3f0)}
+.equipItemMeta{min-width:0}
+.equipItemName{font-size:16px;font-weight:1000;color:#163d31}
+.equipItemDesc{color:#7b8794;font-size:12px;line-height:1.45;margin-top:2px}
+.equipItemRow2{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.equipItemPrice{font-size:14px;font-weight:1000;color:#163d31;text-align:right}
+
+#viewDayEdit .equipItemGrid{padding:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+#viewDayEdit .equipItemCard{padding:14px; grid-template-columns:82px 1fr auto; border-color:#dfe5e1; box-shadow:0 10px 24px rgba(15,23,42,.04)}
+#viewDayEdit .equipItemThumb{width:82px; height:82px; border-radius:16px; background:linear-gradient(180deg,#f6faf8,#eef3f0)}
+#viewDayEdit .equipItemName{font-size:16px; color:#163d31}
+#viewDayEdit .equipItemDesc{color:#7b8794; line-height:1.45}
+#viewDayEdit .equipItemPrice{font-size:14px; color:#163d31}
+@media (max-width:900px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .catTitle{font-size:20px}
+}
+@media (max-width:640px){
+  .equipOverview{padding:8px 12px 0}
+  .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+  .catCard{padding:12px}
+  .catTitle{font-size:18px}
+  .catDesc{font-size:11px; min-height:32px}
+  .equipFocusWrap{padding:10px 12px 0}
+  .equipFocusTitle{font-size:24px; padding:12px 14px}
+  .equipFocusNotes{padding:12px 13px}
+  .equipFocusActions{grid-template-columns:1fr 1fr; gap:10px}
+  .equipItemGrid{grid-template-columns:1fr}
+  .equipItemCard{grid-template-columns:72px 1fr; gap:10px}
+  .equipItemPrice{grid-column:2; text-align:left}
+}
+
 </style>
 </head>
 
@@ -433,19 +514,19 @@ body.printing #printRoot{display:block}
         <div class="steps" id="stepsBar">
           <div class="stepBox" data-step="1">
             <div class="stepNum">1</div>
-            <div class="stepText">基本資料<br>填寫</div>
+            <div class="stepText">填寫基本<br>活動資料</div>
           </div>
           <div class="stepBox" data-step="2">
             <div class="stepNum">2</div>
-            <div class="stepText">生成<br>表單</div>
+            <div class="stepText">確認各場<br>活動內容</div>
           </div>
           <div class="stepBox" data-step="3">
             <div class="stepNum">3</div>
-            <div class="stepText">選<br>設備</div>
+            <div class="stepText">選擇需要<br>設備項目</div>
           </div>
           <div class="stepBox" data-step="4">
             <div class="stepNum">4</div>
-            <div class="stepText">列印<br>報價單</div>
+            <div class="stepText">預覽列印<br>報價內容</div>
           </div>
         </div>
       </div>
@@ -628,52 +709,31 @@ body.printing #printRoot{display:block}
         <div id="equipUnitBar" class="equipUnitBar"></div>
       </div>
 
-      <!-- 三模組 -->
-      <div class="hd stepHd step2" style="border-top:1px solid var(--line);border-bottom:none">
-        <h2>燈光音響</h2>
+      <div class="equipOverview" id="equipOverview">
+        <div class="tabs equipTabs" id="tabs"></div>
       </div>
 
-      <div class="tierWrap">
-        <div class="tierGrid">
-          <div class="tierCard">
-            <div class="tierHead">
-              <b>安全等級</b>
-            </div>
-            <div class="tierBody">
-              <div class="mini">不包含燈光</div>
-              <div class="levelRow" id="levelsSafety"></div>
-            </div>
+      <div class="equipFocusWrap" id="equipFocusWrap" style="display:none">
+        <div class="equipFocusHeader">
+          <div class="equipFocusTitle" id="equipCatTitle">舞台區</div>
+          <div class="equipFocusNotes">
+            <div class="equipFocusNotesTitle">選擇前注意事項</div>
+            <ul id="equipCatNotes"></ul>
           </div>
-
-          <div class="tierCard">
-            <div class="tierHead">
-              <b>氣氛等級</b>
-            </div>
-            <div class="tierBody">
-              <div class="mini">含燈光與簡易特效</div>
-              <div class="levelRow" id="levelsAmbience"></div>
-            </div>
-          </div>
-
-          <div class="tierCard">
-            <div class="tierHead">
-              <b>升級等級</b>
-            </div>
-            <div class="tierBody">
-              <div class="mini">最高階</div>
-              <div class="levelRow" id="levelsUpgrade"></div>
-            </div>
-          </div>
+        </div>
+        <div class="equipItemGrid" id="items"></div>
+        <div class="equipFocusActions">
+          <button class="btn equipFocusBtn" id="btnBackToCats" type="button" onclick="backToEquipOverview()">返回所有區塊</button>
+          <button class="btn equipFocusBtn primary" id="btnNextCategory" type="button" onclick="goToNextEquipCategory()">完成此區塊，前往下一個區塊</button>
         </div>
       </div>
 
-      <!-- 加購分類 -->
-      <div class="hd stepHd step3" style="border-top:1px solid var(--line);border-bottom:none">
-        <h2>設備服務分類（自由加減）</h2>
+      <!-- 舊套裝區保留為相容用，不顯示 -->
+      <div style="display:none" aria-hidden="true">
+        <div id="levelsSafety"></div>
+        <div id="levelsAmbience"></div>
+        <div id="levelsUpgrade"></div>
       </div>
-
-      <div class="tabs" id="tabs"></div>
-      <div class="items" id="items"></div>
 
       <!-- 報價 -->
       <div class="hd stepHd step4" style="border-top:1px solid var(--line);border-bottom:none">
@@ -870,62 +930,181 @@ const TW = {
   "高雄市":["三民區","左營區","鼓山區","苓雅區","前鎮區","鳳山區"]
 };
 const CATEGORIES = [
-{ id:"stage", name:"舞台結構與桁架系統", items:[
-{ id:"stage-deck", name:"舞台板（2x1m）", unit:"片", price:1200,
+{ id:"stage", name:"舞台區", desc:"舞台、樓梯、地毯、講台等和舞台本體有關的設備。", hero:"step3_icons/stage.svg", items:[
+{ id:"stage-deck", name:"基本舞台", unit:"片", price:1200,
 priceTiers:[{min:1,price:1200},{min:20,price:1100},{min:50,price:1000}],
 options:{
+height:{label:"舞台高度", values:["請選擇","20cm","40cm","60cm","80cm","100cm"]},
+color:{label:"舞台顏色", values:["請選擇","黑","灰","紅","藍"]},
 carpet:{label:"是否要鋪地毯", values:["請選擇","要","不要"], omitValues:["不要"]},
-carpet_color:{label:"地毯顏色", values:["請選擇","黑","灰","紅","藍","綠","米白"], when:{opt:"carpet", is:"要"}},
-color:{label:"舞台板顏色", values:["請選擇","黑","灰","紅","藍"]},
-height:{label:"舞台高度", values:["請選擇","20cm","40cm","60cm","80cm","100cm"]}
+carpet_color:{label:"地毯顏色", values:["請選擇","黑","灰","紅","藍","綠","米白"], when:{opt:"carpet", is:"要"}}
 },
-img:svgThumb("舞台板"),
-desc:"舞台板（2x1m）。可依尺寸、階梯、圍裙等調整。\n\n數量優惠（可修改）：1–19片 1200/片；20–49片 1100/片；50片以上 1000/片。\n可選細項：顏色/高度（會在右側報價單顯示）。"
-},
-{ id:"stage-step", name:"舞台階梯（含扶手）", unit:"座", price:900, img:svgThumb("階梯"), desc:"舞台上下台階梯，適合典禮/表演。" },
-{ id:"stage-truss", name:"TRUSS 桁架（3m）", unit:"支", price:1800, img:svgThumb("TRUSS"), desc:"基本桁架結構，用於燈具/背板/布幕。" },
-{ id:"stage-backdrop", name:"主視覺背板（基本）", unit:"組", price:6500, img:svgThumb("背板"), desc:"基本背板（含架設）。主視覺輸出另計或可包套。" },
-{ id:"stage-drape", name:"舞台布幕/遮擋（基本）", unit:"組", price:4800, img:svgThumb("布幕"), desc:"舞台側布/後布/遮擋，提升整體質感。" },
+img:svgThumb("基本舞台"),
+desc:"活動常用的基本舞台板，可依大小、高度與地毯需求調整。適合典禮、致詞、表演。"},
+{ id:"stage-runway", name:"延伸舞台／走道台", unit:"組", price:5800, img:svgThumb("延伸舞台"), desc:"適合婚禮、走秀、頒獎與需要往前延伸視覺焦點的活動。"},
+{ id:"stage-step", name:"舞台樓梯", unit:"座", price:900, img:svgThumb("舞台樓梯"), desc:"舞台上下台使用，搭配中高舞台時很常一起選。"},
+{ id:"stage-ramp", name:"無障礙斜坡", unit:"座", price:2200, img:svgThumb("斜坡"), desc:"推設備或需要無障礙動線時可一起配置。"},
+{ id:"stage-carpet", name:"舞台地毯", unit:"組", price:1800, img:svgThumb("舞台地毯"), desc:"讓舞台看起來更完整，也能搭配主視覺配色。"},
+{ id:"stage-skirt", name:"舞台裙邊", unit:"組", price:1500, img:svgThumb("裙邊"), desc:"遮住舞台下方結構，讓整體畫面更整齊。"},
+{ id:"stage-podium", name:"講台／司儀台", unit:"座", price:2500, img:svgThumb("講台"), desc:"適合致詞、主持與典禮流程使用。"}
 ]},
-{ id:"light", name:"燈光與氣氛效果", items:[
-{ id:"light-par", name:"LED PAR（染色燈）", unit:"盞", price:900, img:svgThumb("染色燈"), desc:"典禮/氛圍底色必備。可搭配燈控/場景變換。" },
-{ id:"light-moving", name:"Moving Head（光束燈）", unit:"盞", price:2500, img:svgThumb("光束燈"), desc:"動態光束效果，適合表演/高潮段落。" },
-{ id:"light-follow", name:"追光燈（含操作）", unit:"組", price:6000, img:svgThumb("追光"), desc:"追光燈含操作人員，適合走位/得獎/表演主角。" },
-{ id:"light-console", name:"燈控台（基本）", unit:"套", price:3500, img:svgThumb("燈控"), desc:"燈光場景切換/節奏控制。演出感提升。" },
-{ id:"fx-haze", name:"薄霧機（Hazer）", unit:"台", price:2200, img:svgThumb("薄霧"), desc:"讓光束更立體。小心場地方規定/消防。" },
+{ id:"audio", name:"音響區", desc:"喇叭、麥克風、混音器與舞台收音相關設備。", hero:"step3_icons/audio.svg", items:[
+{ id:"audio-main", name:"基本主喇叭", unit:"組", price:6000, img:svgThumb("主喇叭"), desc:"活動基本擴聲，適合典禮、講座與中小型活動。"},
+{ id:"audio-sub", name:"低音喇叭", unit:"顆", price:4500, img:svgThumb("低音喇叭"), desc:"需要更有低頻能量時使用，常見於音樂型活動。"},
+{ id:"audio-mixer", name:"混音器", unit:"台", price:3000, img:svgThumb("混音器"), desc:"收音與音量控制的核心設備。"},
+{ id:"audio-wireless2", name:"無線手持麥克風", unit:"組", price:2200, img:svgThumb("手持麥"), desc:"主持、互動、交接講話最常用。"},
+{ id:"audio-lavalier", name:"無線領夾麥克風", unit:"支", price:1800, img:svgThumb("領夾麥"), desc:"簡報、演講常用，雙手可以保持自由。"},
+{ id:"audio-headset", name:"耳掛式麥克風", unit:"支", price:2200, img:svgThumb("耳掛麥"), desc:"需要走動、表演或動作較多時較穩定。"},
+{ id:"audio-monitor", name:"舞台監聽喇叭", unit:"顆", price:1800, img:svgThumb("監聽"), desc:"讓主持或表演者能聽到現場與自己的聲音。"}
 ]},
-{ id:"audio", name:"音響與舞台收音", items:[
-{ id:"audio-main", name:"主喇叭（全頻）", unit:"組", price:6000, img:svgThumb("主喇叭"), desc:"主擴聲系統（示意）。可依品牌/功率/場域調整。" },
-{ id:"audio-sub", name:"低音喇叭（Sub）", unit:"顆", price:4500, img:svgThumb("Sub"), desc:"增加低頻能量，適合戶外/音樂活動。" },
-{ id:"audio-mixer", name:"混音器（基本）", unit:"台", price:3000, img:svgThumb("混音"), desc:"基本混音控制。多路數需求可升級。" },
-{ id:"audio-wireless2", name:"無線麥克風（2支組）", unit:"組", price:2200, img:svgThumb("無線麥"), desc:"常見典禮/講座用。可加到 4/6/8 支。" },
-{ id:"audio-monitor", name:"舞台監聽喇叭", unit:"顆", price:1800, img:svgThumb("監聽"), desc:"給主持/表演者聽到自己的聲音。" },
-{ id:"audio-di", name:"DI Box（主動式）", unit:"顆", price:400, img:svgThumb("DI"), desc:"鍵盤/木吉他/電貝斯等訊號轉換。" },
-{ id:"audio-drumkit", name:"鼓組收音套裝（基本）", unit:"組", price:6500, img:svgThumb("鼓組"), desc:"適合 Live Band / 表演。細項可拆分。" },
+{ id:"light", name:"燈光區", desc:"基本照明、氣氛燈與表演效果燈都從這裡挑。", hero:"step3_icons/light.svg", items:[
+{ id:"light-white", name:"基本舞台白光", unit:"組", price:3600, img:svgThumb("白光"), desc:"先把人照清楚，適合致詞、典禮、講座。"},
+{ id:"light-par", name:"LED 染色燈", unit:"盞", price:900, img:svgThumb("染色燈"), desc:"常用於活動主色與背景氛圍營造。"},
+{ id:"light-uplight", name:"Uplight 氣氛燈", unit:"盞", price:800, img:svgThumb("Uplight"), desc:"牆面、背板、品牌區域常用的氣氛燈。"},
+{ id:"light-moving", name:"Moving Head", unit:"盞", price:2500, img:svgThumb("Moving Head"), desc:"適合表演、開場、高潮橋段使用。"},
+{ id:"light-follow", name:"追光燈（含操作）", unit:"組", price:6000, img:svgThumb("追光燈"), desc:"人物走位或頒獎上台時很常需要。"},
+{ id:"light-console", name:"燈控台", unit:"套", price:3500, img:svgThumb("燈控台"), desc:"需要做場景切換與節奏控制時使用。"},
+{ id:"fx-haze", name:"薄霧機", unit:"台", price:2200, img:svgThumb("薄霧機"), desc:"讓光束更有層次，常和表演燈一起搭配。"}
 ]},
-{ id:"video", name:"影像、投影與直播導播", items:[
-{ id:"video-projector", name:"投影機（基本）", unit:"台", price:6500, img:svgThumb("投影"), desc:"會議/典禮簡報。亮度/鏡頭依場地調整。" },
-{ id:"video-screen", name:"投影布幕（120吋）", unit:"面", price:1800, img:svgThumb("布幕"), desc:"投影布幕（示意）。也可用電動布幕。" },
-{ id:"video-tv", name:"電視（75吋）", unit:"台", price:4800, img:svgThumb("75吋TV"), desc:"展場/小型場地更方便。" },
-{ id:"video-camera", name:"活動攝影機（基本）", unit:"台", price:5000, img:svgThumb("攝影"), desc:"活動錄影/直播機位（示意）。" },
-{ id:"video-switcher", name:"直播導播/切換台（基本）", unit:"套", price:9000, img:svgThumb("導播"), desc:"多機位切換/字幕/畫面輸出（示意）。" },
+{ id:"screen", name:"螢幕投影區", desc:"簡報、影片、歌詞或活動畫面顯示都在這裡。", hero:"step3_icons/screen.svg", items:[
+{ id:"video-projector", name:"投影機", unit:"台", price:6500, img:svgThumb("投影機"), desc:"會議、典禮、簡報播放的基本選項。"},
+{ id:"video-screen", name:"前投布幕", unit:"面", price:1800, img:svgThumb("前投布幕"), desc:"常見投影布幕，適合一般簡報與活動播放。"},
+{ id:"video-rearscreen", name:"後投布幕", unit:"面", price:4200, img:svgThumb("後投布幕"), desc:"畫面較乾淨，不容易被人影遮住，但後方要留空間。"},
+{ id:"video-tv", name:"電視螢幕", unit:"台", price:4800, img:svgThumb("電視螢幕"), desc:"展場或小型活動很實用。"},
+{ id:"video-ledwall", name:"LED 顯示屏", unit:"式", price:28000, img:svgThumb("LED屏"), desc:"亮度高、視覺強，適合大型或高規格活動。"},
+{ id:"video-clicker", name:"簡報器", unit:"支", price:600, img:svgThumb("簡報器"), desc:"有簡報需求時常會一起搭配。"}
 ]},
-{ id:"site", name:"帳篷桌子椅子", items:[
-{ id:"site-tent", name:"快帳（3x3m）", unit:"頂", price:1800, img:svgThumb("快帳"), desc:"戶外遮陽遮雨。可加配重/側布。" },
-{ id:"site-chair", name:"折疊椅", unit:"張", price:30, img:svgThumb("椅子"), desc:"觀眾座位（示意）。" },
-{ id:"site-table", name:"折疊桌", unit:"張", price:150, img:svgThumb("桌子"), desc:"報到/設備區用。" },
-{ id:"site-queue", name:"紅龍/排隊動線（2m）", unit:"支", price:120, img:svgThumb("紅龍"), desc:"控場動線、入口區排隊。" },
-{ id:"site-cableramp", name:"護線板（1m）", unit:"條", price:120, img:svgThumb("護線"), desc:"走線安全必備，避免絆倒。" },
+{ id:"backdrop", name:"背板結構區", desc:"背板、Truss、拍照區與畫面支撐相關項目。", hero:"step3_icons/backdrop.svg", items:[
+{ id:"stage-truss", name:"Truss 桁架", unit:"支", price:1800, img:svgThumb("Truss"), desc:"掛燈、掛布條、掛品牌視覺常會用到。"},
+{ id:"stage-backdrop", name:"主視覺背板", unit:"組", price:6500, img:svgThumb("主背板"), desc:"常見的活動主背板，適合典禮與品牌活動。"},
+{ id:"backdrop-photo", name:"拍照背板", unit:"組", price:5200, img:svgThumb("拍照背板"), desc:"簽到區、拍照區、品牌合照常用。"},
+{ id:"stage-drape", name:"布幕／側遮", unit:"組", price:4800, img:svgThumb("布幕"), desc:"讓舞台與側邊視覺更乾淨完整。"},
+{ id:"backdrop-pipe", name:"布幕架 / Pipe & Drape", unit:"組", price:5800, img:svgThumb("布幕架"), desc:"可快速形成背景與區隔空間。"},
+{ id:"backdrop-banner", name:"橫幅吊掛結構", unit:"組", price:3200, img:svgThumb("吊掛"), desc:"適合掛布條、主題字樣與品牌指示。"}
 ]},
-{ id:"power", name:"電力、控場人員與安全營運", items:[
-{ id:"power-gen", name:"發電機（基本）", unit:"台", price:12000, img:svgThumb("發電"), desc:"戶外/電力不足時必備。功率可升級。" },
-{ id:"power-dist", name:"配電箱/延長線組（基本）", unit:"套", price:1800, img:svgThumb("配電"), desc:"含基本配電、延長線、整理。" },
-{ id:"staff-audio", name:"音控工程師（含彩排）", unit:"人/場", price:6500, img:svgThumb("音控"), desc:"含設定、彩排、全程控場（示意）。" },
-{ id:"staff-light", name:"燈控工程師（含彩排）", unit:"人/場", price:6500, img:svgThumb("燈控"), desc:"燈光場景、節奏控制（示意）。" },
-{ id:"staff-stage", name:"舞台監督/控場（舞監）", unit:"人/場", price:7000, img:svgThumb("舞監"), desc:"流程控場、演出串接、後台協調（示意）。" },
-{ id:"staff-host", name:"主持人（基本）", unit:"人/場", price:9000, img:svgThumb("主持"), desc:"主持/串場/互動（示意）。" },
+{ id:"power", name:"電力設備區", desc:"發電、配電、線材與技術控制相關設備。", hero:"step3_icons/power.svg", items:[
+{ id:"power-gen-small", name:"小型靜音發電機", unit:"台", price:12000, img:svgThumb("小發電機"), desc:"中小型戶外活動常用的補強電力方案。"},
+{ id:"power-gen-mid", name:"中型發電機", unit:"台", price:18000, img:svgThumb("中發電機"), desc:"舞台、音響、燈光需求較多時使用。"},
+{ id:"power-gen", name:"大型發電機", unit:"台", price:26000, img:svgThumb("大發電機"), desc:"大型或高規格活動的獨立供電。"},
+{ id:"power-dist", name:"配電箱／延長線組", unit:"套", price:1800, img:svgThumb("配電"), desc:"發電或大量設備時幾乎都會一起配置。"},
+{ id:"power-cableramp", name:"護線板", unit:"條", price:120, img:svgThumb("護線板"), desc:"保護線材並降低絆倒風險。"},
+{ id:"power-comms", name:"對講機", unit:"支", price:600, img:svgThumb("對講機"), desc:"工作人員溝通、控場與現場聯繫使用。"}
+]},
+{ id:"outdoor", name:"戶外配套區", desc:"帳篷、桌椅、欄杆與現場配套都在這裡。", hero:"step3_icons/outdoor.svg", items:[
+{ id:"site-tent", name:"快帳", unit:"頂", price:1800, img:svgThumb("快帳"), desc:"戶外活動最常見的遮陽遮雨設備。"},
+{ id:"outdoor-canopy", name:"大型帳篷", unit:"頂", price:6800, img:svgThumb("大型帳篷"), desc:"適合主要活動區、報到區或休息區。"},
+{ id:"site-chair", name:"折疊椅", unit:"張", price:30, img:svgThumb("椅子"), desc:"觀眾座位或活動等待區常用。"},
+{ id:"site-table", name:"折疊桌", unit:"張", price:150, img:svgThumb("桌子"), desc:"報到、講義、餐點或工作區配置。"},
+{ id:"site-queue", name:"欄杆／紅龍", unit:"支", price:120, img:svgThumb("紅龍"), desc:"排隊、入口、動線管理常見配套。"},
+{ id:"outdoor-sign", name:"指示牌／立牌", unit:"組", price:1200, img:svgThumb("指示牌"), desc:"協助現場動線與活動資訊引導。"}
+]},
+{ id:"decor", name:"佈置美化區", desc:"氣球、花藝、拍照區與視覺美化項目。", hero:"step3_icons/decor.svg", items:[
+{ id:"decor-balloon", name:"氣球佈置", unit:"組", price:3500, img:svgThumb("氣球"), desc:"適合開幕、慶生、品牌活動與拍照區。"},
+{ id:"decor-floral", name:"花藝佈置", unit:"組", price:4200, img:svgThumb("花藝"), desc:"婚禮、典禮、品牌活動常見。"},
+{ id:"decor-photozone", name:"拍照區佈置", unit:"組", price:5800, img:svgThumb("拍照區"), desc:"讓現場更有主題感與分享感。"},
+{ id:"decor-table", name:"桌面佈置", unit:"組", price:2600, img:svgThumb("桌面佈置"), desc:"適合接待桌、主桌、簽到區。"},
+{ id:"decor-brand", name:"品牌主題佈置", unit:"式", price:8800, img:svgThumb("品牌佈置"), desc:"品牌活動、開幕與展場常見。"}
+]},
+{ id:"staff", name:"人力服務區", desc:"主持、音控、燈控、攝影與現場支援人力。", hero:"step3_icons/staff.svg", items:[
+{ id:"staff-host", name:"主持人", unit:"人/場", price:9000, img:svgThumb("主持人"), desc:"主持、串場與流程帶動。"},
+{ id:"staff-audio", name:"音控工程師", unit:"人/場", price:6500, img:svgThumb("音控"), desc:"音響設定、彩排與現場控音。"},
+{ id:"staff-light", name:"燈控工程師", unit:"人/場", price:6500, img:svgThumb("燈控"), desc:"燈光場景操作與現場配合。"},
+{ id:"staff-stage", name:"舞台監督／控場", unit:"人/場", price:7000, img:svgThumb("舞監"), desc:"協調流程、演出與後台節奏。"},
+{ id:"staff-photo", name:"活動攝影", unit:"人/場", price:5000, img:svgThumb("攝影"), desc:"平面拍攝與活動紀錄。"},
+{ id:"staff-video", name:"活動錄影", unit:"人/場", price:6800, img:svgThumb("錄影"), desc:"動態錄影與後續回看使用。"}
+]},
+{ id:"other", name:"其他加購區", desc:"客製需求、備用設備與特殊加購放這裡。", hero:"step3_icons/other.svg", items:[
+{ id:"other-sparemic", name:"備用麥克風", unit:"支", price:900, img:svgThumb("備用麥"), desc:"避免臨時狀況，常見的保險型加購。"},
+{ id:"other-extra-speaker", name:"補強喇叭", unit:"顆", price:2200, img:svgThumb("補強喇叭"), desc:"場地較長或較寬時可加強後方覆蓋。"},
+{ id:"other-rehearsal", name:"技術彩排", unit:"式", price:4800, img:svgThumb("技術彩排"), desc:"流程較複雜或演出型活動很建議安排。"},
+{ id:"other-rush", name:"急件加班處理", unit:"式", price:3500, img:svgThumb("急件"), desc:"臨時追加或時間緊迫時使用。"},
+{ id:"other-custom", name:"其他客製需求", unit:"式", price:0, img:svgThumb("客製"), desc:"有特殊需求時可先加入，後續再人工確認。"}
 ]}
+
 ];
+
+const CATEGORY_NOTES = {
+  stage:[
+    "先確認舞台大概尺寸與高度，再往下挑選相關項目。",
+    "中高舞台通常會一起搭配舞台樓梯。",
+    "若要畫面更完整，可一起考慮地毯與裙邊。",
+    "多人站台或表演時，舞台深度通常要抓得更足。",
+    "婚禮、走秀、頒獎常會一起選延伸舞台或走道台。",
+    "如需推車或無障礙動線，可加選斜坡。"
+  ],
+  audio:[
+    "先想清楚這場活動是以講話為主，還是表演為主。",
+    "主持常用手持麥，演講常用領夾或耳掛麥。",
+    "活動規模越大，主喇叭與補強需求也會跟著增加。",
+    "有歌唱、表演或樂手時，通常會一起需要監聽。",
+    "混音器是整個收音與輸出的核心。",
+    "若流程較複雜，建議一起安排音控人員。"
+  ],
+  light:[
+    "基本白光是先把人照清楚，典禮與講座最常用。",
+    "染色燈與 Uplight 比較偏氛圍與品牌色呈現。",
+    "若有演出橋段，才會較常用到 Moving Head 或追光。",
+    "燈光數量通常會跟舞台大小與背板寬度一起變動。",
+    "有主視覺或品牌活動時，可考慮 Logo 投影類型。",
+    "想讓光束更有層次時，可再加薄霧機。"
+  ],
+  screen:[
+    "先確認你要播放的是簡報、影片、歌詞還是直播畫面。",
+    "一般會議與講座常用投影機加布幕。",
+    "若場地較亮，電視或 LED 顯示通常更直觀。",
+    "後投布幕畫面乾淨，但後方要留足夠空間。",
+    "活動規模越大，越要留意後排是否看得清楚。",
+    "有簡報需求時，可一起搭配簡報器。"
+  ],
+  backdrop:[
+    "若要做主視覺、品牌感或拍照區，通常會用到這一區。",
+    "Truss 常用來掛燈、掛布條或支撐大型視覺。",
+    "若只是讓畫面更整齊，布幕或側遮就很有感。",
+    "拍照背板與主舞台背板用途不太一樣，可分開選。",
+    "背板寬度通常會跟舞台寬度一起考量。",
+    "想區隔空間時，Pipe & Drape 會比硬式背板更彈性。"
+  ],
+  power:[
+    "如果設備數量多，電力與配電通常要一起評估。",
+    "戶外活動很常需要發電機或額外配電。",
+    "發電機不是越大越好，要看整體設備負載。",
+    "延長線、配電箱與護線板常常會一起出現。",
+    "走道或觀眾區有線材時，建議加護線板。",
+    "流程複雜或區域很多時，可一起準備對講機。"
+  ],
+  outdoor:[
+    "戶外活動最常見的是帳篷、桌椅與動線設備。",
+    "報到區、休息區、主活動區常會分別配置帳篷。",
+    "若有排隊或入口控管，紅龍與欄杆很好用。",
+    "桌椅數量通常會跟預估人數與停留時間有關。",
+    "指示牌與立牌能讓現場動線更清楚。",
+    "若有日曬或下雨風險，帳篷通常會優先處理。"
+  ],
+  decor:[
+    "這一區主要是讓現場畫面更完整、更有主題感。",
+    "開幕、婚禮、慶生與品牌活動很常會用到氣球或花藝。",
+    "若現場要拍照分享，拍照區佈置通常很有感。",
+    "桌面與接待區的佈置，也會影響整體質感。",
+    "若主題較明確，可直接往品牌或主題佈置挑選。",
+    "有主視覺時，顏色與背板通常建議一起搭配。"
+  ],
+  staff:[
+    "當流程越多、設備越多時，人力支援就越重要。",
+    "主持人適合需要串場、帶氣氛或流程控場的活動。",
+    "音控與燈控屬於現場技術人員，可避免流程卡住。",
+    "活動攝影適合拍平面紀錄，錄影則適合留存完整畫面。",
+    "若有表演或時間點很多，舞台監督會很有幫助。",
+    "不確定要不要加人力時，可先選進來後續再微調。"
+  ],
+  other:[
+    "這一區適合放臨時追加、備用或客製型需求。",
+    "若擔心現場突發狀況，可考慮備用麥克風。",
+    "場地太長太寬時，常會再補強喇叭。",
+    "活動流程複雜時，技術彩排通常很值得加進來。",
+    "若時間很趕，可先把急件處理選進來。",
+    "有特殊需求時，也可以先用客製項目保留。"
+  ]
+};
 
 const LEVELS = {
   safety: ["① 基礎穩定","② 標準配置","③ 活動專業","④ 演出進階","⑤ 旗艦舞台","⑥ 全盛典藏"],
@@ -1014,6 +1193,10 @@ function buildPhotoHTML(urls){
 }
 
 function getItemPhotos(catId, itemId){
+  const cat = CATEGORIES.find(c=>c.id===catId);
+  if(cat && cat.hero){
+    return [cat.hero, cat.hero];
+  }
   const seedBase = `${catId||"cat"}-${itemId||"item"}`;
   return [
     `https://picsum.photos/seed/${seedBase}-a/800/600`,
@@ -1560,7 +1743,7 @@ function renderDayCards(){
 
   const note = $("#dayListNote");
   if(note){
-    note.textContent = "這一頁只顯示各活動的日期、地點、時間與基本資料摘要。確認無誤後，請從下方進入設備選擇。";
+    note.textContent = "這一頁只顯示各活動的日期、時間、地點與重點摘要。確認無誤後，請從下方進入設備選擇。";
   }
 
   const COLORS = [
@@ -1570,42 +1753,41 @@ function renderDayCards(){
     {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7'}
   ];
   const colorOf = (idx)=>COLORS[(idx-1)%COLORS.length];
-
   const safe = (v)=>escapeHtml(v == null ? "" : String(v));
-  const locText = (f)=>{
-    const arr = [f.city, f.area, f.addr, f.bldg].filter(Boolean);
-    return arr.join(" ");
+  const locText = (f)=>[f.city, f.area, f.addr, f.bldg].filter(Boolean).join(" ");
+
+  const headline = (idx, form)=>{
+    const parts = [`活動${idx}`];
+    if(form.eventType) parts.push(form.eventType);
+    if(form.crowd) parts.push(`預估${form.crowd}`);
+    return parts.join('｜');
   };
-  const timeText = (meta)=>{
-    const one = `${meta.start || "—"}～${meta.end || "—"}`;
-    if(meta.s2On){
-      return `${one}；第二場 ${meta.s2Start || "—"}～${meta.s2End || "—"}`;
-    }
-    return `${one}；第二場：無`;
-  };
-  const basicRows = (form)=>{
+
+  const metaLines = (form)=>{
     const rows = [];
-    if(form.eventType) rows.push(`活動類型：${form.eventType}`);
-    if(form.indoor) rows.push(`場地類型：${form.indoor}`);
-    if(form.crowd) rows.push(`預估人數：${form.crowd}`);
-    if(form.truckAccess) rows.push(`貨車到場：${form.truckAccess}`);
+    if(form.truckAccess) rows.push(`貨車是否可以直接到達場地：${form.truckAccess}`);
     if(form.moveFloor) rows.push(`搬運方式／樓層：${form.moveFloor}`);
-    if(form.name) rows.push(`姓名 / 單位：${form.name}`);
-    if(form.phone) rows.push(`電話：${form.phone}`);
-    if(form.email) rows.push(`Email：${form.email}`);
+    if(form.indoor) rows.push(`場地類型：${form.indoor}`);
     return rows;
   };
-  const dayLines = (u)=>{
+
+  const scheduleLines = (u)=>{
     const dates = (u.dates && u.dates.length) ? u.dates : [u.date];
+    const form = u.form || {};
+    const location = locText(form) || '地點未填寫';
     return dates.map((d, i)=>{
       const key = u.kind === "main" ? `main-${d}` : `${u.uid}-${d}`;
       const meta = ensurePlanMeta(key);
-      const location = locText(u.form || {});
+      const dayTitle = dates.length > 1 ? `第${i+1}天｜${d}` : `活動日期：${d}`;
+      const second = meta.s2On
+        ? `第二場：${meta.s2Start || "—"}～${meta.s2End || "—"}`
+        : `第二場：無`;
       return `
-        <div style="border:1px solid rgba(255,255,255,.6);border-radius:12px;background:rgba(255,255,255,.62);padding:10px;display:grid;gap:6px">
-          <div style="font-weight:900">${safe(`第${i+1}天｜${d}`)}</div>
-          <div class="mini">${safe(location || "地點未填寫")}</div>
-          <div class="mini">${safe(timeText(meta))}</div>
+        <div style="display:grid;gap:4px;padding:${dates.length > 1 ? '8px 0 0' : '0'};${dates.length > 1 && i > 0 ? 'border-top:1px dashed rgba(0,0,0,.12);margin-top:8px;' : ''}">
+          <div style="font-weight:900;color:#1f2937">${safe(dayTitle)}</div>
+          <div class="mini">${safe(`地點：${location}`)}</div>
+          <div class="mini">${safe(`第一場：${meta.start || "—"}～${meta.end || "—"}`)}</div>
+          <div class="mini">${safe(second)}</div>
         </div>
       `;
     }).join("");
@@ -1615,22 +1797,13 @@ function renderDayCards(){
     const idx = i + 1;
     const color = colorOf(idx);
     const form = u.form || {};
-    const basic = basicRows(form).map(x=>`<div class="mini">${safe(x)}</div>`).join("");
-    const days = dayLines(u);
+    const lines = metaLines(form).map(x=>`<div class="mini">${safe(x)}</div>`).join("");
     return `
       <div class="dayCard" data-idx="${i}" style="background:${color.bg};border:2px solid ${color.border};box-shadow:0 6px 18px rgba(0,0,0,.05)">
-        <div class="dayTop">
-          <div>
-            <div class="dayDate" style="color:${color.text}">活動${idx}</div>
-            <div class="dayMeta">活動摘要</div>
-          </div>
-        </div>
-        <div style="display:grid;gap:10px">
-          <div style="display:grid;gap:8px">${days}</div>
-          <div style="border-top:1px dashed ${color.border};padding-top:10px;display:grid;gap:6px">
-            <div style="font-weight:900;color:${color.text}">基本資料</div>
-            ${basic || '<div class="mini">尚未填寫其他基本資料</div>'}
-          </div>
+        <div style="display:grid;gap:8px">
+          <div style="font-weight:900;font-size:16px;color:${color.text}">${safe(headline(idx, form))}</div>
+          <div style="display:grid;gap:4px">${scheduleLines(u)}</div>
+          ${lines ? `<div style="border-top:1px dashed ${color.border};padding-top:8px;display:grid;gap:4px">${lines}</div>` : ''}
         </div>
       </div>
     `;
@@ -1874,6 +2047,7 @@ function renderTierPills(u){
 function renderTierButtons(u){
   const mk = (tierKey, containerSel) => {
     const el = $(containerSel);
+    if(!el) return;
     el.innerHTML = LEVELS[tierKey].map((name, idx)=>{
       const n = idx+1;
       const on = (u.tiers?.[tierKey]===n) ? "active" : "";
@@ -1925,76 +2099,131 @@ function renderTierButtons(u){
   mk("upgrade","#levelsUpgrade");
 }
 
+function getCatSelectedCount(u, catId){
+  const cat = CATEGORIES.find(c=>c.id===catId);
+  if(!cat) return 0;
+  return (cat.items||[]).reduce((sum,it)=>sum + (Number(u.cart?.items?.[it.id]||0)>0 ? 1 : 0), 0);
+}
+
 function renderTabs(u){
-  const el=$("#tabs");
-  const palette = [
-    {bg:"#e8f7ee", border:"#4ca976", text:"#21543b"},
-    {bg:"#ffe4ef", border:"#d95c96", text:"#7a1f4a"},
-    {bg:"#fff0d8", border:"#d98d2b", text:"#7a4a00"},
-    {bg:"#f3e8ff", border:"#8b5cf6", text:"#4b2ea7"},
-    {bg:"#e0f2fe", border:"#0284c7", text:"#0c4a6e"},
-    {bg:"#fef3c7", border:"#d97706", text:"#78350f"},
-  ];
-  el.innerHTML=CATEGORIES.map((c, idx)=>{
-    const p = palette[idx % palette.length];
-    const active = c.id===u.catId;
-    const style = active
-      ? `background:${p.bg};border-color:${p.border};color:${p.text};box-shadow:0 8px 18px rgba(0,0,0,.06);`
-      : `background:#fff;border-color:var(--line);color:var(--text);`;
-    return `<button class="tab ${active?"active":""}" data-cat="${c.id}" style="${style}">${c.name}</button>`;
+  if(!CATEGORIES.find(c=>c.id===u.catId)) u.catId = CATEGORIES[0].id;
+  if(typeof u.catFocus !== "boolean") u.catFocus = false;
+  const el = $("#tabs");
+  const overview = $("#equipOverview");
+  const focusWrap = $("#equipFocusWrap");
+  const activeCat = CATEGORIES.find(c=>c.id===u.catId) || CATEGORIES[0];
+  if(overview) overview.style.display = u.catFocus ? "none" : "block";
+  if(focusWrap) focusWrap.style.display = u.catFocus ? "block" : "none";
+  if(!el) return;
+
+  el.innerHTML = CATEGORIES.map((c)=>{
+    const selectedCount = getCatSelectedCount(u, c.id);
+    const isDone = !!(u.completedCats && u.completedCats[c.id]);
+    return `
+      <button class="tab ${c.id===u.catId?"active":""}" data-cat="${c.id}" type="button">
+        <div class="catCard">
+          <div class="catPhoto">
+            <img src="${c.hero || svgThumb(c.name)}" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='${svgThumb("設備")}';">
+          </div>
+          <div class="catBody">
+            <div class="catTopLine">
+              <div class="catTitle">${escapeHtml(c.name)}</div>
+              <span class="catCount">${isDone ? "已完成" : (selectedCount>0 ? `已選 ${selectedCount} 項` : `共 ${(c.items||[]).length} 項`)}</span>
+            </div>
+            <div class="catDesc">${escapeHtml(c.desc||"")}</div>
+            <div class="catMeta">
+              <span class="catEnter">點此進入</span>
+            </div>
+          </div>
+        </div>
+      </button>`;
   }).join("");
-  el.querySelectorAll(".tab").forEach(b=>b.addEventListener("click", ()=>{
-    u.catId=b.dataset.cat;
+
+  el.querySelectorAll(".tab").forEach((b)=>b.addEventListener("click", ()=>{
+    u.catId = b.dataset.cat;
+    u.catFocus = true;
+    renderTabs(u);
     renderItems(u);
+    window.scrollTo({top:0, behavior:'smooth'});
   }));
 }
 
-function renderItems(u){
-  const cat=CATEGORIES.find(c=>c.id===u.catId);
-  const el=$("#items");
-  el.innerHTML=(cat?.items||[]).map(it=>{
-    const qty=Number(u.cart?.items?.[it.id]||0);
-    return `
-      <div class="item">
-        <img class="thumb" src="${getItemPhotos(u.catId, it.id)[0]}" alt="${escapeHtml(it.name)}" loading="lazy"
-          onerror="this.onerror=null;this.src='${svgThumb(it.name)}';">
-        <div class="meta">
-          <div class="name">${escapeHtml(it.name)}</div>
-          <div class="sub">${getItemSubPriceText(it, qty)}</div>
-          <div class="row2">
-            <div class="qty">
-              <button class="qbtn" data-act="dec" data-id="${it.id}">-</button>
-              <div class="qval">${qty}</div>
-              <button class="qbtn" data-act="inc" data-id="${it.id}">+</button>
-            </div>
-            <button class="linkbtn" data-act="detail" data-id="${it.id}">詳情</button>
-          </div>
-          ${qty>0 ? buildOptionsHTML(u, it) : ""}
-        </div>
-        <div class="price">${fmt(getLineSubtotal(it, qty))}</div>
-      </div>
-    `;
-  }).join("");
-
-  el.querySelectorAll("button").forEach(b=>{
-    const act=b.dataset.act, id=b.dataset.id;
-    if(!act||!id) return;
-    if(act==="inc") b.addEventListener("click", ()=>setQty(u, id, (u.cart.items[id]||0)+1));
-    if(act==="dec") b.addEventListener("click", ()=>setQty(u, id, Math.max(0,(u.cart.items[id]||0)-1)));
-    if(act==="detail") b.addEventListener("click", ()=>openItemDetail(id));
-  });
-
-  el.querySelectorAll('select[data-act="opt"]').forEach(s=>{
-    s.addEventListener("change", ()=>{
-      const id=s.dataset.id;
-      const key=s.dataset.opt;
-      setItemOpt(u, id, key, s.value);
-      renderItems(u);
-      renderUnitTotalsAndCart();
-      renderDayCards();
-    });
-  });
+function backToEquipOverview(){
+  const u = getCurUnit(); if(!u) return;
+  u.catFocus = false;
+  renderTabs(u);
+  renderItems(u);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
+
+function goToNextEquipCategory(){
+  const u = getCurUnit(); if(!u) return;
+  if(!u.completedCats) u.completedCats = {};
+  u.completedCats[u.catId] = true;
+  const idx = Math.max(0, CATEGORIES.findIndex(c=>c.id===u.catId));
+  if(idx < CATEGORIES.length - 1){
+    u.catId = CATEGORIES[idx + 1].id;
+    u.catFocus = true;
+  }else{
+    u.catFocus = false;
+  }
+  renderTabs(u);
+  renderItems(u);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderItems(u){
+  const cat = CATEGORIES.find(c=>c.id===u.catId) || CATEGORIES[0];
+  const el = $("#items");
+  const titleEl = $("#equipCatTitle");
+  const notesEl = $("#equipCatNotes");
+  const nextBtn = $("#btnNextCategory");
+  const overview = $("#equipOverview");
+  const focusWrap = $("#equipFocusWrap");
+  if(titleEl) titleEl.textContent = cat?.name || "設備區";
+  if(notesEl){
+    const notes = CATEGORY_NOTES[cat.id] || [cat.desc || "請依照需求挑選這一區相關設備。"];
+    notesEl.innerHTML = notes.map(n=>`<li>${escapeHtml(n)}</li>`).join("");
+  }
+  if(nextBtn){
+    const idx = Math.max(0, CATEGORIES.findIndex(c=>c.id===cat.id));
+    nextBtn.textContent = idx < CATEGORIES.length - 1
+      ? `完成此區塊，前往${CATEGORIES[idx + 1].name}`
+      : "完成此區塊，返回所有區塊";
+  }
+  if(overview) overview.style.display = u.catFocus ? "none" : "block";
+  if(focusWrap) focusWrap.style.display = u.catFocus ? "block" : "none";
+  if(!el) return;
+  const rows = (cat?.items||[]);
+  el.innerHTML = rows.length ? rows.map(it=>{
+    const qty = Number(u.cart?.items?.[it.id]||0);
+    return `
+      <div class="equipItemCard">
+        <img class="equipItemThumb" src="${it.img || svgThumb(it.name)}" alt="${escapeHtml(it.name)}" loading="lazy" onerror="this.onerror=null;this.src='${svgThumb("設備")}';">
+        <div class="equipItemMeta">
+          <div class="equipItemName">${escapeHtml(it.name)}</div>
+          <div class="equipItemDesc">${escapeHtml(it.desc||"")}</div>
+          <div class="equipItemRow2">
+            <button class="linkbtn" type="button" onclick="openItemDetail('${it.id}')">查看詳情</button>
+          </div>
+        </div>
+        <div class="equipItemPrice">
+          <div>${fmt(getUnitPrice(it, qty||1))}</div>
+          <div class="sub">／${escapeHtml(it.unit||'項')}</div>
+          <div class="qty" style="margin-top:10px">
+            <button class="qbtn" type="button" data-act="minus" data-id="${it.id}">－</button>
+            <div class="qval">${qty}</div>
+            <button class="qbtn" type="button" data-act="plus" data-id="${it.id}">＋</button>
+          </div>
+        </div>
+      </div>`;
+  }).join("") : `<div class="note">這一區目前沒有可選項目。</div>`;
+
+  el.querySelectorAll("[data-act]").forEach(btn=>btn.addEventListener("click", ()=>{
+    adjustQty(btn.dataset.id, btn.dataset.act==="plus" ? 1 : -1);
+  }));
+}
+
 
 function groupCart(u){
   const groups=new Map();
@@ -2103,6 +2332,9 @@ function renderCart(u){
 
 function renderEquipmentUI(){
   const u = getCurUnit(); if(!u) return;
+  if(!CATEGORIES.find(c=>c.id===u.catId)) u.catId = CATEGORIES[0].id;
+  if(typeof u.catFocus !== "boolean") u.catFocus = false;
+  if(!u.completedCats) u.completedCats = {};
   renderTierPills(u);
   renderTierButtons(u);
   renderTabs(u);
@@ -2191,6 +2423,8 @@ function openUnit(idx){
   showView("viewDayEdit");
 
   fillSelectOptions();
+  const curUnitForOpen = getCurUnit();
+  if(curUnitForOpen){ curUnitForOpen.catFocus = false; if(!curUnitForOpen.completedCats) curUnitForOpen.completedCats = {}; }
   fillUnitFormUI(getCurUnit());
   renderEquipmentUI();
   renderUnitTotalsAndCart();
