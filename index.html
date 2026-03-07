@@ -422,47 +422,45 @@ body.printing #printRoot{display:block}
 }
 
 
-@media (max-width:980px){
-  .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:1100px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 28px}
+  .equipOverview .tab:not(:nth-child(4n))::after,.equipOverview .tab:not(:nth-child(4n))::before{display:none}
+  .equipOverview .tab:not(:nth-child(3n))::after{content:"";display:block;position:absolute;right:-22px;top:42%;width:16px;height:16px;border-top:4px solid #1e8e6f;border-right:4px solid #1e8e6f;transform:translateY(-50%) rotate(45deg);opacity:.95}
+  .equipOverview .tab:not(:nth-child(3n))::before{content:"下一步";display:block;position:absolute;right:-34px;top:calc(42% + 10px);font-size:11px;font-weight:900;color:#1e8e6f;background:#fff;padding:1px 4px;border-radius:999px;z-index:2}
 }
-@media (max-width:640px){
-  .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .equipOverview .tab::after,.equipOverview .tab::before{display:none !important}
   .equipGuide h3{font-size:20px}
 }
 
 
 /* ===== Step3 focus flow refresh ===== */
 .equipOverview{padding:10px 14px 0}
-.equipOverview .equipTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.equipOverview .equipTabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px 28px;overflow:visible}
+.equipOverview .tab{position:relative;overflow:visible}
+.equipOverview .tab:not(:nth-child(5n))::after{content:"➜";position:absolute;right:-25px;top:41%;transform:translateY(-50%);font-size:28px;line-height:1;color:#1e8e6f;font-weight:1000;opacity:.98;z-index:3;text-shadow:0 1px 0 #fff}
+.equipOverview .tab:not(:nth-child(5n))::before{content:"下一步";position:absolute;right:-34px;top:calc(41% + 18px);font-size:11px;font-weight:900;color:#1e8e6f;background:#fff;padding:2px 5px;border-radius:999px;z-index:3;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
 .equipOverview .tab{
   min-height:0; padding:0; border:1px solid #d6e2dc; background:#fff; border-radius:20px;
-  overflow:hidden; align-items:stretch; justify-content:stretch; text-align:left;
+  overflow:visible; align-items:stretch; justify-content:stretch; text-align:left;
   box-shadow:0 12px 26px rgba(15,23,42,.05); transition:.18s ease; display:block;
 }
 .equipOverview .tab:hover{transform:translateY(-2px); box-shadow:0 18px 30px rgba(15,23,42,.08)}
 .equipOverview .tab.active{border-color:#1e8e6f; box-shadow:0 18px 32px rgba(30,142,111,.14); transform:translateY(-2px)}
-.equipOverview .tab{position:relative}
-.equipOverview .tab.hasArrow::after{
-  content:"➜"; position:absolute; right:-28px; top:50%; transform:translateY(-50%);
-  font-size:44px; line-height:1; color:#1e8e6f; font-weight:1000; pointer-events:none; text-shadow:0 2px 8px rgba(30,142,111,.18);
-}
-.equipOverview .tab.hasArrow::before{
-  content:""; position:absolute; right:-18px; top:50%; transform:translateY(-50%);
-  width:18px; height:4px; background:#1e8e6f; border-radius:999px; pointer-events:none;
-}
-
-.catCard{display:grid; gap:10px; padding:16px}
+.catCard{display:grid; gap:6px; padding:8px}
 .catPhoto{
-  width:100%; aspect-ratio: 16 / 9; border-radius:16px; overflow:hidden; background:linear-gradient(180deg,#f4faf7,#eef5f1);
+  width:100%; aspect-ratio: 16 / 5; border-radius:10px; overflow:hidden; background:linear-gradient(180deg,#f4faf7,#eef5f1);
   border:1px solid #dfe9e4; display:flex; align-items:center; justify-content:center;
 }
 .catPhoto img{width:100%; height:100%; object-fit:cover; display:block}
 .catBody{display:grid; gap:6px}
 .catTopLine{display:flex; align-items:flex-start; justify-content:space-between; gap:8px}
-.catTitle{font-size:20px; line-height:1.15; color:#173b30; font-weight:1000; letter-spacing:.5px}
-.catDesc{font-size:12px; line-height:1.5; color:#98a1ab; min-height:36px}
+.catTitle{font-size:16px; line-height:1.15; color:#1f3b32; font-weight:1000; letter-spacing:.2px}
+.catDesc{font-size:11px; line-height:1.45; color:#7b8794; min-height:30px}
 .catMeta{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:2px}
-.catCount,.catEnter{display:inline-flex; align-items:center; justify-content:center; min-height:30px; border-radius:999px; padding:0 12px; font-size:12px; font-weight:900}
+.catCount,.catEnter{display:inline-flex; align-items:center; justify-content:center; min-height:28px; border-radius:999px; padding:0 10px; font-size:11px; font-weight:900}
 .catCount{background:#edf7f2; color:#21614c; border:1px solid #cfe4d8}
 .catEnter{background:#f5f6f8; color:#6b7280; border:1px solid #e3e6ea}
 .equipFocusWrap{padding:12px 14px 0}
@@ -499,18 +497,10 @@ body.printing #printRoot{display:block}
 }
 @media (max-width:640px){
   .equipOverview{padding:8px 12px 0}
-  .equipOverview .equipTabs{grid-template-columns:1fr; gap:18px}
+  .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
   .catCard{padding:12px}
   .catTitle{font-size:18px}
   .catDesc{font-size:11px; min-height:32px}
-  .equipOverview .tab.hasArrow::after{
-    content:"⬇"; right:auto; left:50%; top:auto; bottom:-30px; transform:translateX(-50%);
-    font-size:40px;
-  }
-  .equipOverview .tab.hasArrow::before{
-    right:auto; left:50%; top:auto; bottom:-14px; transform:translateX(-50%);
-    width:4px; height:18px;
-  }
   .equipFocusWrap{padding:10px 12px 0}
   .equipFocusTitle{font-size:24px; padding:12px 14px}
   .equipFocusNotes{padding:12px 13px}
@@ -882,18 +872,53 @@ function genId(){ return "x" + Math.random().toString(36).slice(2,8) + Date.now(
 function svgThumb(label){
   const safe = (label||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const svg =
-`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
  <defs>
    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-     <stop offset="0" stop-color="#e8f5f0"/>
-     <stop offset="1" stop-color="#f6f7fb"/>
+     <stop offset="0" stop-color="#eef8f3"/>
+     <stop offset="1" stop-color="#f7faf8"/>
    </linearGradient>
  </defs>
  <rect width="200" height="200" rx="22" fill="url(#g)"/>
- <circle cx="160" cy="40" r="26" fill="#1e8e6f" opacity="0.18"/>
- <circle cx="40" cy="160" r="36" fill="#156e56" opacity="0.12"/>
- <text x="18" y="102" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" fill="#156e56" font-weight="700">${safe}</text>
+ <circle cx="160" cy="40" r="26" fill="#1e8e6f" opacity="0.12"/>
+ <circle cx="40" cy="160" r="36" fill="#156e56" opacity="0.08"/>
+ <text x="18" y="108" font-size="18" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" fill="#156e56" font-weight="800">${safe}</text>
 </svg>`;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+function svgCategoryThumb(kind,label){
+  const safe = (label||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const map = {
+    stage:{glyph:"◫", sub:"STAGE"},
+    audio:{glyph:"◉", sub:"AUDIO"},
+    light:{glyph:"✦", sub:"LIGHT"},
+    screen:{glyph:"▣", sub:"SCREEN"},
+    backdrop:{glyph:"▤", sub:"FRAME"},
+    power:{glyph:"⚡", sub:"POWER"},
+    outdoor:{glyph:"△", sub:"OUTDOOR"},
+    decor:{glyph:"✿", sub:"DECOR"},
+    staff:{glyph:"👥", sub:"STAFF"},
+    other:{glyph:"＋", sub:"OTHER"}
+  };
+  const it = map[kind] || {glyph:"◎", sub:"ITEM"};
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="320" height="220" viewBox="0 0 320 220">
+    <defs>
+      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#eff8f3"/>
+        <stop offset="1" stop-color="#f8fbf9"/>
+      </linearGradient>
+    </defs>
+    <rect width="320" height="220" rx="26" fill="url(#g2)"/>
+    <rect x="20" y="20" width="280" height="180" rx="22" fill="#ffffff" stroke="#d9e8df"/>
+    <circle cx="70" cy="78" r="34" fill="#e6f4ed"/>
+    <text x="70" y="92" text-anchor="middle" font-size="42" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" fill="#177255">${it.glyph}</text>
+    <text x="122" y="74" font-size="16" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" fill="#177255" font-weight="900">${it.sub}</text>
+    <text x="122" y="106" font-size="28" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" fill="#173f32" font-weight="1000">${safe}</text>
+    <path d="M122 128 H246" stroke="#b9d7c7" stroke-width="4" stroke-linecap="round"/>
+    <path d="M122 148 H226" stroke="#d7e7de" stroke-width="4" stroke-linecap="round"/>
+    <path d="M122 168 H208" stroke="#e4efe9" stroke-width="4" stroke-linecap="round"/>
+  </svg>`;
   return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
 }
 
@@ -2134,14 +2159,14 @@ function renderTabs(u){
   if(focusWrap) focusWrap.style.display = u.catFocus ? "block" : "none";
   if(!el) return;
 
-  el.innerHTML = CATEGORIES.map((c, i)=>{
+  el.innerHTML = CATEGORIES.map((c)=>{
     const selectedCount = getCatSelectedCount(u, c.id);
     const isDone = !!(u.completedCats && u.completedCats[c.id]);
     return `
-      <button class="tab ${c.id===u.catId?"active":""} ${i < CATEGORIES.length-1 ? "hasArrow" : ""}" data-cat="${c.id}" type="button">
+      <button class="tab ${c.id===u.catId?"active":""}" data-cat="${c.id}" type="button">
         <div class="catCard">
           <div class="catPhoto">
-            <img src="${c.hero || svgThumb(c.name)}" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='${svgThumb("設備")}';">
+            <img src="${svgCategoryThumb(c.id, c.name)}" alt="${escapeHtml(c.name)}" loading="lazy">
           </div>
           <div class="catBody">
             <div class="catTopLine">
