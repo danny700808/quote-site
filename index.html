@@ -433,7 +433,7 @@ body.printing #printRoot{display:block}
 
 /* ===== Step3 focus flow refresh ===== */
 .equipOverview{padding:10px 14px 0}
-.equipOverview .equipTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.equipOverview .equipTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
 .equipOverview .tab{
   min-height:0; padding:0; border:1px solid #d6e2dc; background:#fff; border-radius:20px;
   overflow:hidden; align-items:stretch; justify-content:stretch; text-align:left;
@@ -441,6 +441,16 @@ body.printing #printRoot{display:block}
 }
 .equipOverview .tab:hover{transform:translateY(-2px); box-shadow:0 18px 30px rgba(15,23,42,.08)}
 .equipOverview .tab.active{border-color:#1e8e6f; box-shadow:0 18px 32px rgba(30,142,111,.14); transform:translateY(-2px)}
+.equipOverview .tab{position:relative}
+.equipOverview .tab.hasArrow::after{
+  content:"➜"; position:absolute; right:-28px; top:50%; transform:translateY(-50%);
+  font-size:44px; line-height:1; color:#1e8e6f; font-weight:1000; pointer-events:none; text-shadow:0 2px 8px rgba(30,142,111,.18);
+}
+.equipOverview .tab.hasArrow::before{
+  content:""; position:absolute; right:-18px; top:50%; transform:translateY(-50%);
+  width:18px; height:4px; background:#1e8e6f; border-radius:999px; pointer-events:none;
+}
+
 .catCard{display:grid; gap:10px; padding:16px}
 .catPhoto{
   width:100%; aspect-ratio: 16 / 9; border-radius:16px; overflow:hidden; background:linear-gradient(180deg,#f4faf7,#eef5f1);
@@ -449,8 +459,8 @@ body.printing #printRoot{display:block}
 .catPhoto img{width:100%; height:100%; object-fit:cover; display:block}
 .catBody{display:grid; gap:6px}
 .catTopLine{display:flex; align-items:flex-start; justify-content:space-between; gap:8px}
-.catTitle{font-size:22px; line-height:1.15; color:#1f3b32; font-weight:1000; letter-spacing:.5px}
-.catDesc{font-size:12px; line-height:1.5; color:#7b8794; min-height:36px}
+.catTitle{font-size:20px; line-height:1.15; color:#173b30; font-weight:1000; letter-spacing:.5px}
+.catDesc{font-size:12px; line-height:1.5; color:#98a1ab; min-height:36px}
 .catMeta{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:2px}
 .catCount,.catEnter{display:inline-flex; align-items:center; justify-content:center; min-height:30px; border-radius:999px; padding:0 12px; font-size:12px; font-weight:900}
 .catCount{background:#edf7f2; color:#21614c; border:1px solid #cfe4d8}
@@ -486,23 +496,27 @@ body.printing #printRoot{display:block}
 @media (max-width:900px){
   .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .catTitle{font-size:20px}
-  .equipItemGrid{grid-template-columns:1fr}
-  #viewDayEdit .equipItemGrid{grid-template-columns:1fr}
 }
 @media (max-width:640px){
   .equipOverview{padding:8px 12px 0}
-  .equipOverview .equipTabs{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+  .equipOverview .equipTabs{grid-template-columns:1fr; gap:18px}
   .catCard{padding:12px}
   .catTitle{font-size:18px}
   .catDesc{font-size:11px; min-height:32px}
+  .equipOverview .tab.hasArrow::after{
+    content:"⬇"; right:auto; left:50%; top:auto; bottom:-30px; transform:translateX(-50%);
+    font-size:40px;
+  }
+  .equipOverview .tab.hasArrow::before{
+    right:auto; left:50%; top:auto; bottom:-14px; transform:translateX(-50%);
+    width:4px; height:18px;
+  }
   .equipFocusWrap{padding:10px 12px 0}
   .equipFocusTitle{font-size:24px; padding:12px 14px}
   .equipFocusNotes{padding:12px 13px}
   .equipFocusActions{grid-template-columns:1fr 1fr; gap:10px}
-  .equipItemGrid{grid-template-columns:1fr !important}
-  #viewDayEdit .equipItemGrid{grid-template-columns:1fr !important}
-  .equipItemCard{grid-template-columns:72px 1fr; gap:10px; padding:12px}
-  #viewDayEdit .equipItemCard{grid-template-columns:72px 1fr; gap:10px; padding:12px}
+  .equipItemGrid{grid-template-columns:1fr}
+  .equipItemCard{grid-template-columns:72px 1fr; gap:10px}
   .equipItemPrice{grid-column:2; text-align:left}
 }
 
@@ -1999,12 +2013,6 @@ function buildOptionsHTML(u, item){
 /* =========================
    設備選擇（沿用）
    ========================= */
-function adjustQty(itemId, delta){
-  const u = getCurUnit(); if(!u) return;
-  const now = Number(u.cart?.items?.[itemId]||0);
-  setQty(u, itemId, Math.max(0, now + Number(delta||0)));
-}
-
 function setQty(u, itemId, qty){
   u.cart = u.cart || {packs:{}, items:{}};
   u.cart.items = u.cart.items || {};
@@ -2126,11 +2134,11 @@ function renderTabs(u){
   if(focusWrap) focusWrap.style.display = u.catFocus ? "block" : "none";
   if(!el) return;
 
-  el.innerHTML = CATEGORIES.map((c)=>{
+  el.innerHTML = CATEGORIES.map((c, i)=>{
     const selectedCount = getCatSelectedCount(u, c.id);
     const isDone = !!(u.completedCats && u.completedCats[c.id]);
     return `
-      <button class="tab ${c.id===u.catId?"active":""}" data-cat="${c.id}" type="button">
+      <button class="tab ${c.id===u.catId?"active":""} ${i < CATEGORIES.length-1 ? "hasArrow" : ""}" data-cat="${c.id}" type="button">
         <div class="catCard">
           <div class="catPhoto">
             <img src="${c.hero || svgThumb(c.name)}" alt="${escapeHtml(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='${svgThumb("設備")}';">
