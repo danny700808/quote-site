@@ -367,10 +367,6 @@ body.printing #printRoot{display:block}
   /* 如果你之後把 actions 改成固定在右側，這裡仍可避免字被擠成一字一行 */
   .btn{word-break:keep-all}
 
-  /* Step1：加入活動列避免日期＋按鈕重疊 */
-  .addRow{flex-direction:column;align-items:stretch}
-  #btnAddDate{width:100%}
-
   /* Step1：已加入活動的標題/按鈕允許換行 */
   .planRowTop{flex-direction:column;align-items:stretch;gap:8px}
   .planRowTop > div:last-child{justify-content:space-between}
@@ -512,29 +508,19 @@ body.printing #printRoot{display:block}
             <option value="">請選擇活動類型</option>
             <option>開幕典禮／剪綵儀式</option>
             <option>記者會／產品發表會</option>
-            <option>品牌活動／快閃活動（商場/戶外）</option>
-            <option>展覽開幕／展場活動（含舞台時段）</option>
-            <option>校慶活動（運動會/園遊會/舞台）</option>
+            <option>品牌活動／快閃活動／展覽／展場活動</option>
+            <option>校園活動（校慶／運動會／園遊會）</option>
             <option>畢業典禮</option>
-            <option>成果發表會（學校/才藝/社團）</option>
-            <option>社團成發／迎新送舊晚會</option>
-            <option>演講／講座／論壇</option>
-            <option>研討會／學術會議（含分場）</option>
-            <option>公司內訓／教育訓練／大會</option>
-            <option>尾牙／春酒</option>
-            <option>公司家庭日／園遊會</option>
-            <option>餐會／晚宴（含抽獎、致詞、表演）</option>
-            <option>商務交流會／同業公會活動</option>
-            <option>演唱會／Live Band 表演</option>
-            <option>DJ 派對／電音活動</option>
-            <option>舞蹈表演／舞蹈比賽</option>
-            <option>戲劇／舞台劇／音樂劇</option>
-            <option>親子活動／兒童舞台秀</option>
-            <option>慶生會／派對（含包場）</option>
-            <option>婚禮（證婚/宴客/After party）</option>
-            <option>告別式／追思會（殯儀館/會館/戶外追思）</option>
-            <option>宗教活動（廟會/法會/禮拜/慶典）</option>
-            <option>社區活動／里民大會／宣導活動（戶外廣播）</option>
+            <option>成果發表會／社團成發／迎新送舊</option>
+            <option>演講／講座／論壇／研討會／學術會議</option>
+            <option>公司活動（內訓／教育訓練／大會／家庭日）</option>
+            <option>尾牙／春酒／餐會／晚宴／商務交流會</option>
+            <option>表演活動（演唱／Live Band／DJ／舞蹈／戲劇）</option>
+            <option>親子活動／慶生會／派對</option>
+            <option>婚禮</option>
+            <option>告別式／追思會</option>
+            <option>宗教活動</option>
+            <option>社區活動／里民大會／宣導活動</option>
           </select>
         </div>
 
@@ -557,6 +543,27 @@ body.printing #printRoot{display:block}
             <option>室內</option>
             <option>戶外</option>
             <option>半戶外</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>貨車是否可以直接到達場地</label>
+          <select id="fTruckAccess">
+            <option value="">請選擇</option>
+            <option>可以</option>
+            <option>不可以</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>搬運方式／樓層</label>
+          <select id="fMoveFloor">
+            <option value="">請選擇</option>
+            <option>有電梯</option>
+            <option>1樓</option>
+            <option>2樓</option>
+            <option>3樓</option>
+            <option>4樓以上</option>
           </select>
         </div>
 
@@ -1209,7 +1216,7 @@ function renderPlannerRows(containerEl, rows, onChange){
           <div class="planS2">
             <label style="display:flex;align-items:center;gap:10px;font-weight:900;color:var(--muted);cursor:pointer;">
               <input type="checkbox" data-s2="1" ${s2On?"checked":""} style="width:18px;height:18px">
-              需要第二場
+              此活動當天需要第二場次
             </label>
 
             <div class="s2Times" style="${s2On?"":"display:none"}">
@@ -1362,6 +1369,8 @@ function getGlobalFormFromUI(){
     eventType: $("#fEventType")?.value || "",
     crowd: $("#fCrowd")?.value || "",
     indoor: $("#fIndoor")?.value || "",
+    truckAccess: $("#fTruckAccess")?.value || "",
+    moveFloor: $("#fMoveFloor")?.value || "",
     note: $("#fNote")?.value?.trim() || "",
     dateStart: normalizeDateStr($("#fDateStart")?.value||""),
     dateEnd: normalizeDateStr($("#fDateEnd")?.value||""),
@@ -1579,6 +1588,8 @@ function renderDayCards(){
     if(form.eventType) rows.push(`活動類型：${form.eventType}`);
     if(form.indoor) rows.push(`場地類型：${form.indoor}`);
     if(form.crowd) rows.push(`預估人數：${form.crowd}`);
+    if(form.truckAccess) rows.push(`貨車到場：${form.truckAccess}`);
+    if(form.moveFloor) rows.push(`搬運方式／樓層：${form.moveFloor}`);
     if(form.name) rows.push(`姓名 / 單位：${form.name}`);
     if(form.phone) rows.push(`電話：${form.phone}`);
     if(form.email) rows.push(`Email：${form.email}`);
@@ -1626,7 +1637,6 @@ function renderDayCards(){
   });
 
   box.innerHTML = cardsHTML.join("");
-  renderUnitJumpList();
 }
   /* =========================
    Step3：編輯（主案/活動）
@@ -1691,9 +1701,6 @@ function fillUnitFormUI(u){
   if(titleEl) titleEl.textContent = title;
   renderEquipUnitBar();
   renderStep3FlowButton();
-}
-function bindUnitFormEvents(){
-  return;
 }
 function fixDaySession2(writeBack=true){
   const u = getCurUnit(); if(!u) return;
@@ -1828,7 +1835,6 @@ function setQty(u, itemId, qty){
   renderEquipmentUI();
   renderUnitTotalsAndCart();
   renderDayCards();
-  updateCopyButtons();
 }
 
 function applyPackLevel(u, tierKey, level){
@@ -2134,7 +2140,6 @@ function renderUnitTotalsAndCart(){
   }
 
   renderCart(u);
-  updateCopyButtons();
   updateQuickNavBar();
 }
 
@@ -2174,15 +2179,9 @@ function isAnyEquipChosen(u){
   return Object.keys(packs).length>0 || Object.values(items).some(q=>Number(q||0)>0);
 }
 
-function updateCopyButtons(){
-  return;
-}
 function updateQuickNavBar(){
   renderStep3FlowButton();
   renderEquipUnitBar();
-}
-function renderUnitJumpList(){
-  return;
 }
 function openUnit(idx){
   idx = Math.max(0, Math.min((state.units||[]).length-1, Number(idx||0)));
@@ -2462,6 +2461,7 @@ function buildPrint(){
       <div class="printMeta">聯絡人：${escapeHtml(g.name||"")}｜電話：${escapeHtml(g.phone||"")}｜Email：${escapeHtml(g.email||"")}</div>
       <div class="printMeta">地點：${escapeHtml(g.city||"")} ${escapeHtml(g.area||"")} ${escapeHtml(g.addr||"")} ${escapeHtml(g.bldg||"")}</div>
       <div class="printMeta">活動：${escapeHtml(g.eventType||"")}｜人數：${escapeHtml(g.crowd||"")}｜室內外：${escapeHtml(g.indoor||"")}</div>
+      <div class="printMeta">貨車到場：${escapeHtml(g.truckAccess||"")}｜搬運方式／樓層：${escapeHtml(g.moveFloor||"")}</div>
     </div>
 
     <div class="printH3">總覽</div>
@@ -2511,6 +2511,7 @@ function buildPrint(){
         <div class="printMeta">聯絡人：${escapeHtml(u.form?.name||"")}｜電話：${escapeHtml(u.form?.phone||"")}｜Email：${escapeHtml(u.form?.email||"")}</div>
         <div class="printMeta">地點：${escapeHtml(u.form?.city||"")} ${escapeHtml(u.form?.area||"")} ${escapeHtml(u.form?.addr||"")} ${escapeHtml(u.form?.bldg||"")}</div>
         <div class="printMeta">活動：${escapeHtml(u.form?.eventType||"")}｜人數：${escapeHtml(u.form?.crowd||"")}｜室內外：${escapeHtml(u.form?.indoor||"")}</div>
+        <div class="printMeta">貨車到場：${escapeHtml(u.form?.truckAccess||"")}｜搬運方式／樓層：${escapeHtml(u.form?.moveFloor||"")}</div>
       </div>
 
       <div class="printH3">設備清單</div>
@@ -2646,7 +2647,6 @@ function buildQuotePayload_v2(){
       state: deepClone(state),
       ui: {
         fIsMultiDay: !!$("#fIsMultiDay")?.checked,
-        fIsNonContinuous: !!$("#fIsNonContinuous")?.checked,
         fDateStart: normalizeDateStr($("#fDateStart")?.value||""),
         fDateEnd: normalizeDateStr($("#fDateEnd")?.value||""),
         globalFormNow: getGlobalFormFromUI()
@@ -2825,15 +2825,10 @@ function bindStep1Events(){
   }
 
   $("#fIsMultiDay")?.addEventListener("change", ()=>{
-    if($("#multiDayWrap")) $("#multiDayWrap").style.display = $("#fIsMultiDay")?.checked ? "block" : "none";
     syncEndMin();
     renderMainInline();
   });
 
-  $("#fIsNonContinuous")?.addEventListener("change", ()=>{
-    if($("#nonContinuousWrap")) $("#nonContinuousWrap").style.display = $("#fIsNonContinuous")?.checked ? "block" : "none";
-    renderExtraInline();
-  });
 
   $("#fDateStart").addEventListener("change", ()=>{
     syncEndMin();
@@ -2903,6 +2898,8 @@ async function tryLoadEditMode_(){
     $("#fEventType").value = gf.eventType || "";
     $("#fCrowd").value = gf.crowd || "";
     $("#fIndoor").value = gf.indoor || "";
+    $("#fTruckAccess").value = gf.truckAccess || "";
+    $("#fMoveFloor").value = gf.moveFloor || "";
     $("#fNote").value = gf.note || "";
 
     if(gf.city) $("#fCity").value = gf.city;
@@ -2913,11 +2910,8 @@ async function tryLoadEditMode_(){
       $("#fDateStart").value = j.uiState.ui.fDateStart || (gf.dateStart||"");
       $("#fDateEnd").value = j.uiState.ui.fDateEnd || (gf.dateEnd||"");
       $("#fIsMultiDay").checked = !!j.uiState.ui.fIsMultiDay;
-      if($("#fIsNonContinuous")) $("#fIsNonContinuous").checked = !!j.uiState.ui.fIsNonContinuous;
     }
 
-    if($("#multiDayWrap")) $("#multiDayWrap").style.display = $("#fIsMultiDay")?.checked ? "block" : "none";
-    if($("#nonContinuousWrap")) $("#nonContinuousWrap").style.display = $("#fIsNonContinuous")?.checked ? "block" : "none";
 
     renderMainInline();
     renderExtraInline();
@@ -2949,14 +2943,11 @@ async function tryLoadEditMode_(){
 (async function init(){
   fillCityArea($("#fCity"), $("#fArea"), "台中市", "豐原區");
 
-  if($("#multiDayWrap")) $("#multiDayWrap").style.display = "none";
-  if($("#nonContinuousWrap")) $("#nonContinuousWrap").style.display = "none";
 
   fillTimeSelectsForEdit();
   fillSelectOptions();
   bindNavButtons();
   bindStep1Events();
-  bindUnitFormEvents();
 
   setStep(1);
   showView("viewBasic");
@@ -2992,6 +2983,8 @@ async function tryLoadEditMode_(){
       eventType: document.getElementById('fEventType')?.value || '',
       crowd: document.getElementById('fCrowd')?.value || '',
       indoor: document.getElementById('fIndoor')?.value || '',
+      truckAccess: document.getElementById('fTruckAccess')?.value || '',
+      moveFloor: document.getElementById('fMoveFloor')?.value || '',
       note: document.getElementById('fNote')?.value || '',
       date: document.getElementById('fDateStart')?.value || ''
     };
@@ -3016,6 +3009,8 @@ function makeExtraFormHtml(index, seed){
           <div class="field span2"><label>大樓/棟別/樓層/入口（讓地址更清楚）</label><input class="xBldg" value="${esc(seed.bldg||'')}"></div>
           <div class="field"><label>預估人數</label><select class="xCrowd"></select></div>
           <div class="field"><label>室內 / 戶外</label><select class="xIndoor"></select></div>
+          <div class="field"><label>貨車是否可以直接到達場地</label><select class="xTruckAccess"></select></div>
+          <div class="field"><label>搬運方式／樓層</label><select class="xMoveFloor"></select></div>
           <div class="field span2"><label>活動日期</label><input class="xDateStart" type="date"></div>
           <div class="field span2 xPlannerWrap" style="display:none"><label>活動時間規劃</label><div class="xPlannerList planList"></div></div>
           <div class="field span2 xAddDayWrap">
@@ -3051,7 +3046,7 @@ function updateAddLauncher(){
     if(cards.length){
       const last = cards[cards.length-1];
       return {
-        name:last.querySelector('.xName')?.value||'', phone:last.querySelector('.xPhone')?.value||'', email:last.querySelector('.xEmail')?.value||'', city:last.querySelector('.xCity')?.value||'', area:last.querySelector('.xArea')?.value||'', addr:last.querySelector('.xAddr')?.value||'', bldg:last.querySelector('.xBldg')?.value||'', eventType:last.querySelector('.xEventType')?.value||'', crowd:last.querySelector('.xCrowd')?.value||'', indoor:last.querySelector('.xIndoor')?.value||'', note:last.querySelector('.xNote')?.value||'', date:last.querySelector('.xDateStart')?.value||''
+        name:last.querySelector('.xName')?.value||'', phone:last.querySelector('.xPhone')?.value||'', email:last.querySelector('.xEmail')?.value||'', city:last.querySelector('.xCity')?.value||'', area:last.querySelector('.xArea')?.value||'', addr:last.querySelector('.xAddr')?.value||'', bldg:last.querySelector('.xBldg')?.value||'', eventType:last.querySelector('.xEventType')?.value||'', crowd:last.querySelector('.xCrowd')?.value||'', indoor:last.querySelector('.xIndoor')?.value||'', truckAccess:last.querySelector('.xTruckAccess')?.value||'', moveFloor:last.querySelector('.xMoveFloor')?.value||'', note:last.querySelector('.xNote')?.value||'', date:last.querySelector('.xDateStart')?.value||''
       };
     }
     return getMainFormValues();
@@ -3081,11 +3076,15 @@ function bindExtraCard(card){
     card.querySelector('.xEventType').innerHTML = document.getElementById('fEventType')?.innerHTML || '<option value="">請選擇</option>';
     card.querySelector('.xCrowd').innerHTML = document.getElementById('fCrowd')?.innerHTML || '<option value="">請選擇</option>';
     card.querySelector('.xIndoor').innerHTML = document.getElementById('fIndoor')?.innerHTML || '<option value="">請選擇</option>';
+    card.querySelector('.xTruckAccess').innerHTML = document.getElementById('fTruckAccess')?.innerHTML || '<option value="">請選擇</option>';
+    card.querySelector('.xMoveFloor').innerHTML = document.getElementById('fMoveFloor')?.innerHTML || '<option value="">請選擇</option>';
     const seed = copySeedFromPrevious();
     fillCityArea(card.querySelector('.xCity'), card.querySelector('.xArea'), seed.city||'台中市', seed.area||'豐原區');
     if(seed.eventType) card.querySelector('.xEventType').value = seed.eventType;
     if(seed.crowd) card.querySelector('.xCrowd').value = seed.crowd;
     if(seed.indoor) card.querySelector('.xIndoor').value = seed.indoor;
+    if(seed.truckAccess) card.querySelector('.xTruckAccess').value = seed.truckAccess;
+    if(seed.moveFloor) card.querySelector('.xMoveFloor').value = seed.moveFloor;
     if(seed.date) card.querySelector('.xDateStart').value = seed.date;
 
     const startEl = card.querySelector('.xDateStart');
@@ -3156,70 +3155,11 @@ function humanizeStep1(){
     const dateInner = dateField?.querySelector('div[style*="display:grid;gap:8px"]');
     if(dateInner){
       const dateRow = dateField.querySelector('.dateRow');
-      const multiLabel = Array.from(dateInner.children).find(el => el.querySelector('#fIsMultiDay'));
-      const multiWrap = document.getElementById('multiDayWrap');
       const mainWrap = document.getElementById('mainInlineWrap');
-      const nonLabel = Array.from(dateInner.children).find(el => el.querySelector('#fIsNonContinuous'));
-      const nonWrap = document.getElementById('nonContinuousWrap');
       if(dateRow && mainWrap){
         dateInner.innerHTML='';
         dateInner.appendChild(dateRow);
         dateInner.appendChild(mainWrap);
-
-        const dayAdder = document.createElement('div');
-        dayAdder.className = 'field span2';
-        dayAdder.innerHTML = `
-          <label>連續增加天數</label>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <button class="btn" id="mainAddDayBtn" type="button">＋再增加一天</button>
-            <button class="btn" id="mainRemoveDayBtn" type="button">－移除最後一天</button>
-            <span class="pill" id="mainDayCountText">目前 1 天</span>
-          </div>
-          <div class="hint" style="margin-top:8px">需要幾天就往下增加幾天；每一天都可以各自勾選第二場。</div>`;
-        dateInner.appendChild(dayAdder);
-
-        if(multiLabel) multiLabel.style.display='none';
-        if(multiWrap) multiWrap.style.display='none';
-        if(nonLabel) nonLabel.style.display='none';
-        if(nonWrap) nonWrap.style.display='none';
-
-        const startEl = document.getElementById('fDateStart');
-        const multiEl = document.getElementById('fIsMultiDay');
-        const endEl = document.getElementById('fDateEnd');
-        const countText = document.getElementById('mainDayCountText');
-        const syncMainDays = ()=>{
-          const ds = normalizeDateStr(startEl?.value||'');
-          let count = ds ? 1 : 0;
-          if(ds && multiEl?.checked && normalizeDateStr(endEl?.value||'')){
-            const arr = listDatesBetween(ds, normalizeDateStr(endEl.value));
-            count = arr.length || 1;
-          }
-          countText.textContent = `目前 ${count||0} 天`;
-        };
-        document.getElementById('mainAddDayBtn')?.addEventListener('click', ()=>{
-          const ds = normalizeDateStr(startEl?.value||'');
-          if(!ds) return alert('請先選擇活動1日期。');
-          if(!multiEl.checked){ multiEl.checked = true; endEl.value = addDays(ds,1); }
-          else endEl.value = addDays(normalizeDateStr(endEl.value||ds),1);
-          renderMainInline(); syncMainDays();
-        });
-        document.getElementById('mainRemoveDayBtn')?.addEventListener('click', ()=>{
-          const ds = normalizeDateStr(startEl?.value||'');
-          if(!ds) return;
-          if(!multiEl.checked) return;
-          const curEnd = normalizeDateStr(endEl.value||'');
-          const minEnd = addDays(ds,1);
-          if(curEnd > minEnd){
-            const d = new Date(curEnd+'T00:00:00'); d.setDate(d.getDate()-1);
-            endEl.value = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-          }else{
-            multiEl.checked = false; endEl.value = '';
-          }
-          renderMainInline(); syncMainDays();
-        });
-        startEl?.addEventListener('change', syncMainDays);
-        endEl?.addEventListener('change', syncMainDays);
-        syncMainDays();
       }
     }
 
@@ -3279,6 +3219,8 @@ function humanizeStep1(){
         eventType: card.querySelector('.xEventType')?.value || '',
         crowd: card.querySelector('.xCrowd')?.value || '',
         indoor: card.querySelector('.xIndoor')?.value || '',
+        truckAccess: card.querySelector('.xTruckAccess')?.value || '',
+        moveFloor: card.querySelector('.xMoveFloor')?.value || '',
         note: card.querySelector('.xNote')?.value?.trim() || '',
         dayNote: card.querySelector('.xNote')?.value?.trim() || ''
       };
@@ -3366,23 +3308,12 @@ function humanizeStep1(){
     else fn();
   }
   onReady(function(){
-    const $ = (s, root=document)=>root.querySelector(s);
     const hiddenCss = document.createElement('style');
     hiddenCss.textContent = `
-      .legacyForceHide{display:none !important;}
       #mainSequentialControls{margin-top:10px;padding:10px;border:1px dashed var(--line);border-radius:12px;background:#fff;}
       #mainSequentialControls .btn{min-width:132px}
     `;
     document.head.appendChild(hiddenCss);
-
-    function hideLegacyBits(){
-      Array.from(document.querySelectorAll('#viewBasic label')).forEach(el=>{
-        if(el.querySelector('#fIsMultiDay') || el.querySelector('#fIsNonContinuous')) el.classList.add('legacyForceHide');
-      });
-      ['multiDayWrap','nonContinuousWrap'].forEach(id=>document.getElementById(id)?.classList.add('legacyForceHide'));
-      const oldAdder = document.getElementById('mainAddDayBtn')?.closest('.field.span2');
-      if(oldAdder) oldAdder.classList.add('legacyForceHide');
-    }
 
     function getCountHidden(){
       let el = document.getElementById('mainDayCountHidden');
@@ -3404,10 +3335,8 @@ function humanizeStep1(){
       const count = ds ? Math.max(1, Number(n||1)) : 0;
       el.value = String(count);
       syncLegacyFields();
-      const pill = document.getElementById('mainDayCountText');
+      const pill = document.querySelector('#mainSequentialControls .pill');
       if(pill) pill.textContent = `目前 ${count || 0} 天`;
-      const pill2 = document.querySelector('#mainSequentialControls .pill');
-      if(pill2) pill2.textContent = `目前 ${count || 0} 天`;
     }
 
     function getCount(){
@@ -3487,7 +3416,6 @@ function humanizeStep1(){
       const wrap = document.getElementById('mainInlineWrap');
       const list = document.getElementById('mainInlinePlanner');
       if(!wrap || !list) return;
-      hideLegacyBits();
       if(!ds){
         wrap.style.display = 'none';
         list.innerHTML = '';
@@ -3512,26 +3440,23 @@ function humanizeStep1(){
         }
       });
       attachSequentialControls(dates);
-      hideLegacyBits();
     };
 
     function patchDateField(){
-      hideLegacyBits();
       const startEl = document.getElementById('fDateStart');
       if(!startEl) return;
       startEl.addEventListener('change', ()=>{
-        const hadDate = !!norm(startEl.value);
-        if(hadDate && getCount() < 1) setCount(1);
-        if(!hadDate) setCount(0);
+        const hasDate = !!norm(startEl.value);
+        if(hasDate && getCount() < 1) setCount(1);
+        if(!hasDate) setCount(0);
         window.renderMainInline?.();
       });
     }
 
-    hideLegacyBits();
     syncCountFromInputs();
     patchDateField();
-    setTimeout(()=>{ hideLegacyBits(); syncCountFromInputs(); window.renderMainInline?.(); }, 120);
-    setTimeout(()=>{ hideLegacyBits(); syncCountFromInputs(); window.renderMainInline?.(); }, 400);
+    setTimeout(()=>{ syncCountFromInputs(); window.renderMainInline?.(); }, 120);
+    setTimeout(()=>{ syncCountFromInputs(); window.renderMainInline?.(); }, 400);
   });
 })();
 </script>
