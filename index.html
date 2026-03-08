@@ -763,25 +763,25 @@ body.printing #printRoot{display:block}
         </div>
 
         <!-- 日期模式：主案 + 活動（可同時存在） -->
-        <div class="field span2">
-          <label>活動日期規劃（活動1/活動2/活動3…）</label>
+        <div class="field span2" id="mainDateField">
+          <label>活動日期</label>
+          <input id="fDateStart" type="date">
+          <input type="checkbox" id="fIsMultiDay" hidden>
+          <input id="fDateStartMirror" type="date" hidden>
+          <input id="fDateEnd" type="date" hidden>
+        </div>
 
-          <div class="dateRow" style="grid-template-columns: 1fr;">
-            <div class="dateCol">
-              <div class="dateCap">活動1（必填）</div>
-              <input id="fDateStart" type="date">
-            </div>
+        <div class="field span2" id="mainPlannerField" style="display:none">
+          <label>活動時間規劃</label>
+          <div id="mainInlineWrap" style="display:block; padding:0; border:none; border-radius:12px; background:transparent;">
+            <div id="mainInlinePlanner" class="planList" style="margin-top:0"></div>
           </div>
+        </div>
 
-          <div style="display:grid;gap:8px;margin-top:10px">
-            <input type="checkbox" id="fIsMultiDay" hidden>
-            <input id="fDateStartMirror" type="date" hidden>
-            <input id="fDateEnd" type="date" hidden>
-
-            <div id="mainInlineWrap" style="display:none; padding:10px; border:1px dashed var(--line); border-radius:12px; background:#fbfdfc;">
-              <div id="mainInlinePlanner" class="planList" style="margin-top:0"></div>
-            </div>
-          </div>
+        <div class="field span2" id="mainAddDayWrap">
+          <label>連續增加天數</label>
+          <div id="mainSequentialControls"></div>
+          <div class="hint" style="margin-top:8px">需要幾天就往下加幾天；每一天都可以各自勾選第二場。</div>
         </div>
 
         <div class="field span2">
@@ -2271,6 +2271,23 @@ function getCatSelectedCount(u, catId){
   return (cat.items||[]).reduce((sum,it)=>sum + (Number(u.cart?.items?.[it.id]||0)>0 ? 1 : 0), 0);
 }
 
+function getCategoryIconSVG(catId){
+  const map = {
+    stage:['M4 8h16v10H4z M8 6V4m8 2V4 M7 18v2m10-2v2','舞台'],
+    audio:['M5 8a5 5 0 1 0 0 8a5 5 0 0 0 0-8zm0 3a2 2 0 1 1 0 4a2 2 0 0 1 0-4M15 7h4v10h-4','音響'],
+    light:['M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z','燈光'],
+    screen:['M5 5h14v10H5z M9 19h6','螢幕'],
+    backdrop:['M6 5h12v14H6z M8 8h8 M8 11h8 M8 14h8','背板'],
+    power:['M13 2L6 13h5l-1 9l7-11h-5l1-9z','電力'],
+    outdoor:['M12 4l7 13H5L12 4z','戶外'],
+    decor:['M12 5l1.5 3.5L17 10l-3.5 1.5L12 15l-1.5-3.5L7 10l3.5-1.5L12 5z','佈置'],
+    staff:['M9 10a3 3 0 1 0 0-6a3 3 0 0 0 0 6zm6 0a3 3 0 1 0 0-6a3 3 0 0 0 0 6z M4 19a5 5 0 0 1 10 0 M10 19a5 5 0 0 1 10 0','人力'],
+    other:['M12 5v14 M5 12h14','其他']
+  };
+  const [path] = map[catId] || map.other;
+  return `<svg class="catSvg" viewBox="0 0 24 24" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
 function renderTabs(u){
   if(!CATEGORIES.find(c=>c.id===u.catId)) u.catId = CATEGORIES[0].id;
   if(typeof u.catFocus !== "boolean") u.catFocus = false;
@@ -2290,7 +2307,7 @@ function renderTabs(u){
         <div class="catCard">
           <div class="catPhoto">
             <div class="catPhotoInner">
-              <img class="catIcon" src="${escapeHtml(c.hero||'')}" alt="" loading="lazy">
+              ${getCategoryIconSVG(c.id)}
               <div class="catPhotoLabel">${escapeHtml(c.name)}</div>
             </div>
           </div>
@@ -2632,7 +2649,7 @@ function renderQuote(){
   const rows = [];
   let grand = 0;
 
-  function pushSection(title, subtitle, idx){
+  function getQuotePalette(idx){
     const sectionPalette = [
       {bg:'#e8f7ee', border:'#4ca976', text:'#21543b'},
       {bg:'#ffe4ef', border:'#d95c96', text:'#7a1f4a'},
@@ -2640,10 +2657,14 @@ function renderQuote(){
       {bg:'#f3e8ff', border:'#8b5cf6', text:'#4b2ea7'},
       {bg:'#ffe4e6', border:'#ef4444', text:'#991b1b'}
     ];
-    const c = sectionPalette[idx % sectionPalette.length];
+    return sectionPalette[idx % sectionPalette.length];
+  }
+
+  function pushSection(title, subtitle, idx){
+    const c = getQuotePalette(idx);
     rows.push(`
       <tr>
-        <td colspan="3" style="background:${c.bg};border:2px solid ${c.border};color:${c.text};border-radius:12px">
+        <td colspan="3" style="background:${c.bg};border:2px solid ${c.border};border-bottom:none;color:${c.text};border-radius:16px 16px 0 0;padding:14px 16px 8px 16px">
           <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
             <b style="font-size:15px">${escapeHtml(title)}</b>
             <span style="font-weight:700;color:${c.text};opacity:.92">${escapeHtml(subtitle||"")}</span>
@@ -2653,12 +2674,15 @@ function renderQuote(){
     `);
   }
 
-  function pushLine(name, qtyText, amount){
+  function pushLine(name, qtyText, amount, idx, isLast=false){
+    const c = getQuotePalette(idx);
+    const radius = isLast ? '0 0 16px 16px' : '0';
+    const borderBottom = isLast ? `2px solid ${c.border}` : '1px solid rgba(76,169,118,.18)';
     rows.push(`
       <tr>
-        <td>${escapeHtml(name)}</td>
-        <td class="muted">${escapeHtml(qtyText||"")}</td>
-        <td class="ovRight"><b>${fmt(amount||0)}</b></td>
+        <td style="background:${c.bg};border-left:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};">${escapeHtml(name)}</td>
+        <td class="muted" style="background:${c.bg};border-bottom:${borderBottom};">${escapeHtml(qtyText||"")}</td>
+        <td class="ovRight" style="background:${c.bg};border-right:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};"><b>${fmt(amount||0)}</b></td>
       </tr>
     `);
   }
@@ -2703,14 +2727,14 @@ function renderQuote(){
     if(!lines.length){
       rows.push(`<tr><td colspan="3" class="muted">（尚未選擇設備）</td></tr>`);
     }else{
-      lines.forEach(li=>pushLine(li.name, li.qty, li.amount));
+      lines.forEach((li, lineIdx)=>pushLine(li.name, li.qty, li.amount, idx, lineIdx===lines.length-1));
     }
 
     // 活動加價
     if(u.kind==="main"){
       const r = calcMainTotal(u);
       if((r.N||0) >= 2){
-        pushLine("連續多日加價", `第2天 50%｜第3天起 30%`, r.contFee||0);
+        pushLine("連續多日加價", `第2天 50%｜第3天起 30%`, r.contFee||0, idx, false);
       }
       if((r.s2Count||0) > 0){
         pushLine("同日第二場加價", `${r.s2Count} 天（B×30%）`, r.s2Fee||0);
@@ -3587,9 +3611,15 @@ function humanizeStep1(){
     const indoorField = Array.from(form.querySelectorAll('.field')).find(el => el.querySelector('#fIndoor'));
     const truckField = Array.from(form.querySelectorAll('.field')).find(el => el.querySelector('#fTruckAccess'));
     const moveField = Array.from(form.querySelectorAll('.field')).find(el => el.querySelector('#fMoveFloor'));
-    [cityField, addrField, bldgField, dateField, noteField].forEach(el=>el && el.classList.add('span2'));
-    [nameField,phoneField,emailField,eventTypeField,cityField,addrField,bldgField,crowdField,indoorField,truckField,moveField,dateField,noteField]
+    const plannerField = document.getElementById('mainPlannerField');
+    const addDayField = document.getElementById('mainAddDayWrap');
+    [cityField, addrField, bldgField, dateField, plannerField, addDayField, noteField].forEach(el=>el && el.classList.add('span2'));
+    [nameField,phoneField,emailField,eventTypeField,cityField,addrField,bldgField,crowdField,indoorField,truckField,moveField,dateField,plannerField,addDayField,noteField]
       .filter(Boolean).forEach(el=>form.appendChild(el));
+    const dateLabel = dateField?.querySelector('label');
+    if(dateLabel) dateLabel.textContent = '活動日期';
+    if(plannerField){ const l=plannerField.querySelector('label'); if(l) l.textContent='活動時間規劃'; }
+    if(addDayField){ const l=addDayField.querySelector('label'); if(l) l.textContent='連續增加天數'; }
     const minDate = new Date();
     const y=minDate.getFullYear(), m=String(minDate.getMonth()+1).padStart(2,'0'), d=String(minDate.getDate()).padStart(2,'0');
     const todayStr = `${y}-${m}-${d}`;
@@ -3859,16 +3889,22 @@ function humanizeStep1(){
       const ds = norm(document.getElementById('fDateStart')?.value || '');
       const wrap = document.getElementById('mainInlineWrap');
       const list = document.getElementById('mainInlinePlanner');
+      const plannerField = document.getElementById('mainPlannerField');
+      const addWrap = document.getElementById('mainAddDayWrap');
       if(!wrap || !list) return;
       if(!ds){
+        if(plannerField) plannerField.style.display = 'none';
+        if(addWrap) addWrap.style.display = 'none';
         wrap.style.display = 'none';
         list.innerHTML = '';
-        document.getElementById('mainSequentialControls')?.remove();
+        const ctrl = document.getElementById('mainSequentialControls'); if(ctrl) ctrl.innerHTML = '';
         setCount(0);
         return;
       }
       if(getCount() < 1) setCount(1); else syncLegacyFields();
       const dates = window.getMainDates();
+      if(plannerField) plannerField.style.display = 'block';
+      if(addWrap) addWrap.style.display = 'block';
       wrap.style.display = 'block';
       const rows = dates.map((d,i)=>({
         key: `main-${d}`,
