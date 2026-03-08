@@ -74,6 +74,9 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:12px;color:var(--muted);font-weight:900}
 .field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none;font-size:14px}
+.field input[type="date"]{width:100%;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;line-height:1.25;min-height:52px;padding-right:12px}
+.dateRow,.dateCol{min-width:0}
+.dateRow input[type="date"]{display:block;width:100%;max-width:100%}
 .field textarea{min-height:84px;resize:vertical}
 .span2{grid-column:1/-1}
 
@@ -232,6 +235,11 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .equipUnitBtn.isDone::after{content:"✓";margin-left:6px;font-size:12px}
 .step3Flow{padding:14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .step3Flow .flowHint{margin-right:auto;color:var(--muted);font-size:12px;align-self:center}
+
+@media (max-width:640px){
+  .field input[type="date"]{font-size:16px;padding:10px 12px;min-height:50px}
+  .dateFieldFix,.dateFieldFix *{min-width:0}
+}
 
 /* Quote Overview */
 .quoteBox{padding:14px;display:grid;gap:12px}
@@ -2637,17 +2645,11 @@ function renderQuote(){
   const tbody = $("#quoteOverview");
   const warn = $("#quoteWarning");
   if(!tbody) return;
-  warn.innerHTML = "";
+  if(warn) warn.innerHTML = "";
 
-  const units = state.units || [];
-  if(!units.length){
-    tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
-    $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(0));
-    return;
-  }
-
-  const rows = [];
-  let grand = 0;
+  let payload = null;
+  try{ payload = buildQuotePayload_v2(); }catch(_){ payload = null; }
+  const sessions = Array.isArray(payload?.sessions) ? payload.sessions : [];
 
   function getQuotePalette(idx){
     const sectionPalette = [
@@ -2659,6 +2661,18 @@ function renderQuote(){
     ];
     return sectionPalette[idx % sectionPalette.length];
   }
+
+  if(!sessions.length){
+    tbody.innerHTML = `<tr><td colspan="3" class="muted">（目前沒有可列印的報價內容，請先回上一頁確認是否已選擇設備）</td></tr>`;
+    if($("#quoteGrandTotal")) $("#quoteGrandTotal").textContent = fmt(0);
+    if(warn){
+      warn.innerHTML = `<div class="warnBox">目前尚未抓到報價資料。若你剛剛已經選好設備，請回上一頁確認品項後再進入列印。</div>`;
+    }
+    return;
+  }
+
+  const rows = [];
+  let grand = 0;
 
   function pushSection(title, subtitle, idx){
     const c = getQuotePalette(idx);
@@ -2677,86 +2691,36 @@ function renderQuote(){
   function pushLine(name, qtyText, amount, idx, isLast=false){
     const c = getQuotePalette(idx);
     const radius = isLast ? '0 0 16px 16px' : '0';
-    const borderBottom = isLast ? `2px solid ${c.border}` : '1px solid rgba(76,169,118,.18)';
+    const borderBottom = isLast ? `2px solid ${c.border}` : `1px solid ${c.border}22`;
     rows.push(`
       <tr>
-        <td style="background:${c.bg};border-left:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};">${escapeHtml(name)}</td>
-        <td class="muted" style="background:${c.bg};border-bottom:${borderBottom};">${escapeHtml(qtyText||"")}</td>
-        <td class="ovRight" style="background:${c.bg};border-right:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};"><b>${fmt(amount||0)}</b></td>
+        <td style="background:${c.bg};border-left:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};word-break:break-word">${escapeHtml(name)}</td>
+        <td class="muted" style="background:${c.bg};border-bottom:${borderBottom};white-space:normal">${escapeHtml(qtyText||"")}</td>
+        <td class="ovRight" style="background:${c.bg};border-right:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};white-space:nowrap"><b>${fmt(amount||0)}</b></td>
       </tr>
     `);
   }
 
-  function getUnitLabel(idx, u){
-    return `活動${idx+1}`;
-  }
+  sessions.forEach((s, idx)=>{
+    const subtitle = [s.date, (s.timeStart||s.timeEnd)?`${s.timeStart||''}～${s.timeEnd||''}`:''].filter(Boolean).join('｜');
+    pushSection(s.label || `活動 ${idx+1}`, subtitle, idx);
 
-  function getUnitDateText(u){
-    if(u.kind==="main"){
-      return (u.dates && u.dates.length>=2) ? `${u.startDate}～${u.endDate}` : (u.startDate||"");
-    }
-    return u.date || "";
-  }
-
-  function listCartLines(u){
-    const out = [];
-    const packs = u.cart?.packs || {};
-    for(const p of Object.values(packs)){
-      if(!p) continue;
-      const title = `${p.label}：${p.name}`;
-      out.push({name:title, qty:"", amount:Number(p.price||0)});
-    }
-    const items = u.cart?.items || {};
-    for(const [id, qty] of Object.entries(items)){
-      const q = Number(qty||0);
-      if(q<=0) continue;
-      const f = findItem(id);
-      if(!f) continue;
-      out.push({name:f.item.name, qty:`${q} ${f.item.unit||"件"}`, amount:getLineSubtotal(f.item, q)});
-    }
-    return out;
-  }
-
-  units.forEach((u, idx)=>{
-    const label = getUnitLabel(idx, u);
-    const dateText = getUnitDateText(u);
-    pushSection(`${label} 報價`, dateText, idx);
-
-    // 明細（8B：全部展開列到底）
-    const lines = listCartLines(u);
-    if(!lines.length){
-      rows.push(`<tr><td colspan="3" class="muted">（尚未選擇設備）</td></tr>`);
+    const items = Array.isArray(s.items) ? s.items.filter(Boolean) : [];
+    if(!items.length){
+      rows.push(`<tr><td colspan="3" class="muted">（此場次尚未選擇設備）</td></tr>`);
     }else{
-      lines.forEach((li, lineIdx)=>pushLine(li.name, li.qty, li.amount, idx, lineIdx===lines.length-1));
+      items.forEach((it, itemIdx)=>{
+        const qtyText = `${Number(it.qty||0)} ${it.unit || '件'}${it.optionsText ? '｜' + it.optionsText : ''}`;
+        pushLine(`${it.category ? it.category + '｜' : ''}${it.name || ''}`, qtyText, Number(it.total||0), idx, false);
+      });
     }
-
-    // 活動加價
-    if(u.kind==="main"){
-      const r = calcMainTotal(u);
-      if((r.N||0) >= 2){
-        pushLine("連續多日加價", `第2天 50%｜第3天起 30%`, r.contFee||0, idx, false);
-      }
-      if((r.s2Count||0) > 0){
-        pushLine("同日第二場加價", `${r.s2Count} 天（B×30%）`, r.s2Fee||0);
-      }
-      pushLine("本活動合計", "", r.total||0);
-      grand += Number(r.total||0);
-    }else{
-      const r = calcExtraTotal(u);
-      const meta = ensurePlanMeta(u.uid);
-      if(meta.s2On){
-        pushLine("同日第二場加價", `B×30%`, r.s2Fee||0);
-      }
-      pushLine("本活動合計", "", r.total||0);
-      grand += Number(r.total||0);
-    }
-
-    // 間隔
+    pushLine('本場次合計', '', Number(s.total||0), idx, true);
+    grand += Number(s.total||0);
     rows.push(`<tr><td colspan="3" style="background:#fff;height:6px;border:none"></td></tr>`);
   });
 
-  tbody.innerHTML = rows.join("");
-  $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(grand));
+  tbody.innerHTML = rows.join('');
+  if($("#quoteGrandTotal")) $("#quoteGrandTotal").textContent = fmt(grand);
 }
 
 
@@ -3291,29 +3255,22 @@ async function tryLoadEditMode_(){
     const txt = await res.text();
     let j=null; try{ j=JSON.parse(txt); }catch(_){}
 
-    if(!j || !j.ok){
+    if(!j || !j.ok || !j.uiState || !j.uiState.state){
       alert("載入修改單失敗：" + (j && (j.message||j.error) ? (j.message||j.error) : txt));
       return;
     }
 
-    const saved = (j.uiState && j.uiState.state) ? j.uiState.state : null;
-    const payload = j.payload || {};
-
-    if(!saved){
-      alert("這筆資料缺少完整的修改狀態，無法回到可編輯模式。若這是舊單，請以新版本重新送出一次後再修改。\n\nToken：" + token);
-      return;
-    }
-
+    const saved = j.uiState.state;
     state.step = saved.step || 1;
     state.isMulti = !!saved.isMulti;
     state.isExtra = !!saved.isExtra;
     state.extraUnits = deepClone(saved.extraUnits || []);
     state.planMeta = deepClone(saved.planMeta || {});
-    state.globalForm = deepClone(saved.globalForm || (j.uiState.ui && j.uiState.ui.globalFormNow) || payload.globalForm || {});
+    state.globalForm = deepClone(saved.globalForm || (j.uiState.ui && j.uiState.ui.globalFormNow) || {});
     state.units = deepClone(saved.units || []);
     state.currentIndex = Number(saved.currentIndex || 0);
 
-    const gf = (j.uiState && j.uiState.ui && j.uiState.ui.globalFormNow) ? j.uiState.ui.globalFormNow : (state.globalForm||payload.globalForm||{});
+    const gf = (j.uiState.ui && j.uiState.ui.globalFormNow) ? j.uiState.ui.globalFormNow : (state.globalForm||{});
     $("#fName").value = gf.name || "";
     $("#fPhone").value = gf.phone || "";
     $("#fEmail").value = gf.email || "";
@@ -3625,6 +3582,7 @@ function humanizeStep1(){
       .filter(Boolean).forEach(el=>form.appendChild(el));
     const dateLabel = dateField?.querySelector('label');
     if(dateLabel) dateLabel.textContent = '活動日期';
+    if(dateField) dateField.classList.add('dateFieldFix');
     if(plannerField){ const l=plannerField.querySelector('label'); if(l) l.textContent='活動時間規劃'; }
     if(addDayField){ const l=addDayField.querySelector('label'); if(l) l.textContent='連續增加天數'; }
     const minDate = new Date();
@@ -3774,7 +3732,7 @@ function humanizeStep1(){
       });
     });
     const baseTotal = sessions.reduce((a,s)=>a+Number(s.total||0),0);
-    return { action:'submitQuote_v2', editToken: EDIT_TOKEN || '', globalForm:g, sessions:sessions, baseTotal:baseTotal, grandTotal:baseTotal, uiState:{ state:state, ui:{ fIsMultiDay:!!document.getElementById('fIsMultiDay')?.checked, globalFormNow:getGlobalFormFromUI() } } };
+    return { action:'submitQuote_v2', editToken: EDIT_TOKEN || '', siteBaseUrl:getSiteBaseUrl_(), globalForm:g, sessions:sessions, summary:{ baseTotal:baseTotal, surcharge:0, grandTotal:baseTotal, continuousEligible:true }, uiState:{ state:deepClone(state), ui:{ fIsMultiDay:!!document.getElementById('fIsMultiDay')?.checked, fDateStart:normalizeDateStr(document.getElementById('fDateStart')?.value||''), fDateEnd:normalizeDateStr(document.getElementById('fDateEnd')?.value||''), globalFormNow:getGlobalFormFromUI() } } };
   };
 
   setTimeout(humanizeStep1, 50);
