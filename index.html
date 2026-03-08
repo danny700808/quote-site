@@ -117,6 +117,10 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .cline{margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .qtyRow{display:flex;align-items:center;gap:10px}
 .xbtn{position:absolute; top:50%; transform:translateY(-50%); right:10px; width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer}
+.modal .mh{position:relative;padding-right:52px}
+.modal .mh .xbtn{position:absolute;top:10px;right:10px;transform:none;width:34px;height:34px;border-radius:999px;border:1px solid rgba(226,74,74,.28);background:rgba(226,74,74,.08);display:inline-flex;align-items:center;justify-content:center;z-index:2}
+.modal .mb{padding-top:12px}
+.modal .mb img{max-width:100%;height:auto;display:block}
 
 .subttl{color:var(--muted);font-size:12px}
 .subttl b{color:var(--text)}
@@ -298,19 +302,6 @@ body.printing #printRoot{display:block}
   .tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:620px){
-  #viewBasic .form.mainCompactGrid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
-  #viewBasic .form.mainCompactGrid .field{min-width:0}
-  #viewBasic .form.mainCompactGrid .field label{font-size:11px}
-  #viewBasic .form.mainCompactGrid .field input,
-  #viewBasic .form.mainCompactGrid .field select,
-  #viewBasic .form.mainCompactGrid .field textarea{font-size:16px;padding:10px 12px}
-  #viewBasic .form.mainCompactGrid .span2{grid-column:1/-1}
-  #viewBasic .form.mainCompactGrid .timeRow,
-  #viewBasic .form.mainCompactGrid .dateRow{grid-template-columns:1fr auto 1fr}
-  #viewBasic .form.mainCompactGrid .field textarea{min-height:76px}
-}
-
-@media (max-width:620px){
   .wrap{padding:8px}
   .form{grid-template-columns:1fr}
   .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -380,8 +371,6 @@ body.printing #printRoot{display:block}
   /* 如果你之後把 actions 改成固定在右側，這裡仍可避免字被擠成一字一行 */
   .btn{word-break:keep-all}
 
-  #viewBasic .form.mainCompactGrid .field input, #viewBasic .form.mainCompactGrid .field select{font-size:15px}
-  #viewBasic .form.mainCompactGrid .field label{line-height:1.2}
   /* Step1：已加入活動的標題/按鈕允許換行 */
   .planRowTop{flex-direction:column;align-items:stretch;gap:8px}
   .planRowTop > div:last-child{justify-content:space-between}
@@ -533,6 +522,41 @@ body.printing #printRoot{display:block}
   .equipItemPrice .qty{margin-top:6px; justify-content:center}
   .equipItemPrice .qbtn{width:28px; height:28px}
   .equipItemPrice .qval{min-width:22px; font-size:12px}
+}
+
+@media (max-width:820px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  .catCard{padding:6px !important;gap:6px !important}
+  .catPhoto{aspect-ratio:1 / 1 !important;min-height:72px !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:8px !important}
+  .catPhoto img{width:100% !important;height:100% !important;object-fit:contain !important;padding:6px !important}
+  .catCount,.catEnter{min-height:24px !important;font-size:10px !important;padding:0 8px !important}
+  #viewDayEdit .equipItemGrid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  #viewDayEdit .equipItemCard{
+    display:flex !important;flex-direction:column !important;align-items:stretch !important;justify-content:flex-start !important;
+    gap:6px !important;padding:8px !important;border-radius:14px !important;overflow:hidden !important;min-width:0 !important;
+  }
+  #viewDayEdit .equipItemThumb{
+    width:100% !important;height:auto !important;aspect-ratio:1 / 1 !important;border-radius:12px !important;object-fit:cover !important;
+  }
+  #viewDayEdit .equipItemMeta{display:grid !important;gap:4px !important;min-width:0 !important}
+  #viewDayEdit .equipItemName{
+    font-size:12px !important;line-height:1.25 !important;text-align:center !important;
+    display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important;
+    min-height:30px !important;word-break:break-word !important;
+  }
+  #viewDayEdit .equipItemDesc{display:none !important}
+  #viewDayEdit .equipItemRow2{margin-top:0 !important;display:block !important}
+  #viewDayEdit .equipItemRow2 .linkbtn{
+    width:100% !important;min-height:28px !important;padding:4px 6px !important;font-size:11px !important;line-height:1.2 !important
+  }
+  #viewDayEdit .equipItemPrice{display:grid !important;gap:4px !important;text-align:center !important;min-width:0 !important}
+  #viewDayEdit .equipItemPrice > div:first-child{font-size:12px !important;font-weight:1000 !important}
+  #viewDayEdit .equipItemPrice .sub{font-size:10px !important}
+  #viewDayEdit .equipItemPrice .qty{
+    margin-top:2px !important;display:grid !important;grid-template-columns:28px 1fr 28px !important;gap:4px !important;align-items:center !important;
+  }
+  #viewDayEdit .equipItemPrice .qbtn{width:28px !important;height:28px !important}
+  #viewDayEdit .equipItemPrice .qval{min-width:0 !important;font-size:12px !important}
 }
 
 </style>
@@ -888,6 +912,21 @@ function addDays(dateStr, days){
   d.setDate(d.getDate()+Number(days||0));
   return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 }
+function todayISO(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function applyDateMinConstraints(scope){
+  const root = scope || document;
+  const min = todayISO();
+  root.querySelectorAll('input[type="date"]').forEach(el=>{
+    try{ el.min = min; }catch(_){ }
+  });
+}
+
 function todayStr(){
   const now = new Date();
   return `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
@@ -3387,12 +3426,25 @@ function bindExtraCard(card){
     if(seed.date) card.querySelector('.xDateStart').value = seed.date;
 
     const startEl = card.querySelector('.xDateStart');
+    try{
+      const today = todayISO();
+      startEl.min = today;
+      if(startEl.value && startEl.value < today){ startEl.dataset.prevPastDate = startEl.value; }
+    }catch(_){ }
     const countEl = card.querySelector('.xDayCount');
     const countText = card.querySelector('.xDayCountText');
     const addBtn = card.querySelector('.xDayAddBtn');
     const removeBtn = card.querySelector('.xDayRemoveBtn');
 
     const sync = ()=>{
+      const v = normalizeDateStr(startEl.value||'');
+      const min = todayISO();
+      if(v && v < min){
+        startEl.value = startEl.dataset.prevPastDate || '';
+        if(!startEl.value){ alert('活動日期不能選擇今天以前的日期。'); }
+      }else if(v){
+        delete startEl.dataset.prevPastDate;
+      }
       const count = Math.max(1, Number(countEl.value || 1));
       countText.textContent = `目前 ${count} 天`;
       renderExtraCardPlanner(card);
@@ -3409,6 +3461,7 @@ function bindExtraCard(card){
       sync();
     });
     card.querySelector('.extraRemoveBtn').addEventListener('click', ()=>{ card.remove(); reorderExtraCards(); });
+    applyDateMinConstraints(card);
     sync();
   }
   
@@ -3444,7 +3497,6 @@ function humanizeStep1(){
     form.style.border = `2px solid ${p.border}`;
     form.style.padding = '18px';
     form.style.borderRadius = '18px';
-    form.classList.add('mainCompactGrid');
 
     const firstLabel = basic.querySelector('.hd h2');
     if(firstLabel) firstLabel.textContent = '1) 活動1';
@@ -3745,7 +3797,20 @@ function humanizeStep1(){
     function patchDateField(){
       const startEl = document.getElementById('fDateStart');
       if(!startEl) return;
+      try{
+        const today = todayISO();
+        startEl.min = today;
+        if(startEl.value && startEl.value < today){ startEl.dataset.prevPastDate = startEl.value; }
+      }catch(_){ }
       startEl.addEventListener('change', ()=>{
+        const v = norm(startEl.value);
+        const today = todayISO();
+        if(v && v < today){
+          startEl.value = startEl.dataset.prevPastDate || '';
+          if(!startEl.value){ alert('活動日期不能選擇今天以前的日期。'); }
+        }else if(v){
+          delete startEl.dataset.prevPastDate;
+        }
         const hasDate = !!norm(startEl.value);
         if(hasDate && getCount() < 1) setCount(1);
         if(!hasDate) setCount(0);
@@ -3755,8 +3820,9 @@ function humanizeStep1(){
 
     syncCountFromInputs();
     patchDateField();
-    setTimeout(()=>{ syncCountFromInputs(); window.renderMainInline?.(); }, 120);
-    setTimeout(()=>{ syncCountFromInputs(); window.renderMainInline?.(); }, 400);
+    applyDateMinConstraints(document);
+    setTimeout(()=>{ syncCountFromInputs(); applyDateMinConstraints(document); window.renderMainInline?.(); }, 120);
+    setTimeout(()=>{ syncCountFromInputs(); applyDateMinConstraints(document); window.renderMainInline?.(); }, 400);
   });
 })();
 </script>
