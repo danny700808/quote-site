@@ -73,9 +73,18 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .form{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:12px;color:var(--muted);font-weight:900}
-.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none;font-size:14px}
+.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none;font-size:14px;min-width:0;width:100%;display:block}
+.field input[type="date"]{min-height:58px;-webkit-appearance:none;appearance:none;text-align:left;padding:11px 14px}
+.field input[type="date"]::-webkit-date-and-time-value{text-align:left}
 .field textarea{min-height:84px;resize:vertical}
 .span2{grid-column:1/-1}
+.mainFieldCity,.mainFieldAddr,.mainFieldBldg,.mainFieldDate,.mainFieldAddDay,.mainFieldPlanner,.mainFieldNote{grid-column:1/-1}
+#quoteCards{display:grid;gap:12px;margin-top:14px}
+.quoteCard{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+.quoteCardTitle{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:900;margin-bottom:10px}
+.quoteCardLine{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid rgba(0,0,0,.06)}
+.quoteCardLine:first-of-type{border-top:none;padding-top:0}
+.quoteCardMeta{color:var(--muted);font-size:12px;margin-top:2px}
 
 .timeRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
 .timeRow .sep{color:var(--muted);font-weight:900;text-align:center}
@@ -124,6 +133,12 @@ header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdro
 .modal .mh .xbtn{position:absolute;top:10px;right:10px;transform:none;width:34px;height:34px;border-radius:999px;border:1px solid rgba(226,74,74,.28);background:rgba(226,74,74,.08);display:inline-flex;align-items:center;justify-content:center;z-index:2}
 .modal .mb{padding-top:12px}
 .modal .mb img{max-width:100%;height:auto;display:block}
+
+.catPhotoTextOnly{display:flex;align-items:center;justify-content:center;padding:8px} 
+.catPhotoBanner{width:100%;height:100%;min-height:108px;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.78);padding:10px 12px} 
+.catPhotoLabelBig{font-size:18px !important;line-height:1.2 !important;font-weight:1000 !important;text-align:left !important;display:block !important;word-break:keep-all !important;overflow-wrap:anywhere !important} 
+.catSvg{width:28px;height:28px;flex:0 0 28px} 
+@media (max-width: 640px){ .catPhotoBanner{min-height:96px;padding:8px 10px;gap:8px} .catPhotoLabelBig{font-size:16px !important} }
 
 .subttl{color:var(--muted);font-size:12px}
 .subttl b{color:var(--text)}
@@ -468,13 +483,6 @@ body.printing #printRoot{display:block}
 .catCount,.catEnter{display:inline-flex;align-items:center;justify-content:center;min-height:30px;border-radius:999px;padding:0 10px;font-size:12px;font-weight:900;white-space:nowrap;width:100%}
 .catCount{background:#edf7f2; color:#21614c; border:1px solid #cfe4d8}
 .catEnter{background:#f5f6f8; color:#6b7280; border:1px solid #e3e6ea}
-#fDateStart,.xDateStart{width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;text-align:left;padding-right:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-#mainDateField{overflow:hidden}
-#mainSequentialControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-#mainSequentialControls .btn,#mainSequentialControls .pill{flex:0 0 auto}
-.catPhotoInner{background:#f7fbf8;border:1px solid #dfe9e4;border-radius:12px;padding:14px 10px;min-height:72px}
-.catPhotoLabel{font-size:28px;line-height:1.15;font-weight:1000;color:#163d31;letter-spacing:.5px;word-break:keep-all;white-space:normal;max-width:100%;text-align:center}
-.catSvg{width:30px;height:30px;display:block;opacity:.92}
 .equipFocusWrap{padding:12px 14px 0}
 .equipFocusHeader{display:grid; gap:14px; margin-bottom:14px}
 .equipFocusTitle{
@@ -511,10 +519,10 @@ body.printing #printRoot{display:block}
   .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
   .equipOverview .tab{border-radius:16px}
   .catCard{padding:8px; gap:8px}
-  .catPhoto{min-height:92px; border-radius:12px; padding:8px}
-  .catPhotoInner{gap:10px;padding:12px 6px;min-height:76px}
+  .catPhoto{min-height:92px; border-radius:12px; padding:10px}
+  .catPhotoInner{gap:8px}
   .catIcon{width:24px;height:24px}
-  .catPhotoLabel{font-size:22px;line-height:1.15}
+  .catPhotoLabel{font-size:18px;line-height:1.2}
   .catName{font-size:15px;min-height:34px}
   .catMetaRow{gap:6px}
   .catCount,.catEnter{min-height:28px; padding:0 8px; font-size:10px}
@@ -541,10 +549,10 @@ body.printing #printRoot{display:block}
 @media (max-width:820px){
   .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
   .catCard{padding:6px !important;gap:6px !important}
-  .catPhoto{min-height:92px !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:8px !important}
-  .catPhotoInner{gap:10px !important;padding:12px 6px !important;min-height:76px !important}
+  .catPhoto{min-height:92px !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:10px !important}
+  .catPhotoInner{gap:8px !important}
   .catIcon{width:24px !important;height:24px !important}
-  .catPhotoLabel{font-size:22px !important;line-height:1.15 !important}
+  .catPhotoLabel{font-size:18px !important;line-height:1.2 !important}
   .catCount,.catEnter{min-height:24px !important;font-size:10px !important;padding:0 8px !important}
   #viewDayEdit .equipItemGrid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
   #viewDayEdit .equipItemCard{
@@ -910,6 +918,7 @@ body.printing #printRoot{display:block}
             </tr>
           </tfoot>
         </table>
+        <div id="quoteCards"></div>
 
         <div class="step4BottomActions" id="step4BottomActions">
           <button class="btn primary" id="btnBottomSend" type="button">送出報價單／Email 寄送</button>
@@ -2312,15 +2321,15 @@ function renderTabs(u){
     return `
       <button class="tab ${c.id===u.catId?"active":""}" data-cat="${c.id}" type="button">
         <div class="catCard">
-          <div class="catPhoto">
-            <div class="catPhotoInner">
+          <div class="catPhoto catPhotoTextOnly">
+            <div class="catPhotoInner catPhotoBanner">
               ${getCategoryIconSVG(c.id)}
-              <div class="catPhotoLabel">${escapeHtml(c.name)}</div>
+              <div class="catPhotoLabel catPhotoLabelBig">${escapeHtml(c.name)}</div>
             </div>
           </div>
           <div class="catBody">
             <div class="catMetaRow">
-              <span class="catCount">${isDone ? "已完成" : (selectedCount>0 ? `已選 ${selectedCount} 項` : `共 ${(c.items||[]).length} 項`)}</span>
+              <span class="catCount">${isDone ? "已完成" : `共 ${(c.items||[]).length} 項`}</span>
               <span class="catEnter">點此進入</span>
             </div>
           </div>
@@ -2642,19 +2651,16 @@ function markDone(){
 }
 function renderQuote(){
   const tbody = $("#quoteOverview");
+  const cards = $("#quoteCards");
   const warn = $("#quoteWarning");
   if(!tbody) return;
-  warn.innerHTML = "";
+  if(warn) warn.innerHTML = "";
 
   const units = state.units || [];
-  if(!units.length){
-    tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
-    $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(0));
-    return;
+  if((!units.length) && window.buildUnitsFromStep1){
+    try{ window.buildUnitsFromStep1(); }catch(e){}
   }
-
-  const rows = [];
-  let grand = 0;
+  const finalUnits = state.units || [];
 
   function getQuotePalette(idx){
     const sectionPalette = [
@@ -2667,102 +2673,61 @@ function renderQuote(){
     return sectionPalette[idx % sectionPalette.length];
   }
 
-  function pushSection(title, subtitle, idx){
-    const c = getQuotePalette(idx);
-    rows.push(`
-      <tr>
-        <td colspan="3" style="background:${c.bg};border:2px solid ${c.border};border-bottom:none;color:${c.text};border-radius:16px 16px 0 0;padding:14px 16px 8px 16px">
-          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
-            <b style="font-size:15px">${escapeHtml(title)}</b>
-            <span style="font-weight:700;color:${c.text};opacity:.92">${escapeHtml(subtitle||"")}</span>
-          </div>
-        </td>
-      </tr>
-    `);
-  }
-
-  function pushLine(name, qtyText, amount, idx, isLast=false){
-    const c = getQuotePalette(idx);
-    const radius = isLast ? '0 0 16px 16px' : '0';
-    const borderBottom = isLast ? `2px solid ${c.border}` : '1px solid rgba(76,169,118,.18)';
-    rows.push(`
-      <tr>
-        <td style="background:${c.bg};border-left:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};">${escapeHtml(name)}</td>
-        <td class="muted" style="background:${c.bg};border-bottom:${borderBottom};">${escapeHtml(qtyText||"")}</td>
-        <td class="ovRight" style="background:${c.bg};border-right:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};"><b>${fmt(amount||0)}</b></td>
-      </tr>
-    `);
-  }
-
-  function getUnitLabel(idx, u){
-    return `活動${idx+1}`;
-  }
-
+  function getUnitLabel(idx, u){ return `活動${idx+1}`; }
   function getUnitDateText(u){
-    if(u.kind==="main"){
-      return (u.dates && u.dates.length>=2) ? `${u.startDate}～${u.endDate}` : (u.startDate||"");
-    }
+    if(u.kind==="main") return (u.dates && u.dates.length>=2) ? `${u.startDate}～${u.endDate}` : (u.startDate||"");
     return u.date || "";
   }
-
   function listCartLines(u){
-    const out = [];
-    const packs = u.cart?.packs || {};
-    for(const p of Object.values(packs)){
-      if(!p) continue;
-      const title = `${p.label}：${p.name}`;
-      out.push({name:title, qty:"", amount:Number(p.price||0)});
-    }
-    const items = u.cart?.items || {};
-    for(const [id, qty] of Object.entries(items)){
-      const q = Number(qty||0);
-      if(q<=0) continue;
-      const f = findItem(id);
-      if(!f) continue;
-      out.push({name:f.item.name, qty:`${q} ${f.item.unit||"件"}`, amount:getLineSubtotal(f.item, q)});
+    const out=[];
+    const packs=u.cart?.packs||{};
+    for(const p of Object.values(packs)){ if(!p) continue; out.push({name:`${p.label}：${p.name}`, qty:'', amount:Number(p.price||0)}); }
+    const items=u.cart?.items||{};
+    for(const [id,qty] of Object.entries(items)){
+      const q=Number(qty||0); if(q<=0) continue;
+      const f=findItem(id); if(!f) continue;
+      out.push({name:f.item.name, qty:`${q} ${f.item.unit||"件"}`, amount:getLineSubtotal(f.item,q)});
     }
     return out;
   }
 
-  units.forEach((u, idx)=>{
-    const label = getUnitLabel(idx, u);
+  if(!finalUnits.length){
+    tbody.innerHTML = `<tr><td colspan="3">（尚未產生活動資料）</td></tr>`;
+    if(cards) cards.innerHTML = '';
+    $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(0));
+    return;
+  }
+
+  const rows=[];
+  const cardHtml=[];
+  let grand=0;
+  finalUnits.forEach((u, idx)=>{
+    const c = getQuotePalette(idx);
+    const label = getUnitLabel(idx,u);
     const dateText = getUnitDateText(u);
-    pushSection(`${label} 報價`, dateText, idx);
-
-    // 明細（8B：全部展開列到底）
     const lines = listCartLines(u);
+    let totalObj = u.kind==='main' ? calcMainTotal(u) : calcExtraTotal(u);
+    const totalVal = Number(totalObj.total||0);
+    grand += totalVal;
+
+    rows.push(`<tr><td colspan="3" style="background:${c.bg};border:2px solid ${c.border};border-bottom:none;color:${c.text};border-radius:16px 16px 0 0;padding:14px 16px 8px 16px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><b style="font-size:15px">${escapeHtml(label)} 報價</b><span style="font-weight:700;color:${c.text};opacity:.92">${escapeHtml(dateText||"")}</span></div></td></tr>`);
     if(!lines.length){
-      rows.push(`<tr><td colspan="3" class="muted">（尚未選擇設備）</td></tr>`);
+      rows.push(`<tr><td style="background:${c.bg};border-left:2px solid ${c.border};border-bottom:2px solid ${c.border};border-radius:0 0 16px 16px;">（尚未選擇設備）</td><td style="background:${c.bg};border-bottom:2px solid ${c.border};"></td><td class="ovRight" style="background:${c.bg};border-right:2px solid ${c.border};border-bottom:2px solid ${c.border};border-radius:0 0 16px 16px;"><b>${fmt(totalVal)}</b></td></tr>`);
     }else{
-      lines.forEach((li, lineIdx)=>pushLine(li.name, li.qty, li.amount, idx, lineIdx===lines.length-1));
+      lines.forEach((li, lineIdx)=>{
+        const isLast = lineIdx===lines.length-1;
+        const radius = isLast ? '0 0 16px 16px' : '0';
+        const borderBottom = isLast ? `2px solid ${c.border}` : '1px solid rgba(76,169,118,.18)';
+        rows.push(`<tr><td style="background:${c.bg};border-left:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};">${escapeHtml(li.name)}</td><td class="muted" style="background:${c.bg};border-bottom:${borderBottom};">${escapeHtml(li.qty||"")}</td><td class="ovRight" style="background:${c.bg};border-right:2px solid ${c.border};border-bottom:${borderBottom};border-radius:${radius};"><b>${fmt(li.amount||0)}</b></td></tr>`);
+      });
     }
-
-    // 活動加價
-    if(u.kind==="main"){
-      const r = calcMainTotal(u);
-      if((r.N||0) >= 2){
-        pushLine("連續多日加價", `第2天 50%｜第3天起 30%`, r.contFee||0, idx, false);
-      }
-      if((r.s2Count||0) > 0){
-        pushLine("同日第二場加價", `${r.s2Count} 天（B×30%）`, r.s2Fee||0);
-      }
-      pushLine("本活動合計", "", r.total||0);
-      grand += Number(r.total||0);
-    }else{
-      const r = calcExtraTotal(u);
-      const meta = ensurePlanMeta(u.uid);
-      if(meta.s2On){
-        pushLine("同日第二場加價", `B×30%`, r.s2Fee||0);
-      }
-      pushLine("本活動合計", "", r.total||0);
-      grand += Number(r.total||0);
-    }
-
-    // 間隔
     rows.push(`<tr><td colspan="3" style="background:#fff;height:6px;border:none"></td></tr>`);
-  });
 
-  tbody.innerHTML = rows.join("");
+    const lineHtml = lines.length ? lines.map(li=>`<div class="quoteCardLine"><div><div><b>${escapeHtml(li.name)}</b></div><div class="quoteCardMeta">${escapeHtml(li.qty||'')}</div></div><div><b>${fmt(li.amount||0)}</b></div></div>`).join('') : `<div class="quoteCardLine"><div class="quoteCardMeta">（尚未選擇設備）</div><div><b>${fmt(totalVal)}</b></div></div>`;
+    cardHtml.push(`<div class="quoteCard" style="background:${c.bg};border-color:${c.border}"><div class="quoteCardTitle" style="color:${c.text}"><span>${escapeHtml(label)} 報價</span><span>${escapeHtml(dateText||'')}</span></div>${lineHtml}<div class="quoteCardLine"><div><b>本活動合計</b></div><div><b>${fmt(totalVal)}</b></div></div></div>`);
+  });
+  tbody.innerHTML = rows.join('');
+  if(cards) cards.innerHTML = cardHtml.join('');
   $("#quoteGrandTotal") && ($("#quoteGrandTotal").textContent = fmt(grand));
 }
 
@@ -2807,6 +2772,7 @@ function completeCurrentAndContinue(){
 }
 
 function goQuote(){
+  if((!state.units || !state.units.length) && window.buildUnitsFromStep1){ try{ window.buildUnitsFromStep1(); }catch(e){} }
   setStep(4);
   showView("viewQuote");
   renderQuote();
@@ -3403,7 +3369,7 @@ function syncBasicFormLayoutLikeExtra(){
   if(!form || form.dataset.syncedLayout==='1') return;
   const fields = Array.from(form.querySelectorAll(':scope > .field'));
   if(fields.length < 12) return;
-  const desired = [0,1,2,6,3,4,5,7,8,9,10,11,12,13,14];
+  const desired = [0,1,2,7,3,4,5,8,9,10,11,12,13,14];
   desired.forEach(i=>{ if(fields[i]) form.appendChild(fields[i]); });
   form.dataset.syncedLayout='1';
 }
@@ -3620,8 +3586,14 @@ function humanizeStep1(){
     const moveField = Array.from(form.querySelectorAll('.field')).find(el => el.querySelector('#fMoveFloor'));
     const plannerField = document.getElementById('mainPlannerField');
     const addDayField = document.getElementById('mainAddDayWrap');
-    [cityField, addrField, bldgField, dateField, plannerField, addDayField, noteField].forEach(el=>el && el.classList.add('span2'));
-    [nameField,phoneField,emailField,eventTypeField,cityField,addrField,bldgField,crowdField,indoorField,truckField,moveField,dateField,plannerField,addDayField,noteField]
+    if(cityField){ cityField.classList.add('span2','mainFieldCity'); }
+    if(addrField){ addrField.classList.add('span2','mainFieldAddr'); }
+    if(bldgField){ bldgField.classList.add('span2','mainFieldBldg'); }
+    if(dateField){ dateField.classList.add('span2','mainFieldDate'); }
+    if(plannerField){ plannerField.classList.add('span2','mainFieldPlanner'); }
+    if(addDayField){ addDayField.classList.add('span2','mainFieldAddDay'); }
+    if(noteField){ noteField.classList.add('span2','mainFieldNote'); }
+    [nameField,phoneField,emailField,eventTypeField,cityField,addrField,bldgField,crowdField,indoorField,truckField,moveField,dateField,addDayField,plannerField,noteField]
       .filter(Boolean).forEach(el=>form.appendChild(el));
     const dateLabel = dateField?.querySelector('label');
     if(dateLabel) dateLabel.textContent = '活動日期';
