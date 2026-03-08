@@ -298,6 +298,19 @@ body.printing #printRoot{display:block}
   .tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:620px){
+  #viewBasic .form.mainCompactGrid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
+  #viewBasic .form.mainCompactGrid .field{min-width:0}
+  #viewBasic .form.mainCompactGrid .field label{font-size:11px}
+  #viewBasic .form.mainCompactGrid .field input,
+  #viewBasic .form.mainCompactGrid .field select,
+  #viewBasic .form.mainCompactGrid .field textarea{font-size:16px;padding:10px 12px}
+  #viewBasic .form.mainCompactGrid .span2{grid-column:1/-1}
+  #viewBasic .form.mainCompactGrid .timeRow,
+  #viewBasic .form.mainCompactGrid .dateRow{grid-template-columns:1fr auto 1fr}
+  #viewBasic .form.mainCompactGrid .field textarea{min-height:76px}
+}
+
+@media (max-width:620px){
   .wrap{padding:8px}
   .form{grid-template-columns:1fr}
   .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -367,6 +380,8 @@ body.printing #printRoot{display:block}
   /* 如果你之後把 actions 改成固定在右側，這裡仍可避免字被擠成一字一行 */
   .btn{word-break:keep-all}
 
+  #viewBasic .form.mainCompactGrid .field input, #viewBasic .form.mainCompactGrid .field select{font-size:15px}
+  #viewBasic .form.mainCompactGrid .field label{line-height:1.2}
   /* Step1：已加入活動的標題/按鈕允許換行 */
   .planRowTop{flex-direction:column;align-items:stretch;gap:8px}
   .planRowTop > div:last-child{justify-content:space-between}
@@ -3429,6 +3444,7 @@ function humanizeStep1(){
     form.style.border = `2px solid ${p.border}`;
     form.style.padding = '18px';
     form.style.borderRadius = '18px';
+    form.classList.add('mainCompactGrid');
 
     const firstLabel = basic.querySelector('.hd h2');
     if(firstLabel) firstLabel.textContent = '1) 活動1';
