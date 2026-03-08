@@ -3291,22 +3291,29 @@ async function tryLoadEditMode_(){
     const txt = await res.text();
     let j=null; try{ j=JSON.parse(txt); }catch(_){}
 
-    if(!j || !j.ok || !j.uiState || !j.uiState.state){
+    if(!j || !j.ok){
       alert("載入修改單失敗：" + (j && (j.message||j.error) ? (j.message||j.error) : txt));
       return;
     }
 
-    const saved = j.uiState.state;
+    const saved = (j.uiState && j.uiState.state) ? j.uiState.state : null;
+    const payload = j.payload || {};
+
+    if(!saved){
+      alert("這筆資料缺少完整的修改狀態，無法回到可編輯模式。若這是舊單，請以新版本重新送出一次後再修改。\n\nToken：" + token);
+      return;
+    }
+
     state.step = saved.step || 1;
     state.isMulti = !!saved.isMulti;
     state.isExtra = !!saved.isExtra;
     state.extraUnits = deepClone(saved.extraUnits || []);
     state.planMeta = deepClone(saved.planMeta || {});
-    state.globalForm = deepClone(saved.globalForm || (j.uiState.ui && j.uiState.ui.globalFormNow) || {});
+    state.globalForm = deepClone(saved.globalForm || (j.uiState.ui && j.uiState.ui.globalFormNow) || payload.globalForm || {});
     state.units = deepClone(saved.units || []);
     state.currentIndex = Number(saved.currentIndex || 0);
 
-    const gf = (j.uiState.ui && j.uiState.ui.globalFormNow) ? j.uiState.ui.globalFormNow : (state.globalForm||{});
+    const gf = (j.uiState && j.uiState.ui && j.uiState.ui.globalFormNow) ? j.uiState.ui.globalFormNow : (state.globalForm||payload.globalForm||{});
     $("#fName").value = gf.name || "";
     $("#fPhone").value = gf.phone || "";
     $("#fEmail").value = gf.email || "";
