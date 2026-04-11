@@ -1,0 +1,626 @@
+:root{
+  --bg:#f7fbf9;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#e6efe9;
+  --brand:#63bfae;
+  --brand2:#2f8f7b;
+  --blush:#f4b7c4;
+  --mintSoft:#eaf7f3;
+  --blushSoft:#fff1f4;
+  --danger:#e25a6a;
+  --shadow:0 10px 28px rgba(0,0,0,.08);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+header{position:sticky;top:0;z-index:10;background:rgba(247,251,249,.92);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--line)}
+.head{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding:14px 18px}
+.title{grid-column:2;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.title h1{margin:0;font-size:18px}
+.actions{grid-column:3;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+.btn{border:1px solid var(--line);background:var(--card);padding:10px 12px;border-radius:999px;cursor:pointer;font-weight:900;font-size:13px}
+.btn.primary{background:var(--brand);border-color:transparent;color:#fff}
+.btn.primary:hover{background:var(--brand2)}
+.btn.danger{background:var(--danger);border-color:transparent;color:#fff}
+.btn.warn{background:#facc15;border-color:#f59e0b;color:#111827;font-weight:900;}
+.btn.warn:hover{filter:brightness(.97)}
+.btn.ghost{background:transparent}
+
+.grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.card .hd{padding:14px 14px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card .hd h2{margin:0;font-size:16px}
+
+/* Step 顏色標題 */
+.stepHd{position:relative;border-bottom:1px solid var(--line)}
+.stepHd::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;border-radius:0 10px 10px 0;background:color-mix(in srgb, var(--line) 35%, transparent);}
+.stepHd h2{display:flex;align-items:center;gap:10px}
+.stepHd h2::before{content:"";width:10px;height:10px;border-radius:999px;flex:0 0 auto;background:color-mix(in srgb, var(--line) 35%, transparent);}
+
+.step1{background:linear-gradient(90deg, color-mix(in srgb, var(--brand) 18%, #fff), #fff)}
+.step1::before{background:color-mix(in srgb, var(--brand2) 55%, var(--brand))}
+.step1 h2::before{background:var(--brand2)}
+
+.step2{background:linear-gradient(90deg, color-mix(in srgb, var(--blush) 18%, #fff), #fff)}
+.step2::before{background:color-mix(in srgb, var(--blush) 70%, #fff)}
+.step2 h2::before{background:var(--danger)}
+
+.step3{background:linear-gradient(90deg, #eff6ff, #fff)}
+.step3::before{background:#60a5fa}
+.step3 h2::before{background:#2563eb}
+
+.step4{background:linear-gradient(90deg, #fffbeb, #fff)}
+.step4::before{background:#f59e0b}
+.step4 h2::before{background:#f59e0b}
+
+.pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:#fff;white-space:nowrap}
+.note{color:var(--muted);font-size:12px;line-height:1.55}
+.hint{font-size:12px;color:var(--muted);line-height:1.55}
+.hint b{color:var(--text)}
+
+.form{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;color:var(--muted);font-weight:900}
+.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;outline:none;font-size:14px}
+.field textarea{min-height:84px;resize:vertical}
+.span2{grid-column:1/-1}
+
+.timeRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.timeRow .sep{color:var(--muted);font-weight:900;text-align:center}
+.dateRow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+.dateCol{display:grid;gap:6px;min-width:0}
+.dateCap{font-size:11px;color:var(--muted);font-weight:900}
+
+.tabs{padding:12px 14px 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:1px solid var(--line)}
+.tab{width:100%;min-height:54px;padding:12px 10px;border-radius:14px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000;font-size:14px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.35}
+.tab.active{transform:translateY(-1px)}
+
+.items{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+.item{border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;grid-template-columns:74px 1fr auto;gap:12px;align-items:center}
+.thumb{width:74px;height:74px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:#f3f4f6}
+.meta{min-width:0}
+.meta .name{font-weight:1000}
+.meta .sub{color:var(--muted);font-size:12px;margin-top:2px}
+.meta .row2{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.price{font-weight:1000;text-align:right}
+
+.qty{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:6px 8px;background:#fff}
+.qbtn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:1000}
+.qval{min-width:44px;text-align:center;font-weight:1000}
+.linkbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;cursor:pointer;font-weight:1000;font-size:12px}
+
+.summary{padding:14px;display:grid;gap:12px}
+.totals{border:1px dashed var(--line);border-radius:14px;padding:12px;display:grid;gap:8px;background:linear-gradient(180deg, rgba(30,142,111,.06), transparent)}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+.cart{display:grid;gap:12px}
+.group{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.group .gh{padding:10px 12px;background:#fafafa;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:1000}
+.group .gb{padding:8px 12px 12px;display:grid;gap:8px}
+.cartRow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;align-items:center;border:1px solid #e3ebe6;border-radius:12px;padding:10px 12px;background:#fff}
+.cartRowMain{min-width:0}
+.cartRowName{font-weight:1000;line-height:1.25;color:#173f32;word-break:break-word}
+.cartRowMeta{font-size:12px;color:var(--muted);margin-top:2px}
+.cartRowPrice{font-weight:1000;white-space:nowrap;color:#173f32}
+.cartRowQty{display:flex;align-items:center;gap:8px}
+.cartRowQty .qty{padding:4px 6px;gap:6px}
+.cartRowQty .qbtn{width:34px;height:34px}
+.cartRowQty .qval{min-width:26px}
+.xbtn{width:36px;height:36px;border-radius:12px;border:1px solid rgba(226,74,74,.35);background:rgba(226,74,74,.10);color:var(--danger);font-weight:1000;cursor:pointer;position:static;transform:none}
+.cartDelBtn{justify-self:end}
+.modal .mh{position:relative;padding-right:52px}
+.modal .mh .xbtn{position:absolute;top:10px;right:10px;transform:none;width:34px;height:34px;border-radius:999px;border:1px solid rgba(226,74,74,.28);background:rgba(226,74,74,.08);display:inline-flex;align-items:center;justify-content:center;z-index:2}
+.modal .mb{padding-top:12px}
+.modal .mb img{max-width:100%;height:auto;display:block}
+
+.subttl{color:var(--muted);font-size:12px}
+.subttl b{color:var(--text)}
+.mini{font-size:12px;color:var(--muted)}
+
+/* 三模組 */
+.tierWrap{padding:14px;display:grid;gap:12px}
+.tierGrid{display:grid;grid-template-columns:1fr;gap:12px}
+.tierCard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.tierHead{padding:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tierHead b{font-size:14px}
+.tierBody{padding:12px;display:grid;gap:10px}
+.levelRow{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px}
+
+.levelBtn{
+  padding:12px;border-radius:14px;border:1px solid var(--line);background:#fff;
+  cursor:pointer;font-weight:1000;text-align:left;display:flex;flex-direction:column;gap:10px;
+  user-select:none;align-items:stretch;justify-content:flex-start;
+}
+.levelText{min-width:0;display:flex;flex-direction:column;gap:6px}
+.levelTopRow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.levelName{font-size:13px;line-height:1.25;word-break:break-word}
+.levelPrice{font-size:12px;font-weight:1000;white-space:nowrap}
+.levelActions{margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.miniBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;cursor:pointer;font-weight:1000;font-size:12px}
+.miniBtn:hover{border-color:rgba(30,142,111,.35)}
+.miniBtn.primaryMini{background:var(--brand);border-color:transparent;color:#fff}
+.miniBtn.primaryMini:hover{background:var(--brand2)}
+.levelMedia{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f3f4f6}
+.levelMedia img{width:100%;height:120px;object-fit:cover;display:block}
+
+/* Modal */
+.modalMask{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal{width:min(560px,100%);background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.22);overflow:hidden}
+.modal .mh{padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.modal .mb{padding:14px 14px 20px;}
+.modal .mb p{margin:0;color:#374151;line-height:1.65}
+
+.photoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.photoBox{border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;background:#fff}
+.photoBox img{width:100%;height:140px;object-fit:cover;display:block}
+.photoCap{padding:8px 10px;font-size:12px;color:#6b7280}
+.packMeta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 6px}
+.packMeta .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff}
+.packList{margin:8px 0 0;padding-left:18px;line-height:1.65}
+.packList li{margin:4px 0}
+.modalDesc{margin-top:8px;color:var(--muted);line-height:1.7}
+
+.optbox{margin-top:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;background:#fbfdfc}
+.optrow{display:flex;gap:10px;align-items:center;margin:6px 0}
+.optlabel{min-width:92px;font-size:13px;color:var(--muted)}
+.optselect{flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}
+
+/* Wizard Steps（頭部進度） */
+.stepsWrap{width:100%;margin-top:4px}
+.steps{display:flex;justify-content:space-between;position:relative;padding:0;margin:0}
+.steps::before{content:"";position:absolute;top:15px;left:10%;right:10%;height:2px;background:var(--line);z-index:0}
+.stepBox{
+  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:transparent;border:none;box-shadow:none;padding:0;flex:1;
+  cursor:pointer; user-select:none;
+}
+.stepBox.disabled{cursor:not-allowed;opacity:.55}
+.stepNum{width:32px;height:32px;background:var(--card);border:2px solid var(--line);color:var(--muted);font-weight:900;border-radius:999px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.stepText{font-size:13px;font-weight:900;color:var(--muted);text-align:center;line-height:1.25}
+.stepBox.active .stepNum{border-color:var(--brand);color:var(--brand2)}
+.stepBox.active .stepText{color:var(--text)}
+.stepBox.done .stepNum{border-color:var(--brand2);background:rgba(99,191,174,.12);color:var(--brand2)}
+.stepBox.done .stepText{color:var(--text)}
+
+/* Views */
+.view{display:none}
+.view.show{display:block}
+
+
+.unitJumpList{display:flex;flex-wrap:wrap;gap:10px;padding:12px 14px;border-top:1px dashed var(--line);margin-top:12px}
+.unitJumpList .ujBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:800}
+.unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
+.unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
+/* Day cards */
+.dayGrid{padding:14px;display:grid;gap:12px;grid-template-columns:repeat(2, minmax(0,1fr))}
+.dayCard{border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.05);padding:12px;display:grid;gap:10px}
+.dayTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.dayDate{font-weight:1000}
+.dayMeta{font-size:12px;color:var(--muted);line-height:1.45}
+.dayBtns{display:flex;gap:8px;flex-wrap:wrap}
+.badgeDone{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:900;color:#065f46;background:#ecfdf5;border:1px solid #a7f3d0;padding:5px 9px;border-radius:999px}
+.badgeTodo{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:900;color:#92400e;background:#fffbeb;border:1px solid #fcd34d;padding:5px 9px;border-radius:999px}
+
+/* Planner inline rows */
+.planList{display:grid;gap:10px}
+.planRow{border:1px dashed var(--line);border-radius:12px;background:#fbfdfc;padding:10px;display:grid;gap:8px}
+.planRowTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.planRowTop b{font-size:13px}
+.planTimes{display:grid;grid-template-columns:1fr;gap:8px}
+.planTimes .timeRow{grid-template-columns:1fr auto 1fr}
+.planS2{border:1px dashed var(--line);border-radius:12px;background:#fff;padding:10px;display:grid;gap:8px}
+.planS2 .timeRow{grid-template-columns:1fr auto 1fr}
+
+/* Step3 equipment flow */
+.equipBarWrap{padding:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+.equipUnitBar{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.equipUnitBtn{border-radius:14px;border:2px solid var(--line);background:#fff;padding:12px 10px;text-align:center;font-weight:1000;cursor:pointer;transition:.15s ease;line-height:1.25}
+.equipUnitBtn .sub{display:block;margin-top:4px;font-size:11px;color:inherit;opacity:.8}
+.equipUnitBtn.isCurrent{transform:translateY(-1px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
+.equipUnitBtn.isDone::after{content:"✓";margin-left:6px;font-size:12px}
+.step3Flow{padding:14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.step3Flow .flowHint{margin-right:auto;color:var(--muted);font-size:12px;align-self:center}
+
+/* Quote Overview */
+.quoteBox{padding:16px;display:grid;gap:14px}
+.quoteClean{display:grid;gap:14px}
+.quoteDay{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 6px 18px rgba(17,24,39,.05)}
+.quoteDayHd{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.quoteDayTitle{font-size:16px;font-weight:1000}
+.quoteDayDate{font-size:12px;font-weight:800;opacity:.9}
+.quoteDayBody{padding:14px 16px 16px;display:grid;gap:14px;background:#fff}
+.quoteGroup{display:grid;gap:8px}
+.quoteGroup + .quoteGroup{padding-top:12px;border-top:1px solid #edf2ee}
+.quoteGroupTitle{font-size:13px;font-weight:1000;color:#374151}
+.quoteLines{display:grid;gap:0}
+.quoteLine{padding:10px 0;display:grid;gap:4px}
+.quoteLine + .quoteLine{border-top:1px solid #f3f4f6}
+.quoteLineTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.quoteLineName{font-weight:800;line-height:1.5}
+.quoteLineAmount{font-weight:1000;white-space:nowrap}
+.quoteLineMeta{font-size:12px;color:var(--muted);line-height:1.45}
+.quoteSubtotal{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:2px;padding-top:12px;border-top:2px solid #e5efe8;font-weight:1000}
+.quoteSubtotal .label{font-size:13px;color:#374151}
+.quoteSubtotal .value{font-size:18px}
+.quoteGrandCard{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#111827;color:#fff;border-radius:18px;padding:16px 18px;border:2px solid #0f172a;box-shadow:0 10px 24px rgba(17,24,39,.18)}
+.quoteGrandLabel{font-size:13px;font-weight:900;letter-spacing:.08em;opacity:.9}
+.quoteGrandValue{font-size:28px;font-weight:1000;line-height:1.1}
+.warnBox{border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08);padding:10px 12px;border-radius:12px;color:#92400e;font-weight:900}
+
+/* Print */
+#printRoot{display:none}
+body.printing #printRoot{display:block}
+@media print{
+  body.printing *{visibility:hidden !important}
+  body.printing #printRoot, body.printing #printRoot *{visibility:visible !important}
+  body.printing #printRoot{
+    position:absolute; inset:0; padding:16mm 12mm;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; color:#111827;
+  }
+  .printHdr{margin-bottom:10mm}
+  .printBrand{font-size:18px;font-weight:900;margin:0}
+  .printTitle{font-size:15px;font-weight:800;margin:6px 0 0 0}
+  .printMeta{font-size:11px;color:#6b7280;margin-top:6px}
+  .printH3{font-size:13px;font-weight:900;margin:10mm 0 4mm 0}
+  .printTbl{width:100%;border-collapse:collapse;font-size:11px}
+  .printTbl th,.printTbl td{border:1px solid #e5e7eb;padding:6px 7px;vertical-align:top}
+  .printTbl th{background:#f9fafb;text-align:left}
+  .right{text-align:right}
+  .muted{color:#6b7280}
+  .totalsBox{margin-top:8mm;display:flex;justify-content:flex-end}
+  .totals{min-width:260px;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px}
+  .trow{display:flex;justify-content:space-between;gap:12px;margin:6px 0}
+  .trow.total{border-top:1px solid #e5e7eb;padding-top:8px;margin-top:8px;font-size:12px;font-weight:900}
+  .pageBreak{break-after:page}
+  @page{size:auto;margin:10mm}
+}
+/* Step3：活動表單總覽（底部） */
+.formNavPanel{margin-top:12px}
+.formNavHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0}
+.formNavHint{color:var(--muted);font-size:13px;margin:0 0 8px}
+.formNavGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.formNavBtn{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:14px;
+  padding:10px;
+  text-align:left;
+  box-shadow:0 8px 18px rgba(0,0,0,.05);
+}
+.formNavBtn.isActive{border-color:var(--brand2);box-shadow:0 10px 22px rgba(47,143,123,.16)}
+.formNavBtn.isDone{opacity:1}
+.formNavBtn.isTodo{opacity:1}
+.fnTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fnTitle{font-weight:900}
+.fnMoney{font-weight:900;white-space:nowrap}
+.fnBottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+.fnMeta{color:var(--muted);font-size:12px}
+.fnStatus{font-size:12px;font-weight:900}
+.formNavBtn.isTodo .fnStatus{color:#b45309}
+.formNavBtn.isDone .fnStatus{color:#047857}
+
+/* Step3：底部導引列 */
+.quickNav{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:12px}
+.quickNav .btn{flex:1;min-width:160px}
+.btn.mini{padding:6px 10px;font-size:12px}
+
+
+@media (max-width:920px){
+  .levelRow{grid-template-columns:repeat(2, 1fr)}
+  .dayGrid{grid-template-columns:1fr}
+  .tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .wrap{padding:8px}
+  .form{grid-template-columns:1fr}
+  #basicForm.form,#viewBasic #basicForm{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:14px !important}
+  #basicForm .field.span2{grid-column:1/-1 !important}
+  #basicForm .field{min-width:0}
+  .extraFormGrid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:14px !important}
+  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .field input,.field select,.field textarea{font-size:16px;padding:10px 12px}
+  .items{grid-template-columns:repeat(2,1fr);gap:6px;padding:10px}
+  .item{display:flex;flex-direction:column;align-items:stretch}
+  .thumb{width:100%;height:90px;border-radius:10px}
+  .price{text-align:left;border-top:1px dashed var(--line);padding-top:6px}
+  .steps::before{top:13px;left:8%;right:8%}
+  .stepNum{width:28px;height:28px;font-size:12px;border-width:1.5px}
+  .stepText{font-size:11px}
+}
+
+/* ✅ Step3 底部快速導覽：改成「跟著內容」顯示在即時報價最下面（不再固定右側） */
+#quickNavBar{
+  position: static;
+  z-index: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: none;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+#quickNavBar .btn{ white-space: nowrap; }
+#quickNavBar .btn[disabled]{ opacity:.55; cursor:not-allowed; }
+
+/* === 7B：三模組改成三欄列式（更緊湊，像清單） === */
+.tierGrid{grid-template-columns:repeat(3, 1fr)}
+@media (max-width: 980px){
+  .tierGrid{grid-template-columns:1fr}
+}
+.levelRow{display:flex;flex-direction:column;gap:10px}
+.levelBtn{
+  display:grid;
+  grid-template-columns:56px 1fr;
+  gap:10px;
+  padding:8px;
+  border-radius:12px;
+}
+.levelMedia{order:0}
+.levelMedia img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.levelText{order:1}
+.levelActions{display:flex;gap:8px;flex-wrap:wrap}
+.miniBtn{padding:6px 8px;font-size:12px}
+.levelName{font-size:13px}
+.levelPrice{font-size:12px}
+
+/* 手機：避免按鈕/文字擠成直線 */
+@media (max-width: 480px){
+  .tierHead b{font-size:13px}
+  .levelBtn{grid-template-columns:52px 1fr}
+  .levelMedia img{width:52px;height:52px}
+  .miniBtn{padding:6px 8px}
+
+  /* 手機直向：Header 按鈕不要被擠成直排 */
+  .head{grid-template-columns:1fr;gap:10px}
+  .title{grid-column:1}
+  .actions{grid-column:1;justify-content:center}
+  .actions .btn{padding:8px 10px;font-size:13px;white-space:nowrap}
+
+  /* 右側操作按鈕（原本會被壓窄）在手機改成更緊湊的橫向排列 */
+  /* 如果你之後把 actions 改成固定在右側，這裡仍可避免字被擠成一字一行 */
+  .btn{word-break:keep-all}
+
+  /* Step1：已加入活動的標題/按鈕允許換行 */
+  .planRowTop{flex-direction:column;align-items:stretch;gap:8px}
+  .planRowTop > div:last-child{justify-content:space-between}
+
+  /* Step2：活動卡片標頭避免長日期擠壓「未完成」 */
+  .dayGrid{grid-template-columns:1fr}
+  .dayTop{flex-direction:column;align-items:stretch}
+  .dayRight{justify-items:start}
+
+  /* Step2：活動卡片按鈕在手機直向改為滿寬堆疊 */
+  .dayBtns{flex-direction:column;align-items:stretch}
+  .dayBtns .btn{width:100%}
+
+  /* Step3：底部快速切換列 */
+  .unitJumpList{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;border-top:1px dashed var(--line);margin-top:10px}
+  .unitJumpList .ujBtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;font-size:13px}
+  .unitJumpList .ujBtn.todo{opacity:.9}
+  .unitJumpList .ujBtn.done{border-color:rgba(47,143,123,.25);background:rgba(99,191,174,.10)}
+  .unitJumpList .ujBtn.current{border-color:var(--brand2);box-shadow:0 6px 16px rgba(47,143,123,.18)}
+
+
+  /* Step1：加入活動區塊避免整塊超出卡片 */
+  .addBox, .addRow, .addRow *{max-width:100%}
+  .addBox{overflow:hidden}
+  .addRow input, .addRow select, .addRow button{width:100%}
+
+  /* Step3：分類 Tabs 在手機直向改成 2 欄平均 */
+  .tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .tabs .tab{width:100%;justify-content:center;text-align:center;white-space:normal}
+
+  /* Step3：設備卡片太窄會變「一字一行」，手機直向改為單欄 */
+  .items{grid-template-columns:1fr !important}
+  .formNavGrid{grid-template-columns:1fr}
+
+  /* Step3：避免連結/visited 變紫色 */
+  .summary a, .summary a:visited, .quoteBox a, .quoteBox a:visited{color:var(--text)}
+
+  /* Step4：乾淨版報價單 */
+  .quoteDayHd{padding:12px 14px}
+  .quoteDayBody{padding:12px 14px 14px}
+  .quoteLineTop{display:grid;grid-template-columns:1fr auto;gap:8px}
+  .quoteGrandCard{padding:14px 16px}
+  .quoteGrandValue{font-size:24px}
+
+  /* Step4：上方按鈕保留但縮小（B） */
+  #step4TopActions .btn{padding:8px 10px;font-size:13px}
+
+  /* Step4：底部操作區 */
+  .step4BottomActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .step4BottomActions .btn{min-width:240px}
+
+}
+
+
+@media (max-width:1100px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 20px}
+}
+@media (max-width:760px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .equipGuide h3{font-size:20px}
+}
+
+
+/* ===== Step3 focus flow refresh ===== */
+.equipOverview{padding:10px 14px 0}
+.equipOverview .equipTabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px 28px;overflow:visible}
+.equipOverview .tab{position:relative;overflow:visible}
+
+.equipOverview .tab{
+  min-height:0; padding:0; border:1px solid #d6e2dc; background:#fff; border-radius:20px;
+  overflow:visible; align-items:stretch; justify-content:stretch; text-align:left;
+  box-shadow:0 12px 26px rgba(15,23,42,.05); transition:.18s ease; display:block;
+}
+.equipOverview .tab:hover{transform:translateY(-2px); box-shadow:0 18px 30px rgba(15,23,42,.08)}
+.equipOverview .tab.active{border-color:#1e8e6f; box-shadow:0 18px 32px rgba(30,142,111,.14); transform:translateY(-2px)}
+.catCard{display:grid;gap:8px;padding:10px;align-items:center;justify-items:center}
+.catPhoto{
+  width:100%; min-height:118px; border-radius:14px; overflow:hidden; background:linear-gradient(180deg,#f4faf7,#eef5f1);
+  border:1px solid #dfe9e4; display:flex; align-items:center; justify-content:center; padding:12px; text-align:center;
+}
+.catPhotoInner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%}
+.catIcon{width:34px;height:34px;object-fit:contain;display:block;opacity:.96}
+.catPhotoLabel{font-size:24px;line-height:1.2;font-weight:1000;color:#163d31;letter-spacing:.5px;word-break:break-word;white-space:normal;max-width:100%}
+.catBody{display:grid;gap:8px;justify-items:center;width:100%}
+.catName{display:none}
+.catMetaRow{display:grid;gap:8px;width:100%}
+.catCount,.catEnter{display:inline-flex;align-items:center;justify-content:center;min-height:30px;border-radius:999px;padding:0 10px;font-size:12px;font-weight:900;white-space:nowrap;width:100%}
+.catCount{background:#edf7f2; color:#21614c; border:1px solid #cfe4d8}
+.catEnter{background:#f5f6f8; color:#6b7280; border:1px solid #e3e6ea}
+.equipFocusWrap{padding:12px 14px 0}
+.equipFocusHeader{display:grid; gap:14px; margin-bottom:14px}
+.equipFocusTitle{
+  text-align:center; padding:14px 18px; border-radius:18px; border:1px solid #cfe4d8;
+  background:linear-gradient(180deg,#eaf7ef 0%, #dcf1e3 100%); color:#184f3a; font-weight:1000; font-size:28px; letter-spacing:1px;
+}
+.equipFocusNotes{border:1px solid #dfe7e2; background:#fafcfb; border-radius:18px; padding:14px 16px}
+.equipFocusNotesTitle{font-size:14px; font-weight:1000; color:#385c50; margin-bottom:8px}
+.equipFocusNotes ul{margin:0; padding-left:18px; display:grid; gap:7px; color:#4b5563; font-size:13px; line-height:1.55}
+.equipFocusActions{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:12px 0 4px}
+.equipFocusBtn{min-height:52px; font-size:15px; font-weight:1000; border-width:2px}
+.equipFocusBtn:not(.primary){background:#fff; color:#17644a; border-color:#1e8e6f}
+.equipFocusBtn.primary{box-shadow:none}
+.equipItemGrid{padding:0;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.equipItemCard{border:1px solid #dfe5e1;border-radius:16px;padding:14px;display:grid;grid-template-columns:82px 1fr auto;gap:12px;align-items:center;background:#fff;box-shadow:0 10px 24px rgba(15,23,42,.04)}
+.equipItemThumb{width:82px;height:82px;border-radius:16px;object-fit:cover;border:1px solid var(--line);background:linear-gradient(180deg,#f6faf8,#eef3f0)}
+.equipItemMeta{min-width:0}
+.equipItemName{font-size:16px;font-weight:1000;color:#163d31}
+.equipItemDesc{color:#7b8794;font-size:12px;line-height:1.45;margin-top:2px}
+.equipItemRow2{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.equipItemPrice{font-size:14px;font-weight:1000;color:#163d31;text-align:right}
+
+#viewDayEdit .equipItemGrid{padding:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+#viewDayEdit .equipItemCard{padding:14px; grid-template-columns:82px 1fr auto; border-color:#dfe5e1; box-shadow:0 10px 24px rgba(15,23,42,.04)}
+#viewDayEdit .equipItemThumb{width:82px; height:82px; border-radius:16px; background:linear-gradient(180deg,#f6faf8,#eef3f0)}
+#viewDayEdit .equipItemName{font-size:16px; color:#163d31}
+#viewDayEdit .equipItemDesc{color:#7b8794; line-height:1.45}
+#viewDayEdit .equipItemPrice{font-size:14px; color:#163d31}
+@media (max-width:900px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+}
+@media (max-width:640px){
+  .equipOverview{padding:8px 10px 0}
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+  .equipOverview .tab{border-radius:16px}
+  .catCard{padding:8px; gap:8px}
+  .catPhoto{min-height:92px; border-radius:12px; padding:10px}
+  .catPhotoInner{gap:8px}
+  .catIcon{width:24px;height:24px}
+  .catPhotoLabel{font-size:18px;line-height:1.2}
+  .catName{font-size:15px;min-height:34px}
+  .catMetaRow{gap:6px}
+  .catCount,.catEnter{min-height:28px; padding:0 8px; font-size:10px}
+  .equipFocusWrap{padding:10px 10px 0}
+  .equipFocusTitle{font-size:24px; padding:12px 14px}
+  .equipFocusNotes{padding:12px 13px}
+  .equipFocusActions{grid-template-columns:1fr 1fr; gap:10px}
+  .equipItemGrid{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+  .equipItemCard{grid-template-columns:1fr; gap:8px; padding:8px; align-items:stretch; border-radius:14px; overflow:hidden; position:relative}
+  .equipItemThumb{width:100%; height:auto; aspect-ratio:1/1; border-radius:12px}
+  .equipItemMeta{display:grid; gap:5px; min-width:0}
+  .equipItemName{font-size:12px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:30px; text-align:center; word-break:break-word}
+  .equipItemDesc{display:none}
+  .equipItemRow2{margin-top:0; gap:6px}
+  .equipItemRow2 .linkbtn{width:100%; min-height:30px; padding:5px 6px; font-size:10px}
+  .equipItemPrice{text-align:center; font-size:12px; display:grid; gap:4px; min-width:0; position:relative; z-index:2}
+  .equipItemPrice > div:first-child{font-size:12px; font-weight:1000}
+  .equipItemPrice .sub{font-size:10px}
+  .equipItemPrice .qty{margin-top:4px; display:flex; justify-content:space-between; align-items:center; width:100%; padding:4px 6px; gap:6px; position:relative; z-index:3; pointer-events:auto}
+  .equipItemPrice .qbtn{width:32px; height:32px; position:relative; z-index:4; pointer-events:auto; touch-action:manipulation}
+  .equipItemPrice .qval{min-width:16px; font-size:12px; pointer-events:none}
+}
+
+@media (max-width:820px){
+  .equipOverview .equipTabs{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  .catCard{padding:6px !important;gap:6px !important}
+  .catPhoto{min-height:92px !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:10px !important}
+  .catPhotoInner{gap:8px !important}
+  .catIcon{width:24px !important;height:24px !important}
+  .catPhotoLabel{font-size:18px !important;line-height:1.2 !important}
+  .catCount,.catEnter{min-height:24px !important;font-size:10px !important;padding:0 8px !important}
+  #viewDayEdit .equipItemGrid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  #viewDayEdit .equipItemCard{
+    display:flex !important;flex-direction:column !important;align-items:stretch !important;justify-content:flex-start !important;
+    gap:6px !important;padding:8px !important;border-radius:14px !important;overflow:hidden !important;min-width:0 !important;
+  }
+  #viewDayEdit .equipItemThumb{
+    width:100% !important;height:auto !important;aspect-ratio:1 / 1 !important;border-radius:12px !important;object-fit:cover !important;
+  }
+  #viewDayEdit .equipItemMeta{display:grid !important;gap:4px !important;min-width:0 !important}
+  #viewDayEdit .equipItemName{
+    font-size:11px !important;line-height:1.25 !important;text-align:center !important;
+    display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important;
+    min-height:30px !important;word-break:break-word !important;
+  }
+  #viewDayEdit .equipItemDesc{display:none !important}
+  #viewDayEdit .equipItemRow2{margin-top:0 !important;display:block !important}
+  #viewDayEdit .equipItemRow2 .linkbtn{
+    width:100% !important;min-height:28px !important;padding:4px 6px !important;font-size:11px !important;line-height:1.2 !important
+  }
+  #viewDayEdit .equipItemPrice{display:grid !important;gap:4px !important;text-align:center !important;min-width:0 !important}
+  #viewDayEdit .equipItemPrice > div:first-child{font-size:12px !important;font-weight:1000 !important}
+  #viewDayEdit .equipItemPrice .sub{font-size:10px !important}
+  #viewDayEdit .equipItemPrice .qty{
+    margin-top:2px !important;display:flex !important;justify-content:space-between !important;gap:4px !important;align-items:center !important;width:100% !important;padding:4px 6px !important;
+  }
+  #viewDayEdit .equipItemPrice .qbtn{width:30px !important;height:30px !important;position:relative !important;z-index:2 !important;pointer-events:auto !important}
+  #viewDayEdit .equipItemPrice .qval{min-width:0 !important;font-size:12px !important;pointer-events:none !important}
+}
+
+
+
+/* 活動1 手機版排序對齊新增活動卡 */
+@media (max-width:760px){
+  #basicForm.form,#viewBasic #basicForm{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:14px !important}
+  #basicForm > .field:nth-child(1){order:1}
+  #basicForm > .field:nth-child(2){order:2}
+  #basicForm > .field:nth-child(3){order:3}
+  #basicForm > .field:nth-child(7){order:4}
+  #basicForm > .field:nth-child(4){order:5}
+  #basicForm > .field:nth-child(5){order:6}
+  #basicForm > .field:nth-child(6){order:7}
+  #basicForm > .field:nth-child(8){order:8}
+  #basicForm > .field:nth-child(9){order:9}
+  #basicForm > .field:nth-child(10){order:10}
+  #basicForm > .field:nth-child(11){order:11}
+  #basicForm > .field:nth-child(12){order:12}
+  #basicForm > .field:nth-child(13){order:13}
+  #basicForm > .field:nth-child(14){order:14}
+  #basicForm > .field:nth-child(15){order:15}
+}
+
+
+@media (max-width:760px){
+  #basicForm > .field{order:initial !important}
+}
+
+@media (max-width:820px){
+  .group .gb{padding:6px 10px 10px !important}
+  .cartRow{grid-template-columns:minmax(0,1fr) auto auto auto !important;gap:8px !important;align-items:center !important;padding:8px 10px !important}
+  .cartRowMain{min-width:0 !important}
+  .cartRowName{font-size:14px !important;line-height:1.25 !important;word-break:break-word !important}
+  .cartRowMeta{display:none !important}
+  .cartRowPrice{font-size:14px !important;white-space:nowrap !important;justify-self:end !important}
+  .cartRowQty{justify-content:flex-end !important}
+  .cartRowQty .qty{padding:2px 4px !important;gap:4px !important}
+  .cartRowQty .qbtn{width:30px !important;height:30px !important}
+  .cartRowQty .qval{min-width:18px !important;font-size:14px !important}
+  .cartDelBtn{justify-self:end !important}
+}
+
+@media (max-width:760px){
+  #basicForm .field label{font-size:12px}
+  #basicForm .field input,
+  #basicForm .field select,
+  #basicForm .field textarea{width:100%;min-width:0}
+}

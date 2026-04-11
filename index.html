@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>活動企劃｜設備選配與即時報價</title>
+
+<link href="assets/css/main.css" rel="stylesheet"/></head>
+<body>
+<header>
+<div class="head">
+<div class="title">
+<h1>活動企劃｜設備選配與即時報價</h1>
+<div class="stepsWrap">
+<div class="steps" id="stepsBar">
+<div class="stepBox" data-step="1">
+<div class="stepNum">1</div>
+<div class="stepText">填寫基本<br/>活動資料</div>
+</div>
+<div class="stepBox" data-step="2">
+<div class="stepNum">2</div>
+<div class="stepText">確認各場<br/>活動內容</div>
+</div>
+<div class="stepBox" data-step="3">
+<div class="stepNum">3</div>
+<div class="stepText">選擇需要<br/>設備項目</div>
+</div>
+<div class="stepBox" data-step="4">
+<div class="stepNum">4</div>
+<div class="stepText">預覽列印<br/>報價內容</div>
+</div>
+</div>
+</div>
+</div>
+<div class="actions"></div>
+</div>
+</header>
+<div class="wrap">
+<noscript>
+<div style="margin:12px 0;padding:12px;border:1px solid #f59e0b;background:#fffbeb;border-radius:12px;font-weight:900;color:#92400e">
+      ⚠️ 你的瀏覽器目前停用了 JavaScript，本頁無法運作。請改用可執行 JS 的瀏覽器。
+    </div>
+</noscript>
+<div class="grid">
+<!-- ======================= VIEW: Step1 ======================= -->
+<section class="card view show" id="viewBasic">
+<div class="hd stepHd step1">
+<h2>1) 活動1</h2>
+</div>
+<div class="form" id="basicForm">
+<div class="field">
+<label>姓名 / 單位</label>
+<input id="fName" placeholder="例：柚子樂器 / 王小明"/>
+</div>
+<div class="field">
+<label>行動電話</label>
+<input id="fPhone" inputmode="tel" placeholder="例：09xx-xxx-xxx" type="tel"/>
+</div>
+<div class="field">
+<label>Email</label>
+<input id="fEmail" placeholder="例：you@example.com" type="email"/>
+</div>
+<div class="field span2">
+<label>活動地點（縣市/區）</label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<select id="fCity"></select>
+<select id="fArea"></select>
+</div>
+</div>
+<div class="field span2">
+<label>詳細地址（路名/號）</label>
+<input id="fAddr" placeholder="例：中山路 100 號"/>
+</div>
+<div class="field span2">
+<label>大樓/棟別/樓層/入口（讓地址更清楚）</label>
+<input id="fBldg" placeholder="例：XX大樓 A棟 3F（從側門進）"/>
+</div>
+<div class="field">
+<label>活動類型</label>
+<select id="fEventType">
+<option value="">請選擇活動類型</option>
+<option>開幕典禮／剪綵儀式</option>
+<option>記者會／產品發表會</option>
+<option>品牌活動／快閃活動／展覽／展場活動</option>
+<option>校園活動（校慶／運動會／園遊會）</option>
+<option>畢業典禮</option>
+<option>成果發表會／社團成發／迎新送舊</option>
+<option>演講／講座／論壇／研討會／學術會議</option>
+<option>公司活動（內訓／教育訓練／大會／家庭日）</option>
+<option>尾牙／春酒／餐會／晚宴／商務交流會</option>
+<option>表演活動（演唱／Live Band／DJ／舞蹈／戲劇）</option>
+<option>親子活動／慶生會／派對</option>
+<option>婚禮</option>
+<option>告別式／追思會</option>
+<option>宗教活動</option>
+<option>社區活動／里民大會／宣導活動</option>
+</select>
+</div>
+<div class="field">
+<label>預估人數</label>
+<select id="fCrowd">
+<option value="">請選擇</option>
+<option value="100">100人以內</option>
+<option value="400">100到400人</option>
+<option value="1000">400至1000人</option>
+<option value="2000">1000人至2000人</option>
+<option value="9999">2000人至以上</option>
+</select>
+</div>
+<div class="field">
+<label>室內 / 戶外</label>
+<select id="fIndoor">
+<option value="">請選擇</option>
+<option>室內</option>
+<option>戶外</option>
+<option>半戶外</option>
+</select>
+</div>
+<div class="field">
+<label>貨車是否可以直接到達場地</label>
+<select id="fTruckAccess">
+<option value="">請選擇</option>
+<option>可以</option>
+<option>不可以</option>
+</select>
+</div>
+<div class="field">
+<label>搬運方式／樓層</label>
+<select id="fMoveFloor">
+<option value="">請選擇</option>
+<option>有電梯</option>
+<option>1樓</option>
+<option>2樓</option>
+<option>3樓</option>
+<option>4樓以上</option>
+</select>
+</div>
+<!-- 日期模式：主案 + 活動（可同時存在） -->
+<div class="field span2" id="mainDateField">
+<label>活動日期</label>
+<input id="fDateStart" type="date"/>
+<input hidden="" id="fIsMultiDay" type="checkbox"/>
+<input hidden="" id="fDateStartMirror" type="date"/>
+<input hidden="" id="fDateEnd" type="date"/>
+</div>
+<div class="field span2" id="mainPlannerField" style="display:none">
+<label>活動時間規劃</label>
+<div id="mainInlineWrap" style="display:block; padding:0; border:none; border-radius:12px; background:transparent;">
+<div class="planList" id="mainInlinePlanner" style="margin-top:0"></div>
+</div>
+</div>
+<div class="field span2" id="mainAddDayWrap">
+<label>連續增加天數</label>
+<div id="mainSequentialControls"></div>
+<div class="hint" style="margin-top:8px">需要幾天就往下加幾天；每一天都可以各自勾選第二場。</div>
+</div>
+<div class="field span2">
+<label>備註 / 需求</label>
+<textarea id="fNote" placeholder=""></textarea>
+</div>
+</div>
+<div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
+<button class="btn primary" id="btnNextToDays" type="button">下一步：生成活動表單</button>
+</div>
+</section>
+<!-- ======================= VIEW: Step2 日期圖框列表 ======================= -->
+<section class="card view" id="viewDayList">
+<div class="hd stepHd step2">
+<h2>2) 活動清單（活動1/活動2/活動3…）</h2>
+<span class="pill" id="daysCountPill">0 項</span>
+</div>
+<div style="padding:14px">
+<div class="note" id="dayListNote"></div>
+</div>
+<div class="dayGrid" id="dayCards"></div>
+<div style="padding:14px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line)">
+<button class="btn primary" id="btnGoSelectEquip" type="button">下一步：選設備</button>
+</div>
+</section>
+<!-- ======================= VIEW: Step3 編輯（主案/活動） ======================= -->
+<section class="card view" id="viewDayEdit">
+<div class="hd stepHd step3">
+<h2 id="dayEditTitle">3) 選設備</h2>
+</div>
+<div class="equipBarWrap">
+<div class="equipUnitBar" id="equipUnitBar"></div>
+</div>
+<div class="equipOverview" id="equipOverview">
+<div class="tabs equipTabs" id="tabs"></div>
+</div>
+<div class="equipFocusWrap" id="equipFocusWrap" style="display:none">
+<div class="equipFocusHeader">
+<div class="equipFocusTitle" id="equipCatTitle">舞台區</div>
+<div class="equipFocusNotes">
+<div class="equipFocusNotesTitle">選擇前注意事項</div>
+<ul id="equipCatNotes"></ul>
+</div>
+</div>
+<div class="equipItemGrid" id="items"></div>
+<div class="equipFocusActions">
+<button class="btn equipFocusBtn" id="btnBackToCats" onclick="backToEquipOverview()" type="button">返回所有區塊</button>
+<button class="btn equipFocusBtn primary" id="btnNextCategory" onclick="goToNextEquipCategory()" type="button">完成此區塊，前往下一個區塊</button>
+</div>
+</div>
+<!-- 舊套裝區保留為相容用，不顯示 -->
+<div aria-hidden="true" style="display:none">
+<div id="levelsSafety"></div>
+<div id="levelsAmbience"></div>
+<div id="levelsUpgrade"></div>
+</div>
+<!-- 報價 -->
+<div class="hd stepHd step4" style="border-top:1px solid var(--line);border-bottom:none">
+<h2>本項即時報價</h2>
+<span class="pill" id="dayTotalPill">NT$0</span>
+</div>
+<div class="summary">
+<div class="totals">
+<div class="trow"><span class="subttl">設備小計（B）</span><b id="dayEquipSubtotal">NT$0</b></div>
+<div class="trow" id="dayContinuousRow" style="display:none">
+<span class="subttl">主案連續加價（Day2/Day3+）</span><b id="dayContinuousFee">NT$0</b>
+</div>
+<div class="trow" id="daySession2Row" style="display:none">
+<span class="subttl" id="daySession2Label">第二場加價（B×30%）</span><b id="daySession2Fee">NT$0</b>
+</div>
+<div class="trow"><span class="subttl">本項合計</span><b id="dayTotal">NT$0</b></div>
+</div>
+<div class="cart" id="cart"></div>
+</div>
+<div class="step3Flow" id="step3Flow">
+<div class="flowHint" id="step3FlowHint">請依序完成每一個活動的設備填寫。</div>
+<button class="btn primary" id="btnStep3Continue" type="button">完成本活動，前往下一項</button>
+</div>
+</section>
+<!-- ======================= VIEW: Step4 ======================= -->
+<section class="card view" id="viewQuote">
+<div class="hd stepHd step4">
+<h2>4) 列印報價單</h2>
+</div>
+<div class="quoteBox">
+<div id="quoteWarning"></div>
+<div class="quoteClean" id="quoteOverview"></div>
+<div class="quoteGrandCard">
+<div>
+<div class="quoteGrandLabel">最後總價</div>
+<div class="note" style="color:rgba(255,255,255,.78);margin-top:4px">請確認各活動內容與金額是否正確</div>
+</div>
+<div class="quoteGrandValue" id="quoteGrandTotal">NT$0</div>
+</div>
+<div class="step4BottomActions" id="step4BottomActions">
+<button class="btn primary" id="btnBottomSend" type="button">送出報價單／Email 寄送</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Modal -->
+<div class="modalMask" id="modalMask">
+<div class="modal">
+<div class="mh">
+<b id="mTitle">詳情</b>
+<button class="xbtn" id="mClose" title="關閉">✕</button>
+</div>
+<div class="mb"><p id="mBody">—</p></div>
+</div>
+</div>
+<!-- Print Root -->
+<div id="printRoot"></div>
+
+
+
+<script src="assets/js/app-core.js"></script><script src="assets/js/activity-layout.js"></script><script src="assets/js/mobile-helper.js"></script></body>
+</html>
